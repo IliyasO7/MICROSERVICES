@@ -17,6 +17,7 @@ const Customer = require('../../models/customer')
 const orderService = require('../../services/order')
 const customerService = require('../../services/customers')
 const smsService = require('../../services/sms')
+const Vendor = require("../../models/vendor")
 
 // List orders
 exports.list = async (req, res, next) => {
@@ -328,6 +329,93 @@ exports.feedback = async (req, res, next) => {
       //   message: `Housejoy: Your booking ID ${order.orderId} for ${order.service.name} service has been cancelled successfully. Housejoy makes home services more accessible for you. Book again at ${process.env.HOUSEJOY_URL}. -Sarvaloka Services On Call Pvt Ltd`
       // })
   
+      res.status(200).json({
+        result: 'success'
+      })
+  } catch (err) {
+    console.log(err)
+    next(err)
+  }
+}
+
+
+exports.vendorFilter = async (req, res, next) => {
+  try {
+    console.log(`orderId is: ${req.params.orderId}`)
+
+    let order = await Order.findOne({ orderId: req.params.orderId }).populate('customer').populate('service').lean()
+      if (!order) {
+        throw {
+          status: 404,
+          message: 'Order not found'
+        }
+      }
+      console.log('order',order);
+      console.log('order city of customer',order.customer.addresses); 
+      console.log('order service name',order.service.name); 
+      if(order.customer.addresses){
+        var customerCity = order.customer.addresses;
+      }
+      console.log(customerCity);
+
+      if(order.service.name){
+        var orderServiceName = order.service.name;
+      }
+
+
+      const allvendors = await Vendor.find({}).lean()
+
+      console.log('all vendors', allvendors);
+      console.log('total Vendors',allvendors.length);
+      
+      const firstVendorFilter = [];
+      var increment = 1;
+      //basic Filter
+      for await (eachVendor of allvendors){
+        console.log('customer city is',customerCity[0].city);
+        console.log('Each Vendor city is :', eachVendor.serviceArea.city);
+        if(eachVendor.status == 'Active'){
+          if(eachVendor.serviceArea.city === customerCity[0].city){
+            if(eachVendor.serviceProvided === orderServiceName){
+              if(eachVendor.availability){
+                console.log('vendor availability increment is ',increment);
+                ++increment;
+                firstVendorFilter.push(eachVendor)
+              }         
+            }
+          }
+        }
+      }
+      console.log('First Filter',firstVendorFilter);
+      console.log('total Vendors',allvendors.length);
+      console.log('Filtered length',firstVendorFilter.length);
+
+      //based on fullfillment Ratio
+      const fullfillmentVendorFilter = firstVendorFilter.sort((a,b)=>b.fullfillment_ratio - a.fullfillment_ratio)
+      console.log('sorted vendors based on Max fullfillment ratio', fullfillmentVendorFilter);
+
+      //based on rating
+      const ratingVendorFilter = fullfillmentVendorFilter.sort((a,b)=> b.rating - a.rating);
+      console.log('sorted vendors based on Max Rating', ratingVendorFilter);
+
+      //based on acceptance Ratio 
+      const acceptanceVendorFilter = ratingVendorFilter.sort((a,b)=> b.acceptance_ratio - a.acceptance_ratio)
+      console.log('sorted vendors based on Max Acceptance ratio', acceptanceVendorFilter);
+      console.log('first sorted vendor to whom this order will be assigned ', acceptanceVendorFilter[0]);
+
+
+
+
+
+    
+      // // Send SMS
+      // await smsService.send({
+      //   type: 'TXN',
+      //   senderId: 'HSEJOY',
+      //   templateId: '1107167903365507452',
+      //   phone: order.customer.phone,
+      //   message: `Housejoy: Your booking ID ${order.orderId} for ${order.service.name} service has been cancelled successfully. Housejoy makes home services more accessible for you. Book again at ${process.env.HOUSEJOY_URL}. -Sarvaloka Services On Call Pvt Ltd`
+      // })
       res.status(200).json({
         result: 'success'
       })

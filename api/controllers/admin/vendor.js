@@ -98,6 +98,57 @@ exports.create = async (req, res, next) => {
   }
 }
 
+
+// Vendor create
+exports.testVendor = async (req, res, next) => {
+  try {
+
+    // Generate vendorId
+    let vendorId = await randomstring.generate({ length: 8, charset: 'alphanumeric', capitalization: 'uppercase' })
+
+    let vendorMongooseId = mongoose.Types.ObjectId()
+
+    // Create new vendor
+    await new Vendor({
+      _id: vendorMongooseId,
+      'vendorId': vendorId,
+      'ownerName': req.body.ownerName,
+      'phone': req.body.phone,
+      'additionalPhone': req.body.additionalPhone,
+      'password': req.body.password,
+      'homeAddress': req.body.homeAddress,
+      'businessName': req.body.businessName,
+      'officeAddress': req.body.officeAddress,
+      'serviceProvided': req.body.serviceProvided,
+      'teamSize': req.body.teamSize,
+      'inBusinessSince': req.body.inBusinessSince,
+      'languagesKnown': req.body.languagesKnown,
+      'serviceArea': req.body.serviceArea,
+      'aadharCardNumber': req.body.aadharCardNumber,
+      'aadhar': req.body.aadhar,
+      'bankAccountNumber': req.body.bankAccountNumber,
+      'bankIfscCode': req.body.bankIfscCode,
+      'bankDocument': req.body.bankDocument,
+      'gst': req.body.gst,
+      'gstDocumentUpload': req.body.gstDocumentUpload,
+      'agreementUpload': req.body.agreementUpload,
+      'payment': req.body.payment,
+      'paymentReceiptNumber': req.body.paymentReceiptNumber,
+      'paymentReceipt': req.body.paymentReceipt,
+      'status': req.body.status
+    }).save()
+
+    res.json({
+      result: 'success',
+      vendorId: vendorId,
+      vendorMongooseId
+    })
+
+  } catch (err) {
+    next(err)
+  }
+}
+
 // Update media
 exports.updateMedia = async (req, res, next) => {
   try {

@@ -29,7 +29,10 @@ const customerSchema = mongoose.Schema({
   couponCODEB_COUNT:{
     type: Number, 
     default:0,
-  }
+  },
+  all_Ratings:[{type:Number}],
+  rating:{type: Number,default: 1,required:true},
+  
 })
 
 customerSchema.plugin(timestamp)

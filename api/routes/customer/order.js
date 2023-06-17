@@ -42,6 +42,11 @@ router.post(
   orderController.create
 )
 
+router.post( // auth.isLoggedIn,
+  '/vendorFilter/:orderId',
+  orderController.vendorFilter
+)
+
 // Delete order
 router.delete(
   '/:orderId',

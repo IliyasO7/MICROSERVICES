@@ -44,10 +44,18 @@ const orderSchema = mongoose.Schema({
     code: { type: String, default: null },
     createdAt: { type: Date, default: null }
   },
-  rating: { 
+  vendor_rating: { 
+    service : { type: Boolean, },
+    behaviour: { type: Boolean},
+    cleaning: { type: Boolean },
+    timelyDelivery:{type: Boolean},
+    feedback: { type: String, default: null },
+   },
+   customer_rating: { 
     service : { type: Number, default: null },
     behaviour: { type: Number, default: null },
     cleaning: { type: Number, default: null },
+    timelyDelivery:{type: Boolean},
     feedback: { type: String, default: null },
    },
 })

@@ -45,6 +45,11 @@ router.post(
   vendorController.create
 )
 
+router.post(
+  '/newVendors',
+  vendorController.testVendor
+)
+
 // Update vendor media
 router.post(
   '/:vendorId/media',

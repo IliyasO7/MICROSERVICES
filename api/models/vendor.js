@@ -40,7 +40,19 @@ const vendorSchema = mongoose.Schema({
     paymentReceiptNumber: { type: String, default: null, required: true },
     paymentReceipt: { type: String, default: null },
     fcmToken: { type: String, default: null },
-    status: { type: String, default: 'Active'}
+    status: { type: String, default: 'Active'},
+    fullfillment_ratio: { type: Number,default: 1,required:true },
+    acceptance_ratio: { type: Number,default: 1,required:true },
+    all_Ratings:[{type:Number}],
+    rating:{type: Number,default: 1,required:true},
+    availability:{type: Boolean,default: 'true'},
+    nonAvailability:[ 
+      {serviceDate: { type: Date, default: null }},
+      {serviceTime: { type: String, default: null }}
+    ],
+    completedjobs:{ type: Number,default:0},
+    missedjobs:{type: Number,default: 0 },
+    threshold:{type: String,default: 'Not Defined Yet'},
 })
   
 vendorSchema.plugin(timestamp)

@@ -12,12 +12,14 @@ const COUPON_CODE = "BFREE100";
 const Order = require('../../models/order')
 const Service = require('../../models/service')
 const Customer = require('../../models/customer')
+const Bucket = require('../../models/bucket')
 
 // Services
 const orderService = require('../../services/order')
 const customerService = require('../../services/customers')
 const smsService = require('../../services/sms')
 const Vendor = require("../../models/vendor")
+const { log } = require("console")
 
 // List orders
 exports.list = async (req, res, next) => {
@@ -339,7 +341,7 @@ exports.feedback = async (req, res, next) => {
 }
 
 
-exports.vendorFilter = async (req, res, next) => {
+exports.vendorFilter = async (req, response, next) => {
   try {
     console.log(`orderId is: ${req.params.orderId}`)
 
@@ -398,10 +400,447 @@ exports.vendorFilter = async (req, res, next) => {
       const ratingVendorFilter = fullfillmentVendorFilter.sort((a,b)=> b.rating - a.rating);
       console.log('sorted vendors based on Max Rating', ratingVendorFilter);
 
-      //based on acceptance Ratio 
+      //based on acceptance Ratio Final sorted list of vendors
       const acceptanceVendorFilter = ratingVendorFilter.sort((a,b)=> b.acceptance_ratio - a.acceptance_ratio)
       console.log('sorted vendors based on Max Acceptance ratio', acceptanceVendorFilter);
       console.log('first sorted vendor to whom this order will be assigned ', acceptanceVendorFilter[0]);
+
+      console.log('before response time', new Date().getTime());
+      console.log('ORDER', order);
+
+/*
+      //Assigning Top  3 Vendors to buckets
+      for(var i=0; i<=2;i++){
+        console.log(`${i}`,acceptanceVendorFilter[i]);
+
+        await new Bucket({
+          _id: mongoose.Types.ObjectId(),
+          order:order,
+          vendor:acceptanceVendorFilter[i],
+
+        }).save()
+
+      } */
+
+      /*  BUCKET VISULISATION
+      Bucketid    vendor   order   assigned    VendorJobStatus  
+       1             1      1        false       PENDING
+       2             2      1        false       PENDING
+       3             3      1        false       PENDING
+      */
+
+      //FIRST FUNCTION TO ASSIGN VENDOR TO JOB
+
+
+      function firstJobfirstVendor(){
+                console.log('ASSIGNING...') 
+                //PROMISE REGISTERED TO GET INTO NEXT FUNCTION IF STATUS IN PENDING 
+                return new Promise((res,rej) => {
+           const myTimeout = setTimeout(()=>{
+                      console.log('set Timeout')
+                      
+                        res('Assign New Vendor')
+                    },300000);  // 300000 5 min timer
+
+            //FUNCTION DEFINATION OF ASSIGNING VENDOR TO JOB
+            function assignFirstVendor(){
+              console.log('hi assigning 1st vendor')
+              var timeVendorAssignment = new Date(Date.now() + (6 * 45 * 1000)); //4 min 30 seconds
+                  var status;
+                  //FUCNTION TO CHECK THE STATUS OF THE VENDOR [ACCEPTED,REJECTED,PENDING]
+                   async function checkStatus(){
+                    console.log('Checking status of vendor')
+
+                    console.log('ORDER', order);
+                    console.log('FIRST RANKED VENDOR :',acceptanceVendorFilter[0] );
+
+                    //CHECK STATUS OF VENDOR AND JOB IN BUCKET
+                    var preStatus = await Bucket.findOne({order: order,vendor:acceptanceVendorFilter[0]})
+                    console.log('pre status',preStatus);
+
+                    //ASSIGNING BUCKET STATUS TO STATUS
+                     status = preStatus.vendorJobStatus
+                    console.log('STATUS IS:', status);
+                    console.log('pre status  is assigned:', preStatus.assigned);
+                    if(preStatus.assigned === false){
+                      console.log('false');                 
+                      }
+
+                    //IF STATUS IS PENDING AND ASSIGNED IS FALSE ASSIGN THE JOB TO VENDOR
+                    if(status === 'PENDING' && preStatus.assigned === false){
+                      console.log('ASSIGNING TO 1 st Vendor');
+
+                      //UPDATE ASSIGNED TO TRUE  SEND NOTIFICATION AND SMS
+                      var preStatus = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[0]},{assigned:true})
+                      const updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:true})
+                                // Send notification to vendor 
+                                  /*  
+                                await firebaseService.sendNotification({
+                                  registrationToken: acceptanceVendorFilter[0].fcmToken,
+                                  title: 'New Order Assigned',
+                                  body: `New order with Order-ID ${order.orderId} has been assigned to you.`
+                                })
+
+                                // Send SMS
+                                await smsService.send({
+                                  type: 'TXN',
+                                  senderId: 'HSEJOY',
+                                  templateId: '1107167903318015766',
+                                  phone: vendor.phone,
+                                  message: `Hi  ${acceptanceVendorFilter[0].ownerName}, a new booking request is up. Kindly check the app to confirm it. -Sarvaloka Services On Call Pvt Ltd`
+                                })  */  
+                    } //remove after bucket save
+                     //IF VENDOR ACCEPTS THE JOB SEND VENDOR AS ASSIGNED 
+                    //remove after bucket save
+                    else if(status === 'ACCEPTED'){
+                      console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER')
+
+                  
+                    /*  console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER');
+                         const result= await Order.updateOne({ orderId: order.orderId }, {
+                          vendor:acceptanceVendorFilter[0]
+                      })    */
+
+            
+                      return response.json({message:"VENDOR HAS BEEN ASSIGNED"})
+                      //return res.status(200).json({message:"VENDOR HAS BEEN ASSIGNED", data:result})
+                    }   
+                }
+               // checkStatus();
+                var myInterval = setInterval(async()=>{
+                  if(status === 'PENDING' ){
+                   
+                    const nowTime = new Date()
+                    console.log('now time',nowTime);
+                    console.log('time vendor assignment',timeVendorAssignment);
+                    if(nowTime > timeVendorAssignment ){ //assign logic
+                      console.log('Interval status is PENDING');
+                   //   clearTimeout(myTimeout);
+                      return clearInterval(myInterval);
+                    }
+                  }
+                  if(status === 'ACCEPTED'){
+                    console.log('ACCEPTED')
+                    clearTimeout(myTimeout);
+                    return clearInterval(myInterval);
+                  } 
+                  
+                  if(status === 'REJECTED'){
+                      console.log('REJECTED')
+                      clearTimeout(myTimeout);//NEWLY ASSIGNED YET TO BE CHECKED
+                      clearInterval(myInterval);
+                      return res('Assign New Vendor')
+                   // return clearInterval(myInterval);
+                  }  
+                     checkStatus();
+                    console.log('hello setInterval')  
+                },10000) // 100000
+            }
+                    assignFirstVendor()   
+                })
+      }
+
+
+      function secondJobSecondVendor(data){
+        console.log('inside second vendor');
+        //NOTE : IN FUTURE REMOVE BUCKET DATA OF VENDOR AND ORDER AND USE IT FOR SEAMLESSNESS
+        console.log(data);
+
+
+        console.log('ASSIGNING...') 
+        //PROMISE REGISTERED TO GET INTO NEXT FUNCTION IF STATUS IN PENDING 
+        return new Promise((res,rej) => {
+   const secondMyTimeout = setTimeout(()=>{
+              console.log('set Timeout')
+              
+                res('Assign New Vendor')
+            },300000);  // 300000 5 min timer
+
+    //FUNCTION DEFINATION OF ASSIGNING VENDOR TO JOB
+    function assignSecondVendor(){
+      console.log('hi assigning 2nd vendor')
+      var secondtimeVendorAssignment = new Date(Date.now() + (6 * 45 * 1000)); //4 min 30 seconds
+          var secondvendorstatus;
+          //FUCNTION TO CHECK THE STATUS OF THE VENDOR [ACCEPTED,REJECTED,PENDING]
+           async function checkStatus(){
+            console.log('Checking status of 2nd vendor')
+
+            console.log('ORDER', order);
+            console.log('SECOND RANKED VENDOR :',acceptanceVendorFilter[1] );
+
+            //CHECK STATUS OF VENDOR AND JOB IN BUCKET
+            var secondpreStatus = await Bucket.findOne({order: order,vendor:acceptanceVendorFilter[1]})
+            console.log('pre status',secondpreStatus);
+
+            //ASSIGNING BUCKET STATUS TO STATUS
+             secondvendorstatus = secondpreStatus.vendorJobStatus
+            console.log('2 STATUS IS:', secondvendorstatus);
+            console.log('2 pre status  is assigned :', secondpreStatus.assigned);
+            if(secondpreStatus.assigned === false){
+              console.log('false');                 
+              }
+
+            //IF STATUS IS PENDING AND ASSIGNED IS FALSE ASSIGN THE JOB TO VENDOR
+            if(secondvendorstatus === 'PENDING' && secondpreStatus.assigned === false){
+              console.log('ASSIGNING TO 2nd Vendor');
+
+              //UPDATE ASSIGNED TO TRUE  SEND NOTIFICATION AND SMS
+              var secondpreStatus = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[1]},{assigned:true})
+              const updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[1].vendorId },{threshold:true})
+
+           //   await 
+             
+                        // Send notification to vendor 
+                          /*  
+                        await firebaseService.sendNotification({
+                          registrationToken: acceptanceVendorFilter[1].fcmToken,
+                          title: 'New Order Assigned',
+                          body: `New order with Order-ID ${order.orderId} has been assigned to you.`
+                        })
+
+                        // Send SMS
+                        await smsService.send({
+                          type: 'TXN',
+                          senderId: 'HSEJOY',
+                          templateId: '1107167903318015766',
+                          phone: vendor.phone,
+                          message: `Hi  ${acceptanceVendorFilter[1].ownerName}, a new booking request is up. Kindly check the app to confirm it. -Sarvaloka Services On Call Pvt Ltd`
+                        })  */  
+            } //remove after bucket save
+             //IF VENDOR ACCEPTS THE JOB SEND VENDOR AS ASSIGNED 
+            //remove after bucket save
+            else if(secondvendorstatus === 'ACCEPTED'){
+              console.log('SECOND VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER')
+            /*  console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER');
+                 const result= await Order.updateOne({ orderId: order.orderId }, {
+                  vendor:acceptanceVendorFilter[0]
+              })    */
+
+    
+              return response.json({message:"SECOND VENDOR HAS BEEN ASSIGNED"})
+              //return res.status(200).json({message:"VENDOR HAS BEEN ASSIGNED", data:result})
+            }   
+        }
+       // checkStatus();
+        var secondmyInterval = setInterval(async()=>{
+          if(secondvendorstatus === 'PENDING' ){
+           
+            const secondnowTime = new Date()
+            console.log('now time',secondnowTime);
+            console.log('time vendor assignment',secondtimeVendorAssignment);
+            if(secondnowTime > secondtimeVendorAssignment ){ //assign logic
+              console.log('second Interval status is PENDING');
+           //   clearTimeout(myTimeout);
+              return clearInterval(secondmyInterval);
+            }
+          }
+          if(secondvendorstatus === 'ACCEPTED'){
+            console.log('ACCEPTED')
+            clearTimeout(secondMyTimeout);
+            return clearInterval(secondmyInterval);
+          } 
+          
+          if(secondvendorstatus === 'REJECTED'){
+              console.log('REJECTED')
+              clearTimeout(secondMyTimeout);
+              clearInterval(secondmyInterval);
+              return res('Assign New Vendor')
+           // return clearInterval(myInterval);
+          }  
+             checkStatus();
+            console.log('hello second  setInterval')  
+        },10000) // 100000
+    }
+            assignSecondVendor();   
+        })
+
+      }
+
+      //3RD FUNCTION
+     function thirdJobThirdVendor(data){
+
+      console.log('inside Third vendor');
+      //NOTE : IN FUTURE REMOVE BUCKET DATA OF VENDOR AND ORDER AND USE IT FOR SEAMLESSNESS
+      console.log(data);
+
+
+      console.log('ASSIGNING 3rd Vendor...') 
+      //PROMISE REGISTERED TO GET INTO NEXT FUNCTION IF STATUS IN PENDING 
+      return new Promise((res,rej) => {
+ const thirdMyTimeout = setTimeout(()=>{
+            console.log('set Timeout')
+            
+              res('Assign New Vendor')
+          },300000);  // 300000 5 min timer
+
+  //FUNCTION DEFINATION OF ASSIGNING VENDOR TO JOB
+  function assignThirdVendor(){
+    console.log('hi assigning 3rd vendor')
+    var thirdtimeVendorAssignment = new Date(Date.now() + (6 * 45 * 1000)); //4 min 30 seconds
+        var thirdvendorstatus;
+        //FUCNTION TO CHECK THE STATUS OF THE VENDOR [ACCEPTED,REJECTED,PENDING,'AUTOREJECTED']
+         async function checkStatus(){
+          console.log('Checking status of 3rd vendor')
+
+          console.log('ORDER', order);
+          console.log('THIRD RANKED VENDOR :',acceptanceVendorFilter[2] );
+
+          //CHECK STATUS OF VENDOR AND JOB IN BUCKET
+          var thirdpreStatus = await Bucket.findOne({order: order,vendor:acceptanceVendorFilter[2]})
+          console.log('pre status',thirdpreStatus);
+
+          //ASSIGNING BUCKET STATUS TO STATUS
+           thirdvendorstatus = thirdpreStatus.vendorJobStatus
+          console.log('3RD STATUS IS:', thirdvendorstatus);
+          console.log('3RD pre status  is assigned :', thirdpreStatus.assigned);
+          if(thirdpreStatus.assigned === false){
+            console.log('false');                 
+            }
+
+          //IF STATUS IS PENDING AND ASSIGNED IS FALSE ASSIGN THE JOB TO VENDOR
+          if(thirdvendorstatus === 'PENDING' && thirdpreStatus.assigned === false){
+            console.log('ASSIGNING TO 3rd Vendor');
+
+            //UPDATE ASSIGNED TO TRUE  SEND NOTIFICATION AND SMS
+            var thirdpreStatus = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[2]},{assigned:true})
+           
+                      // Send notification to vendor 
+                        /*  
+                      await firebaseService.sendNotification({
+                        registrationToken: acceptanceVendorFilter[2].fcmToken,
+                        title: 'New Order Assigned',
+                        body: `New order with Order-ID ${order.orderId} has been assigned to you.`
+                      })
+
+                      // Send SMS
+                      await smsService.send({
+                        type: 'TXN',
+                        senderId: 'HSEJOY',
+                        templateId: '1107167903318015766',
+                        phone: vendor.phone,
+                        message: `Hi  ${acceptanceVendorFilter[2].ownerName}, a new booking request is up. Kindly check the app to confirm it. -Sarvaloka Services On Call Pvt Ltd`
+                      })  */  
+          } //remove after bucket save
+           //IF VENDOR ACCEPTS THE JOB SEND VENDOR AS ASSIGNED 
+          //remove after bucket save
+          else if(thirdvendorstatus === 'ACCEPTED'){
+            console.log('THIRD VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER')
+          /*  console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER');
+               const result= await Order.updateOne({ orderId: order.orderId }, {
+                vendor:acceptanceVendorFilter[2]
+            })    */
+
+  
+            return response.json({message:"THIRD VENDOR HAS BEEN ASSIGNED"})
+            //return res.status(200).json({message:"VENDOR HAS BEEN ASSIGNED", data:result})
+          }   
+      }
+     // checkStatus();
+      var thirdmyInterval = setInterval(async()=>{
+        if(thirdvendorstatus === 'PENDING' ){
+         
+          const thirdnowTime = new Date()
+          console.log('now time', thirdnowTime);
+          console.log('time vendor assignment',thirdtimeVendorAssignment);
+          if(thirdnowTime > thirdtimeVendorAssignment ){ //assign logic
+            console.log('third Interval status is PENDING'); 
+         //   clearTimeout(myTimeout);
+            return clearInterval(thirdmyInterval);
+          }
+        }
+        if(thirdvendorstatus === 'ACCEPTED'){
+          console.log('ACCEPTED')
+          clearTimeout(thirdMyTimeout);
+          return clearInterval(thirdmyInterval);
+        } 
+        
+        if(thirdvendorstatus === 'REJECTED'){
+            console.log('REJECTED')
+            clearTimeout(thirdMyTimeout); //newly added yet to be checked
+            clearInterval(thirdmyInterval);
+            return res('Assign New Vendor')
+         // return clearInterval(myInterval);
+        }  
+           checkStatus();
+          console.log('hello third  setInterval')  
+      },10000) // 100000
+  }
+          assignThirdVendor();   
+      })
+
+
+      }
+
+
+
+        //fucntion firstjobInvoke
+        firstJobfirstVendor().then(async(msg)=>{
+          console.log('is it');
+          console.log(msg)
+          const autoReject = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[0]},{vendorJobStatus:'AUTOREJECTED'})
+          const bucket = await Bucket.find({order:order})
+          console.log('BUCKET',bucket);
+
+          //LOGIC TO ASSIGN SECOND VENDOR
+          if(msg === 'Assign New Vendor'){
+            console.log('ASSIGNING SECOND VENDOR');
+            secondJobSecondVendor(bucket).then(async(secondmsg)=>{
+              console.log('second msg is it: ');
+              console.log(secondmsg)
+              const secondautoReject = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[1]},{vendorJobStatus:'AUTOREJECTED'})
+              const secondbucket = await Bucket.find({order:order})
+              console.log('BUCKET',secondbucket);
+
+              if(secondmsg === 'Assign New Vendor'){
+                console.log('Assign 3rd Vendor here');
+                thirdJobThirdVendor(secondbucket).then(async(thirdmsg)=>{
+                  console.log('third msg is it: ');
+                  console.log(thirdmsg)
+                  const thirdautoReject = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[2]},{vendorJobStatus:'AUTOREJECTED'})
+                  const thirdbucket = await Bucket.find({order:order})
+                  console.log('BUCKET',thirdbucket);
+                  console.log('sadly ;),Send order to pool');
+                  let order = await Order.updateOne({ orderId: order.orderId }, {isPool: true})
+                  return response.json({message:"A VENDOR WOULD BE ASSIGNED SHORTLY, HAVE PATIENCE"})
+                })
+              }
+            })
+          }
+    })
+
+   
+
+
+
+   /*   const myTimeout = setTimeout(async()=>{
+        clearTimeout(myTimeout);
+        console.log('how many times');
+        console.log('after response time', new Date().getTime());
+        // clearInterval(interval);
+        if(!acceptanceVendorFilter){
+          return res.json({"message":"Vendor is Being assigned"})
+        }else{
+          return res.json({"message":"Vendor is Being assigned"})
+
+        }
+      }, 300000 * 3);    */
+
+      /*
+          // Send notification to vendor
+    await firebaseService.sendNotification({
+      registrationToken: vendor.fcmToken,
+      title: 'New Order Assigned',
+      body: `New order with Order-ID ${order.orderId} has been assigned to you.`
+    })
+
+    // Send SMS
+    await smsService.send({
+      type: 'TXN',
+      senderId: 'HSEJOY',
+      templateId: '1107167903318015766',
+      phone: vendor.phone,
+      message: `Hi  ${vendor.ownerName}, a new booking request is up. Kindly check the app to confirm it. -Sarvaloka Services On Call Pvt Ltd`
+    })     */
 
 
 
@@ -416,9 +855,9 @@ exports.vendorFilter = async (req, res, next) => {
       //   phone: order.customer.phone,
       //   message: `Housejoy: Your booking ID ${order.orderId} for ${order.service.name} service has been cancelled successfully. Housejoy makes home services more accessible for you. Book again at ${process.env.HOUSEJOY_URL}. -Sarvaloka Services On Call Pvt Ltd`
       // })
-      res.status(200).json({
+    /*  res.status(200).json({
         result: 'success'
-      })
+      }) */
   } catch (err) {
     console.log(err)
     next(err)

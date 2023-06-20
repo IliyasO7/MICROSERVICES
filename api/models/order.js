@@ -58,6 +58,7 @@ const orderSchema = mongoose.Schema({
     timelyDelivery:{type: Boolean},
     feedback: { type: String, default: null },
    },
+   isPool:{ type: Boolean,default:false }
 })
 
 orderSchema.plugin(timestamp)

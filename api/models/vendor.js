@@ -52,7 +52,7 @@ const vendorSchema = mongoose.Schema({
     ],
     completedjobs:{ type: Number,default:0},
     missedjobs:{type: Number,default: 0 },
-    threshold:{type: String,default: 'Not Defined Yet'},
+    threshold:{type: Boolean,default: 'false',required:true},
 })
   
 vendorSchema.plugin(timestamp)

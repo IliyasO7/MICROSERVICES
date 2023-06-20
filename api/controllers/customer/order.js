@@ -472,7 +472,7 @@ exports.vendorFilter = async (req, response, next) => {
 
                       //UPDATE ASSIGNED TO TRUE  SEND NOTIFICATION AND SMS
                       var preStatus = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[0]},{assigned:true})
-                      const updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:true})
+                      var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:true})
                                 // Send notification to vendor 
                                   /*  
                                 await firebaseService.sendNotification({
@@ -494,6 +494,7 @@ exports.vendorFilter = async (req, response, next) => {
                     //remove after bucket save
                     else if(status === 'ACCEPTED'){
                       console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER')
+                      var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:false})
 
                   
                     /*  console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER');
@@ -526,6 +527,7 @@ exports.vendorFilter = async (req, response, next) => {
                   } 
                   
                   if(status === 'REJECTED'){
+                    var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:false})
                       console.log('REJECTED')
                       clearTimeout(myTimeout);//NEWLY ASSIGNED YET TO BE CHECKED
                       clearInterval(myInterval);
@@ -611,6 +613,7 @@ exports.vendorFilter = async (req, response, next) => {
             //remove after bucket save
             else if(secondvendorstatus === 'ACCEPTED'){
               console.log('SECOND VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER')
+              var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[2].vendorId },{threshold:false})
             /*  console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER');
                  const result= await Order.updateOne({ orderId: order.orderId }, {
                   vendor:acceptanceVendorFilter[0]
@@ -720,11 +723,12 @@ exports.vendorFilter = async (req, response, next) => {
                         phone: vendor.phone,
                         message: `Hi  ${acceptanceVendorFilter[2].ownerName}, a new booking request is up. Kindly check the app to confirm it. -Sarvaloka Services On Call Pvt Ltd`
                       })  */  
-          } //remove after bucket save
+          } 
            //IF VENDOR ACCEPTS THE JOB SEND VENDOR AS ASSIGNED 
           //remove after bucket save
           else if(thirdvendorstatus === 'ACCEPTED'){
             console.log('THIRD VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER')
+            var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[2].vendorId },{threshold:false})
           /*  console.log('VENDOR IS BEING AUTOMATICALLY ASSIGNED TO THIS ORDER');
                const result= await Order.updateOne({ orderId: order.orderId }, {
                 vendor:acceptanceVendorFilter[2]
@@ -737,7 +741,7 @@ exports.vendorFilter = async (req, response, next) => {
       }
      // checkStatus();
       var thirdmyInterval = setInterval(async()=>{
-        if(thirdvendorstatus === 'PENDING' ){
+        if(thirdvendorstatus === 'PENDING' ){   
          
           const thirdnowTime = new Date()
           console.log('now time', thirdnowTime);
@@ -775,6 +779,7 @@ exports.vendorFilter = async (req, response, next) => {
 
         //fucntion firstjobInvoke
         firstJobfirstVendor().then(async(msg)=>{
+          var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:false})
           console.log('is it');
           console.log(msg)
           const autoReject = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[0]},{vendorJobStatus:'AUTOREJECTED'})
@@ -785,6 +790,7 @@ exports.vendorFilter = async (req, response, next) => {
           if(msg === 'Assign New Vendor'){
             console.log('ASSIGNING SECOND VENDOR');
             secondJobSecondVendor(bucket).then(async(secondmsg)=>{
+              var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[1].vendorId },{threshold:false})
               console.log('second msg is it: ');
               console.log(secondmsg)
               const secondautoReject = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[1]},{vendorJobStatus:'AUTOREJECTED'})
@@ -794,6 +800,7 @@ exports.vendorFilter = async (req, response, next) => {
               if(secondmsg === 'Assign New Vendor'){
                 console.log('Assign 3rd Vendor here');
                 thirdJobThirdVendor(secondbucket).then(async(thirdmsg)=>{
+                  var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[2].vendorId },{threshold:false})
                   console.log('third msg is it: ');
                   console.log(thirdmsg)
                   const thirdautoReject = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[2]},{vendorJobStatus:'AUTOREJECTED'})

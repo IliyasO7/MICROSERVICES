@@ -4,7 +4,7 @@ const fs = require('fs')
 const _ = require('lodash')
 const { phone } = require('phone')
 const randomstring = require('randomstring')
-
+const Bucket = require('../../models/bucket')
 // Models
 const Order = require('../../models/order')
 const Vendor = require('../../models/vendor')
@@ -208,6 +208,55 @@ exports.list = async (req, res, next) => {
       next()
     }
   }
+
+
+  // List orders
+exports.bucketlist = async (req, res, next) => {
+  try {
+    let filters = {
+      vendor: req.userData.vendorId,
+      status: req.query.status || undefined
+    }
+    const vendor = await Vendor.find({vendorId:req.userData.vendorId})
+   // let orders = await Order.find(_.omitBy(filters, _.isNil), 'orderId customer service payment createdAt status serviceDate serviceTime assignedAt').populate('customer', '_id fname lname email phone').populate('service', 'name category').lean()
+    let bucketList = await Bucket.find({vendor :vendor._id,assigned:true,vendorJobStatus:'PENDING'})
+    res.status(200).json({
+      result: 'success',
+      count: bucketList.length,
+      bucket: bucketList
+    })
+  } catch (err) {
+    next()
+  }
+}
+
+exports.updateJoStatus = async (req, res, next) => {
+  try {
+
+   console.log(req.body.status);
+   if(!req.body.status){
+    res.status(400).json({
+      result: 'Something Went Wrong',
+    })
+  }
+   
+    const vendor = await Vendor.find({vendorId:req.userData.vendorId})
+    if(req.body.status === 'ACCEPTED'){
+      var status = 'ACCEPTED'
+    }else if(req.body.status === 'REJECTED'){
+       status = 'REJECTED'
+
+    }
+   // let orders = await Order.find(_.omitBy(filters, _.isNil), 'orderId customer service payment createdAt status serviceDate serviceTime assignedAt').populate('customer', '_id fname lname email phone').populate('service', 'name category').lean()
+    let bucketList = await Bucket.updateOne({vendor :vendor._id,assigned:true,order:req.body.orderId})
+    res.status(200).json({
+      result: 'Job Status Changed,Your Profile would be udpated Shortly',
+      data:bucketList
+    })
+  } catch (err) {
+    next()
+  }
+}
   
   // Order details
   exports.details = async (req, res, next) => {

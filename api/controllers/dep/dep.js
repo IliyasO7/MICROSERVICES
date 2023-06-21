@@ -418,7 +418,10 @@ exports.createLead = async (req, res, next) => {
         })
       }
       console.log('req.body is:',req.body);
-      const service = await Service.findOne({ name: req.body.types_of_service_  }).lean() // req.body.types_of_service_
+      var service = await Service.findOne({ name: req.body.types_of_service_  }).lean() // req.body.types_of_service_
+      if(!service){
+        var service = await Service.findOne({ _id: '63c94b6e9b197f413029fd33'}).lean() // 63c94b6e9b197f413029fd33
+      }
       const customerName = req.body.full_name;
       const  phone =req.body.phone_number;
       const  email =req.body.email;
@@ -486,15 +489,21 @@ exports.createLead = async (req, res, next) => {
     console.log('inside update new Lead',req.body);
     let toDb = {}
     let lead = await newleads.findOne({_id: req.body.id}).lean();
-    console.log('lead',lead);
-    toDb = {
+  //   updating null services
+ //   var service = await Service.findOne({ _id: '63c94b6e9b197f413029fd33'}).lean() // 63c94b6e9b197f413029fd33
+ //   updatedlead =   await newleads.updateOne({_id: req.body.id}, {service:service})
+     toDb = {
         text: req.body.remarks.text,
         remarkTime: req.body.remarks.remarkTime,
     }
     console.log('to Db',toDb);
+    var date = new Date();
+    console.log('date',date);
     
-const updatedlead =   await newleads.updateOne({_id: req.body.id}, {$push: {remarks: toDb},$set:{status: req.body.status}})
-    console.log('updated Lead',updatedlead);
+var updatedlead =   await newleads.updateOne({_id: req.body.id}, {$push: {remarks: toDb}} )
+    updatedlead =   await newleads.updateOne({_id: req.body.id}, {updatedAt:date,status:'read'})
+
+    //console.log('updated Lead',updatedlead);
     res.json({
         message: "Lead updated succefully",
         data:updatedlead
@@ -529,6 +538,24 @@ const updatedlead =   await newleads.updateOne({_id: req.body.id}, {$push: {rema
         }).save()
        
         console.log('cid',createCustomer);
+
+        let addressId = await mongoose.Types.ObjectId()
+
+        await Customer.updateOne({ _id: createCustomer._id }, {
+          $push: {
+            addresses: {
+              _id: addressId,
+              fname: req.body.address.fname,
+              lname: req.body.address.lname,
+              phone: req.body.address.phone,
+              address: req.body.address.address,
+              city:  req.body.address.city,
+              state: req.body.address.state,
+              pincode: req.body.address.pincode,
+              country: req.body.address.country || 'in'
+            }
+          }
+        })
     
      //   customer = await Customer.findOne({ phone: req.body.address.phone }).lean()
     //   console.log('suctoemr is', customer);
@@ -616,3 +643,5 @@ const updatedlead =   await newleads.updateOne({_id: req.body.id}, {$push: {rema
       next(err)
     }
   }
+
+

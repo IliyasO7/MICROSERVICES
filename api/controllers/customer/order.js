@@ -807,8 +807,8 @@ exports.vendorFilter = async (req, response, next) => {
                   const thirdbucket = await Bucket.find({order:order})
                   console.log('BUCKET',thirdbucket);
                   console.log('sadly ;),Send order to pool');
-                  let order = await Order.updateOne({ orderId: order.orderId }, {isPool: true})
-                  return response.json({message:"A VENDOR WOULD BE ASSIGNED SHORTLY, HAVE PATIENCE"})
+                //  let order = await Order.updateOne({ orderId: order.orderId }, {isPool: true})
+                //  return response.json({message:"A VENDOR WOULD BE ASSIGNED SHORTLY, HAVE PATIENCE"})
                 })
               }
             })

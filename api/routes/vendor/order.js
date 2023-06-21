@@ -55,12 +55,22 @@ router.get(
   vendorOrderController.list
 )
 
+//
+router.get(
+  '/bucketList',
+  auth.isVendor,
+  vendorOrderController.bucketlist
+)
+
+
+
 // Get order details
 router.get(
   '/:orderId',
   auth.isVendor,
   vendorOrderController.details
 )
+
 
 // Update order price
 router.post(

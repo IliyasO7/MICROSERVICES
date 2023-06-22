@@ -24,6 +24,7 @@ module.exports = function (app) {
 
     const dependencies = require('./api/routes/dep')
     const blogs = require('./api/routes/blogs')
+    const rentalAdminAuthRoutes = require('./api/routes/rentalAdmin/auth')
     
     app.use('/services', servicesRoutes)
     app.use('/webhooks', webhooksRoutes)
@@ -44,4 +45,6 @@ module.exports = function (app) {
     app.use('/dep/leads', dependencies)
 
     app.use('/blogs', blogs)
+
+    app.use('/rentalAdmin', rentalAdminAuthRoutes)
 }

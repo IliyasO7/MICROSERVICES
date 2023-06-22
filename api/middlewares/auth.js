@@ -58,3 +58,24 @@ exports.isVendor = async (req, res, next) => {
     })
   }
 }
+
+// Check if admin
+exports.isRentalAdmin = async (req, res, next) => {
+  try {
+
+    const token = req.headers.authorization.split(" ")[1]
+    const decoded = jwt.verify(token, process.env.JWT_KEY)
+    if (decoded.role == 'rentaladmin') {
+      req.userData = decoded
+      next()
+    } else {
+      throw new Error('You are not admin')
+    }
+    
+  } catch (err) {
+    next({
+      status: 401,
+      message: 'Invalid authorization'
+    })
+  }
+}

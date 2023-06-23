@@ -55,11 +55,25 @@ router.get(
   vendorOrderController.list
 )
 
-//
+//get bucketList of vendor
 router.get(
-  '/bucketList',
+  '/bucketList/:orderId',
   auth.isVendor,
   vendorOrderController.bucketlist
+)
+
+//update job status
+router.get(
+  '/bucketList/:orderId',
+  auth.isVendor,
+  vendorOrderController.updateJobStatus
+)
+
+//update job status
+router.get(
+  '/bucketList/orderDetails/:orderId',
+  auth.isVendor,
+  vendorOrderController.getBucketWithOrderId
 )
 
 

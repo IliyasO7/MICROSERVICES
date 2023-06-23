@@ -213,13 +213,9 @@ exports.list = async (req, res, next) => {
   // List orders
 exports.bucketlist = async (req, res, next) => {
   try {
-    let filters = {
-      vendor: req.userData.vendorId,
-      status: req.query.status || undefined
-    }
     const vendor = await Vendor.find({vendorId:req.userData.vendorId})
    // let orders = await Order.find(_.omitBy(filters, _.isNil), 'orderId customer service payment createdAt status serviceDate serviceTime assignedAt').populate('customer', '_id fname lname email phone').populate('service', 'name category').lean()
-    let bucketList = await Bucket.find({vendor :vendor._id,assigned:true,vendorJobStatus:'PENDING'})
+    let bucketList = await Bucket.find({vendor :vendor._id,assigned:true,vendorJobStatus:'PENDING',bucketStatus:'OPEN'})
     res.status(200).json({
       result: 'success',
       count: bucketList.length,
@@ -230,9 +226,23 @@ exports.bucketlist = async (req, res, next) => {
   }
 }
 
-exports.updateJoStatus = async (req, res, next) => {
-  try {
+  // List orders
+  exports.getBucketWithOrderId = async (req, res, next) => {
+    try {
+      const vendor = await Vendor.find({vendorId:req.userData.vendorId})
+     // let orders = await Order.find(_.omitBy(filters, _.isNil), 'orderId customer service payment createdAt status serviceDate serviceTime assignedAt').populate('customer', '_id fname lname email phone').populate('service', 'name category').lean()
+      let bucketOrder = await Bucket.find({vendor :vendor._id,order:req.params.orderId})
+      res.status(200).json({
+        result: 'success',
+        bucket: bucketOrder
+      })
+    } catch (err) {
+      next()
+    }
+  }
 
+exports.updateJobStatus = async (req, res, next) => {
+  try {
    console.log(req.body.status);
    if(!req.body.status){
     res.status(400).json({
@@ -240,19 +250,24 @@ exports.updateJoStatus = async (req, res, next) => {
     })
   }
    
-    const vendor = await Vendor.find({vendorId:req.userData.vendorId})
+    const vendor = await Vendor.findOne({vendorId:req.userData.vendorId})
     if(req.body.status === 'ACCEPTED'){
       var status = 'ACCEPTED'
     }else if(req.body.status === 'REJECTED'){
        status = 'REJECTED'
-
     }
    // let orders = await Order.find(_.omitBy(filters, _.isNil), 'orderId customer service payment createdAt status serviceDate serviceTime assignedAt').populate('customer', '_id fname lname email phone').populate('service', 'name category').lean()
-    let bucketList = await Bucket.updateOne({vendor :vendor._id,assigned:true,order:req.body.orderId})
-    res.status(200).json({
-      result: 'Job Status Changed,Your Profile would be udpated Shortly',
-      data:bucketList
-    })
+    let updatebucketList = await Bucket.updateOne({vendor :vendor._id,assigned:true,order:req.params.orderId},{ vendorJobStatus:req.body.status,bucketStatus:'CLOSED'})
+    if(!updatebucketList){
+      res.status(500).json({
+        result: 'ORDER HAS BEEN CANCELLED',
+      })
+    }else{
+      res.status(200).json({
+        result: 'Checking for availability,Your Profile would be updated Shortly in your orders',
+        data:updatebucketList
+      })
+    }
   } catch (err) {
     next()
   }

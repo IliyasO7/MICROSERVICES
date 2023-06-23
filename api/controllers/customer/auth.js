@@ -16,6 +16,7 @@ const smsService = require('../../services/sms')
 // Signup
 exports.signup = async (req, res, next) => {
   try {
+    console.log('req body',req.body);
 
     // Format phone number
     let phoneNumber = (await phone(req.body.phone, { country: 'IN' })).phoneNumber

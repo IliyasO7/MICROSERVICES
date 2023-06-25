@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const dayjs = require('dayjs')
 const _ = require('lodash')
-
+const Order = require('../../models/order')
 // Models
 const Vendor = require('../../models/vendor')
 
@@ -141,6 +141,42 @@ exports.updatePassword = async (req, res, next) => {
   try {
 
     let updatePassword = await vendorService.updatePassword(req.userData.vendorId, req.body.password)
+
+    res.status(200).json({
+      result: 'success'
+    })
+
+  } catch (err) {
+    next(err)
+  }
+}
+
+// Update service Provided Includes
+exports.serviceCheckIncludes = async (req, res, next) => {
+  try {
+    console.log('req body order',req.params.orderId);
+    console.log('req body vendorId', req.body.vendorId);
+
+    const order = await Order.findOne({orderId:req.params.orderId});
+    if(order){
+      console.log('order Details',order);
+      console.log('order service data',order.service);
+      console.log('order service data is',order.service.ObjectId);
+    }
+
+    const vendor = await Vendor.findOne({ _id : req.body.vendorId })
+    console.log('vendor',vendor);
+    console.log('vendor service',vendor.serviceProvided);
+    if(vendor){
+      if(vendor.serviceProvided.includes(order.service)){
+        console.log('yes');
+      }
+      console.log('here inside vendor');
+
+    }
+
+
+    //let updatePassword = await vendorService.updatePassword(req.userData.vendorId, req.body.password)
 
     res.status(200).json({
       result: 'success'

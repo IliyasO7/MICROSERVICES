@@ -5,7 +5,7 @@ const _ = require('lodash')
 const fs = require('fs')
 const PhoneNumber = require('awesome-phonenumber')
 const bcrypt = require('bcrypt')
-
+const Service = require('../../models/service');
 // Models
 const Vendor = require('../../models/vendor')
 
@@ -36,11 +36,21 @@ exports.list = async (req, res, next) => {
 // Signup
 exports.create = async (req, res, next) => {
   try {
-
+    console.log('inside create vendor',req.body.serviceProvided);
+    if(req.body.serviceProvided){
+    for await(eachService of req.body.serviceProvided){
+      console.log('Each Service',eachService);
+       const service = await Service.findById(eachService).lean()
+       console.log('service:',service);
+       if(!service){
+        throw 'No such service'
+       }
+    }
+  }
     // Format phone number
     let phone = new PhoneNumber(req.body.phone, 'IN')
     if (!phone.isValid()) {
-      throw 'Invalid phone number'
+      throw new Error('Invalid phone number')
     }
 
     // Check if vendor is already registered

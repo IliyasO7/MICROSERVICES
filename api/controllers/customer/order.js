@@ -7,7 +7,7 @@ const dayjs = require('dayjs')
 const PhoneNumber = require('awesome-phonenumber')
 const _ = require('lodash')
 const COUPON_CODE = "BFREE100";
-
+const firebaseService = require('../../services/firebase')
 // Models
 const Order = require('../../models/order')
 const Service = require('../../models/service')
@@ -355,6 +355,8 @@ exports.vendorFilter = async (req, response, next) => {
       console.log('order',order);
       console.log('order city of customer',order.customer.addresses); 
       console.log('order service name',order.service.name); 
+      let orderService =order.service;
+      console.log('orderService', order.service);
       if(order.customer.addresses){
         var customerCity = order.customer.addresses;
       }
@@ -369,8 +371,12 @@ exports.vendorFilter = async (req, response, next) => {
 
       console.log('all vendors', allvendors);
       console.log('total Vendors',allvendors.length);
+    /*  if(vendor.serviceProvided.includes(order.service)){
+        console.log('yes');
+      }*/
       
       const firstVendorFilter = [];
+      var flag =false;
       var increment = 1;
       //basic Filter
       for await (eachVendor of allvendors){
@@ -378,7 +384,19 @@ exports.vendorFilter = async (req, response, next) => {
         console.log('Each Vendor city is :', eachVendor.serviceArea.city);
         if(eachVendor.status == 'Active'){
           if(eachVendor.serviceArea.city === customerCity[0].city){
-            if(eachVendor.serviceProvided === orderServiceName){
+            console.log('Service provided by vendor',eachVendor.serviceProvided);
+            
+            console.log('EACH', eachVendor);
+            
+            for(var i=0;i<eachVendor.serviceProvided.length;i++){
+              if(order.service._id == eachVendor.serviceProvided[i]){
+                console.log('FLAG CHANGE TO TRUE BECAUSE SERVICE MATCHES WITH ORDER SERVICE');
+                flag=true;
+              }
+            }
+            console.log('FLAG', flag);
+            if(flag){
+              console.log('inside service provided true');
               if(eachVendor.availability){
                 console.log('vendor availability increment is ',increment);
                 ++increment;
@@ -407,9 +425,10 @@ exports.vendorFilter = async (req, response, next) => {
 
       console.log('before response time', new Date().getTime());
       console.log('ORDER', order);
-      /*  
+ 
 
-      //Assigning Top  3 Vendors to buckets
+      /*
+      //Assigning To ALL  Vendors who has the potential
       let bId = _.toUpper(randomstring.generate(7))
       for(var i=0; i<acceptanceVendorFilter.length;i++){
         console.log(`${i}`,acceptanceVendorFilter[i]);
@@ -422,7 +441,8 @@ exports.vendorFilter = async (req, response, next) => {
 
         }).save()
 
-      }    */  
+      }   
+      */
 
       /*  BUCKET VISULISATION
       Bucketid    vendor   order   assigned    VendorJobStatus  
@@ -476,7 +496,7 @@ exports.vendorFilter = async (req, response, next) => {
                       var preStatus = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[0]},{assigned:true})
                       var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:true})
                                 // Send notification to vendor 
-                                  /*  
+                           
                                 await firebaseService.sendNotification({
                                   registrationToken: acceptanceVendorFilter[0].fcmToken,
                                   title: 'New Order Assigned',
@@ -488,9 +508,9 @@ exports.vendorFilter = async (req, response, next) => {
                                   type: 'TXN',
                                   senderId: 'HSEJOY',
                                   templateId: '1107167903318015766',
-                                  phone: vendor.phone,
+                                  phone: acceptanceVendorFilter[0].phone,
                                   message: `Hi  ${acceptanceVendorFilter[0].ownerName}, a new booking request is up. Kindly check the app to confirm it. -Sarvaloka Services On Call Pvt Ltd`
-                                })  */  
+                                })  
                     } //remove after bucket save
                      //IF VENDOR ACCEPTS THE JOB SEND VENDOR AS ASSIGNED 
                     //remove after bucket save
@@ -1026,3 +1046,80 @@ exports.vendorFilter = async (req, response, next) => {
     next(err)
   }
 }
+
+
+
+
+exports.filter = async (req, res, next) => {
+
+try{
+  console.log(`orderId is: ${req.params.orderId}`)
+
+    let order = await Order.findOne({ orderId: req.params.orderId }).populate('customer').populate('service').lean()
+      if (!order) {
+        throw {
+          status: 404,
+          message: 'Order not found'
+        }
+      }
+      console.log('order',order);
+      console.log('order city of customer',order.customer.addresses); 
+      console.log('order service name',order.service.name); 
+      let orderService =order.service;
+      console.log('orderService', order.service);
+      if(order.customer.addresses){
+        var customerCity = order.customer.addresses;
+      }
+      console.log(customerCity);
+
+      if(order.service.name){
+        var orderServiceName = order.service.name;
+      }
+
+
+      const allvendors = await Vendor.find({}).lean()
+
+      console.log('all vendors', allvendors);
+      console.log('total Vendors',allvendors.length);
+    /*  if(vendor.serviceProvided.includes(order.service)){
+        console.log('yes');
+      }*/
+      
+      const firstVendorFilter = [];
+      var flag =false;
+      var increment = 1;
+      //basic Filter
+      for await (eachVendor of allvendors){
+        console.log('customer city is',customerCity[0].city);
+        console.log('Each Vendor city is :', eachVendor.serviceArea.city);
+        if(eachVendor.status == 'Active'){
+          if(eachVendor.serviceArea.city === customerCity[0].city){
+            console.log('Service provided by vendor',eachVendor.serviceProvided);
+            
+            console.log('EACH', eachVendor);
+            
+            for(var i=0;i<eachVendor.serviceProvided.length;i++){
+              if(order.service._id == eachVendor.serviceProvided[i]){
+                console.log('FLAG CHANGE TO TRUE BECAUSE SERVICE MATCHES WITH ORDER SERVICE');
+                flag=true;
+              }
+            }
+            console.log('FLAG', flag);
+            if(flag){
+              console.log('inside service provided true');
+              if(eachVendor.availability){
+                console.log('vendor availability increment is ',increment);
+                ++increment;
+                firstVendorFilter.push(eachVendor)
+              }         
+            }
+          }
+        }
+      }
+      console.log('waht is:',firstVendorFilter);
+    }
+      catch (err) {
+        console.log(err)
+        next(err)
+      }
+    }

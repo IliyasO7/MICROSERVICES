@@ -82,5 +82,13 @@ router.post(
   vendorController.updatePassword
 )
 
+// Update password
+router.post(
+  '/serviceCheck/:orderId',
+
+  vendorController.serviceCheckIncludes
+)
+
+
 
 module.exports = router

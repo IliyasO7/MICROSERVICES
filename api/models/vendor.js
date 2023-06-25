@@ -12,7 +12,8 @@ const vendorSchema = mongoose.Schema({
     homeAddress: { type: String, default: null, required: true },
     businessName: { type: String, default: null , required: true },
     officeAddress: { type: String, default: null },
-    serviceProvided: { type : String, default : null, required: true },
+    serviceProvided:{ type: Array, required: true },
+    //serviceProvided: { type : String, default : null, required: true },
     teamSize: { type: Number, default: null, required: true },
     inBusinessSince: { type : String, default: null, required: true },
     languagesKnown: [

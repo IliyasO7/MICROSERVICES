@@ -496,12 +496,14 @@ exports.vendorFilter = async (req, response, next) => {
                       var preStatus = await Bucket.updateOne({order: order,vendor:acceptanceVendorFilter[0]},{assigned:true})
                       var updateThreshold = await Vendor.updateOne({vendorId:acceptanceVendorFilter[0].vendorId },{threshold:true})
                                 // Send notification to vendor 
+                                console.log('fcm token',acceptanceVendorFilter[0].fcmToken);
                            
-                                await firebaseService.sendNotification({
+                           const fcmSendToken = await firebaseService.sendNotification({
                                   registrationToken: acceptanceVendorFilter[0].fcmToken,
                                   title: 'New Order Assigned',
                                   body: `New order with Order-ID ${order.orderId} has been assigned to you.`
                                 })
+                           console.log('sent...',fcmSendToken);
 
                                 // Send SMS
                                 await smsService.send({

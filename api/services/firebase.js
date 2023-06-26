@@ -10,7 +10,7 @@ firebase.initializeApp({
 // Send notification
 exports.sendNotification = async (params) => {
   try {
-
+    console.log('Sending Notification', params)
     // Params: [registrationToken, title, body]
     
     await firebase.messaging().send({

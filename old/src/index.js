@@ -22,7 +22,9 @@ app.use(
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.get("/", (req, res) => {
+  sendResponse(res, 200, "Server is working");
+});
 // connect database
 
 // logger middleware

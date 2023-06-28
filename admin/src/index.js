@@ -17,7 +17,7 @@ app.use(
 );
 
 // app.use(routes);
-app.get((req, res) => {
+app.get("/", (req, res) => {
   sendResponse(res, 200, "Server is working");
 });
 app.use((err, req, res, next) => {

@@ -25,5 +25,7 @@ services:
     build: ./old
     volumes:
       - ./old:/app/src
+      - ./shared:/app/shared  
+
     env_file:
       - .env

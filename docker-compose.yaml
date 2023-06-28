@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  nginx:
+    container_name: nginx
+    ports:
+      - '80:80'
+      - '443:433'
+    build: ./nginx
+    depends_on:
+      - old
+     
+  old:
+    container_name: old
+    build: ./old
+    volumes:
+      - ./old:/src
+    env_file:
+      - .env

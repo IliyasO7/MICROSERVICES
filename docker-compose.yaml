@@ -9,11 +9,21 @@ services:
     build: ./nginx
     depends_on:
       - old
-     
+      - admin
+    
+  admin:
+    container_name: admin
+    build: ./admin
+    volumes:
+      - ./admin:/app/src
+      - ./shared:/app/shared  
+    env_file:
+      - .env
+
   old:
     container_name: old
     build: ./old
     volumes:
-      - ./old:/src
+      - ./old:/app/src
     env_file:
       - .env

@@ -1,4 +1,6 @@
-const mongoose = require("mongoose");
+// import "../models/index";
+
+import mongoose from "mongoose";
 
 mongoose.set("strictQuery", true);
 mongoose.set("id", false);
@@ -8,16 +10,17 @@ mongoose.set("debug", (collectionName, methodName, methodArgs) => {
   if (process.env.NODE_ENV === "production") return;
   if (methodName === "createIndex") return;
 
-  //   console.info(
-  //     `\x1b[32mMongoose: ${collectionName}.${methodName}(${JSON.stringify(
-  //       methodArgs
-  //     )}) \x1b[0m`
-  //   );
+  console.info(
+    `\x1b[32mMongoose: ${collectionName}.${methodName}(${JSON.stringify(
+      methodArgs
+    )}) \x1b[0m`
+  );
 });
 
 mongoose.connection.on("error", console.log);
 
-module.exports = connectMongoDB = async () => {
+export async function connectMongoDB() {
   await mongoose.connect(process.env.MONGODB_URL);
+
   console.log("MongoDB is connected");
-};
+}

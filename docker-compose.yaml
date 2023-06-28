@@ -8,7 +8,7 @@ services:
       - '443:433'
     build: ./nginx
     depends_on:
-      - old
+      - auth
       - admin
     
   admin:
@@ -19,13 +19,26 @@ services:
       - ./shared:/app/shared  
     env_file:
       - .env
-
-  old:
-    container_name: old
-    build: ./old
+ 
+  auth:
+    container_name: auth
+    build: ./auth
     volumes:
-      - ./old:/app/src
+      - ./auth:/app/src
       - ./shared:/app/shared  
+    env_file:
+      - .env
+  
+  redis:
+    container_name: redis
+    image: redis
+
+  # old:
+  #   container_name: old
+  #   build: ./old
+  #   volumes:
+  #     - ./old:/app/src
+  #     - ./shared:/app/shared  
 
     env_file:
       - .env

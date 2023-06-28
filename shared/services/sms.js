@@ -1,13 +1,13 @@
-const axios = require("axios");
-const qs = require("qs");
-const _ = require("lodash");
+import axios from "axios";
+import qs from "qs";
+import "lodash";
 
 // Send SMS
-exports.send = async (data) => {
+export const send = async (data) => {
   try {
     // Data: phone, senderId, message, type
 
-    await axios({
+    const response = await axios({
       method: "POST",
       url: `https://api.kaleyra.io/v1/${process.env.KALEYRA_SID}/messages`,
       headers: {
@@ -15,7 +15,7 @@ exports.send = async (data) => {
         "api-key": process.env.KALEYRA_API_KEY,
       },
       data: qs.stringify({
-        to: data.phone,
+        to: data.mobile,
         type: data.type || "OTP",
         sender: data.senderId,
         body: data.message,
@@ -23,9 +23,9 @@ exports.send = async (data) => {
       }),
     });
 
-    return true;
+    return [response, null];
   } catch (err) {
-    console.error(err);
-    throw err;
+    console.log(err.message);
+    return [null, err];
   }
 };

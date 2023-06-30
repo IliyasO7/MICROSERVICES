@@ -19,4 +19,11 @@ router.post(
   controller.signUp
 )
 
+// Get profile by ID
+router.get(
+  '/profile/:cId',
+ // isLoggedIn,
+  controller.getprofile
+)
+
 export default router;

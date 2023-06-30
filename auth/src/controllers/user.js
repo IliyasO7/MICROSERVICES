@@ -66,3 +66,44 @@ export const signUp = async (req, res) => {
   }
 
 };
+
+//Get Profile by ID [Populate services later ]
+export const getprofile = async (req, res) => {
+//  const cId = req.userData.customerId
+  const cId = req.params.cId
+  console.log('CID',cId)
+  let user = await User.findById({_id:cId});
+  if (!user) {
+    return sendResponse(res, 400, "Profile Does not exist");
+  }else{
+     return sendResponse(res, 200, "Profile Fetched successfully",{user});
+  }
+};
+
+/*
+// Get profile
+export const profile = async (req, res, next) => {
+  try {
+    let profile = await Customer.findById(
+      req.userData.customerId,
+      "_id fname lname email phone addresses service country status"
+    )
+      .populate("service", "name description pricing ")
+      .lean();
+
+    if (!profile) {
+      throw {
+        status: 404,
+        message: "Customer not found",
+      };
+    }
+
+    res.status(200).json({
+      result: "success",
+      profile: profile,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+*/

@@ -43,3 +43,26 @@ export const verifyOtp = async (req, res) => {
   const tokens = generateTokens({ userId: user._id });
   sendResponse(res, 200, "Otp Verified", { user, ...tokens });
 };
+
+
+export const signUp = async (req, res) => {
+  const mobile = req.body.mobile;
+  const fname = req.body.fname;
+  const lname = req.body.lname;
+  const email = req.body.email;
+
+  let user = await User.findOne({ mobile: mobile });
+  if (!user) {
+    return sendResponse(res, 400, "USER DOES NOT EXIST,pls verify otp");
+  }else{
+    const saveUser = await User.updateOne({ mobile: req.body.mobile },{
+      fname:fname,
+      lname:lname,
+      email:email
+    });
+    if(saveUser){
+      sendResponse(res, 200, "User SignUp successful", {saveUser});
+    }
+  }
+
+};

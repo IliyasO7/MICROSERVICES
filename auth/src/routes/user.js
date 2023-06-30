@@ -12,4 +12,11 @@ router.post(
   controller.verifyOtp
 );
 
+// Signup
+router.post(
+  '/signup',
+  validate(validation.signUp),
+  controller.signUp
+)
+
 export default router;

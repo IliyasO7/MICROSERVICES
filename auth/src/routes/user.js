@@ -36,4 +36,11 @@ router.post(
   controller.addAddress
 );
 
+//Update Address
+router.post(
+  "/updateAddress",
+  checkAuth(),
+  validate(validation.address),
+  controller.updateAddress
+);
 export default router;

@@ -107,3 +107,32 @@ export const addAddress = async (req, res) => {
             return sendResponse(res, 200, "New Address Added Successfully", { createNewAddress });
          }
 };
+
+//UPDATE ADDRESS
+export const updateAddress = async (req, res) => {
+
+  const customerData = req.user;
+  const address= req.body.address;
+  const city = req.body.city;
+  const state = req.body.state;
+  const pincode= req.body.pincode;
+  const country= req.body.country;
+  const defaultValue = req.body.default
+
+  let user = await User.findById({ _id: customerData._id });
+  if (!user) {
+    return sendResponse(res, 400, "Profile Does not exist");
+  } else {    
+          let updateAddress = await Address.updateOne(
+            { user:user },
+            {
+                  default: defaultValue,
+                  address: address,
+                  city: city,
+                  state: state,
+                  pincode: pincode, 
+                  country:country,
+            })
+            return sendResponse(res, 200, "New Address Updated Successfully", { updateAddress });
+         }
+};

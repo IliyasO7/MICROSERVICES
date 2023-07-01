@@ -173,7 +173,7 @@ export const setDefaultAddress = async (req, res) => {
 
 //Delete Address
 export const deleteAddress = async (req, res) => {
-  const addressID = req.body.addressId;
+  const addressID = req.params.addressId;
        let deletedAddress = await Address.deleteOne({ _id: addressID });
        return sendResponse(res, 200, "Address Deleted Successfully");
 };

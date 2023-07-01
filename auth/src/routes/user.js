@@ -61,9 +61,8 @@ router.post(
 
 //Delete address
 router.delete(
-  '/deleteAddress',
+  '/deleteAddress/:addressId',
   checkAuth(),
-  validate(validation.addressID),
   controller.deleteAddress
 )
 

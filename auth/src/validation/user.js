@@ -28,9 +28,7 @@ const setDefault = Joi.object({
   default: Joi.boolean().required(),
 });
 
-const addressID = Joi.object({
-  addressId: Joi.string().required(),
-});
+
 
 
 export default {
@@ -39,5 +37,5 @@ export default {
   updateProfile,
   address,
   setDefault,
-  addressID
+
 };

@@ -43,4 +43,11 @@ router.post(
   validate(validation.address),
   controller.updateAddress
 );
+
+//get User Address
+router.get(
+  "/getAddress",
+  checkAuth(),
+  controller.getAddress
+);
 export default router;

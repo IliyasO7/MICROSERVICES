@@ -9,15 +9,14 @@ const verifYOtp = Joi.object({
   otp: Joi.string().length(4).required(),
 });
 
-const signUp = Joi.object({
+const updateProfile = Joi.object({
   fname: Joi.string().required(),
   lname: Joi.string().required(),
   email: Joi.string().lowercase().email().required(),
-  mobile: Joi.string().length(10).required(),
 });
 
 export default {
   sendOtp,
   verifYOtp,
-  signUp
+  updateProfile,
 };

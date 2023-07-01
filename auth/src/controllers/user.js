@@ -44,39 +44,37 @@ export const verifyOtp = async (req, res) => {
   sendResponse(res, 200, "Otp Verified", { user, ...tokens });
 };
 
-
-export const signUp = async (req, res) => {
-  const mobile = req.body.mobile;
+export const updateProfile = async (req, res) => {
   const fname = req.body.fname;
   const lname = req.body.lname;
   const email = req.body.email;
 
-  let user = await User.findOne({ mobile: mobile });
-  if (!user) {
-    return sendResponse(res, 400, "USER DOES NOT EXIST,pls verify otp");
-  }else{
-    const saveUser = await User.updateOne({ mobile: req.body.mobile },{
-      fname:fname,
-      lname:lname,
-      email:email
-    });
-    if(saveUser){
-      sendResponse(res, 200, "User SignUp successful", {saveUser});
+  const saveUser = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      fname: fname,
+      lname: lname,
+      email: email,
+      isProfileCompleted: true,
+    },
+    {
+      new: true,
     }
-  }
+  );
 
+  sendResponse(res, 200, "User SignUp successful", saveUser);
 };
 
 //Get Profile by ID [Populate services later ]
 export const getprofile = async (req, res) => {
-//  const cId = req.userData.customerId
-  const cId = req.params.cId
-  console.log('CID',cId)
-  let user = await User.findById({_id:cId});
+  //  const cId = req.userData.customerId
+  const cId = req.params.cId;
+  console.log("CID", cId);
+  let user = await User.findById({ _id: cId });
   if (!user) {
     return sendResponse(res, 400, "Profile Does not exist");
-  }else{
-     return sendResponse(res, 200, "Profile Fetched successfully",{user});
+  } else {
+    return sendResponse(res, 200, "Profile Fetched successfully", { user });
   }
 };
 

@@ -1,7 +1,7 @@
 import * as controller from "../controllers/user.js";
 import Router from "express";
 import validation from "../validation/user.js";
-import { validate } from "../../../shared/utils/helper.js";
+import { checkAuth, validate } from "../../../shared/utils/helper.js";
 //import { isLoggedIn } from "../utils/auth.js";
 
 const router = Router();
@@ -15,16 +15,17 @@ router.post(
 
 // Signup
 router.post(
-  '/signup',
-  validate(validation.signUp),
-  controller.signUp
-)
+  "/register",
+  checkAuth(),
+  validate(validation.updateProfile),
+  controller.updateProfile
+);
 
 // Get profile by ID
 router.get(
-  '/profile/:cId',
- // isLoggedIn,
+  "/profile/:cId",
+  // isLoggedIn,
   controller.getprofile
-)
+);
 
 export default router;

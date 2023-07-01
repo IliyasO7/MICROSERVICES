@@ -21,11 +21,19 @@ router.post(
   controller.updateProfile
 );
 
-// Get profile by ID
+// Get profile
 router.get(
   "/profile",
   checkAuth(),
   controller.getprofile
+);
+
+// Add Address
+router.post(
+  "/addAddress",
+  checkAuth(),
+  validate(validation.address),
+  controller.addAddress
 );
 
 export default router;

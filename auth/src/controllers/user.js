@@ -1,10 +1,11 @@
 import User from "../../../shared/models/user.js";
+import Address from "../../../shared/models/address.js";
 import * as smsService from "../../../shared/services/sms.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
-
+//import mongoose  from "mongoose";
 export const sendOtp = async (req, res) => {
   const otp = "0000" || generateOtp();
 
@@ -77,30 +78,32 @@ export const getprofile = async (req, res) => {
   }
 };
 
-/*
-// Get profile
-export const profile = async (req, res, next) => {
-  try {
-    let profile = await Customer.findById(
-      req.userData.customerId,
-      "_id fname lname email phone addresses service country status"
-    )
-      .populate("service", "name description pricing ")
-      .lean();
 
-    if (!profile) {
-      throw {
-        status: 404,
-        message: "Customer not found",
-      };
-    }
+//ADD CUSTOMER ADDRESS
+export const addAddress = async (req, res) => {
 
-    res.status(200).json({
-      result: "success",
-      profile: profile,
-    });
-  } catch (err) {
-    next(err);
-  }
+  const customerData = req.user;
+  const address= req.body.address;
+  const city = req.body.city;
+  const state = req.body.state;
+  const pincode= req.body.pincode;
+  const country= req.body.country;
+  const defaultValue = req.body.default
+
+  let user = await User.findById({ _id: customerData._id });
+  if (!user) {
+    return sendResponse(res, 400, "Profile Does not exist");
+  } else {    
+          let createNewAddress = await Address.create(
+            {
+                  user:user,
+                  default: defaultValue,
+                  address: address,
+                  city: city,
+                  state: state,
+                  pincode: pincode, 
+                  country:country,
+            })
+            return sendResponse(res, 200, "New Address Added Successfully", { createNewAddress });
+         }
 };
-*/

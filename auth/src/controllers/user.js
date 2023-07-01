@@ -71,10 +71,11 @@ export const getprofile = async (req, res) => {
   const customerData = req.user;
   console.log('Data',customerData);
   let user = await User.findById({ _id: customerData._id });
+  let userAddress = await Address.find({user: user});
   if (!user) {
     return sendResponse(res, 400, "Profile Does not exist");
   } else {
-    return sendResponse(res, 200, "Profile Fetched successfully", { user });
+    return sendResponse(res, 200, "Profile Fetched successfully", { user,userAddress });
   }
 };
 

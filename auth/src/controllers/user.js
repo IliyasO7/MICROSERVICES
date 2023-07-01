@@ -142,12 +142,13 @@ export const updateAddress = async (req, res) => {
 //GET ADDRESS
 export const getAddress = async (req, res) => {
   const customerData = req.user;
-
   let user = await User.findById({ _id: customerData._id });
   if (!user) {
     return sendResponse(res, 400, "Profile Does not exist");
-        } else {    
-                  let userAddress = await Address.find({ user:user });
-                  return sendResponse(res, 200, "Address Fetched Successfully", { userAddress });
-               }
+  } else {  
+
+       let userAddress = await Address.find({ user:user });
+       return sendResponse(res, 200, "Address Fetched Successfully", { userAddress });
+    
+    }
 };

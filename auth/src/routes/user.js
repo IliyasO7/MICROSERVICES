@@ -50,4 +50,21 @@ router.get(
   checkAuth(),
   controller.getAddress
 );
+
+// Set default address
+router.post(
+  '/setdefaultAddress',
+  checkAuth(),
+  validate(validation.setDefault),
+  controller.setDefaultAddress
+)
+
+//Delete address
+router.delete(
+  '/deleteAddress',
+  checkAuth(),
+  validate(validation.addressID),
+  controller.deleteAddress
+)
+
 export default router;

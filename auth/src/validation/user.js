@@ -24,10 +24,20 @@ const address = Joi.object({
   country:Joi.string().min(2).lowercase().required(),
 });
 
+const setDefault = Joi.object({
+  default: Joi.boolean().required(),
+});
+
+const addressID = Joi.object({
+  addressId: Joi.string().required(),
+});
+
 
 export default {
   sendOtp,
   verifYOtp,
   updateProfile,
-  address
+  address,
+  setDefault,
+  addressID
 };

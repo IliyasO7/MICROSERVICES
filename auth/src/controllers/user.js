@@ -152,3 +152,28 @@ export const getAddress = async (req, res) => {
     
     }
 };
+
+
+//set Default Address
+export const setDefaultAddress = async (req, res) => {
+  const customerData = req.user;
+  const setDefault = req.body.default;
+  let user = await User.findById({ _id: customerData._id });
+  if (!user) {
+    return sendResponse(res, 400, "Profile Does not exist");
+  } else {  
+
+       let updateDefaultAddress = await Address.updateOne(
+        { user:user },
+        {default:setDefault});
+       return sendResponse(res, 200, "Address Fetched Successfully", { updateDefaultAddress });
+    
+    }
+};
+
+//Delete Address
+export const deleteAddress = async (req, res) => {
+  const addressID = req.body.addressId;
+       let deletedAddress = await Address.deleteOne({ _id: addressID });
+       return sendResponse(res, 200, "Address Deleted Successfully");
+};

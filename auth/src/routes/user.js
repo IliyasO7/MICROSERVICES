@@ -23,8 +23,8 @@ router.post(
 
 // Get profile by ID
 router.get(
-  "/profile/:cId",
-  // isLoggedIn,
+  "/profile",
+  checkAuth(),
   controller.getprofile
 );
 

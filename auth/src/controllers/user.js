@@ -67,10 +67,9 @@ export const updateProfile = async (req, res) => {
 
 //Get Profile by ID [Populate services later ]
 export const getprofile = async (req, res) => {
-  //  const cId = req.userData.customerId
-  const cId = req.params.cId;
-  console.log("CID", cId);
-  let user = await User.findById({ _id: cId });
+  const customerData = req.user;
+  console.log('Data',customerData);
+  let user = await User.findById({ _id: customerData._id });
   if (!user) {
     return sendResponse(res, 400, "Profile Does not exist");
   } else {

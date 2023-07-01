@@ -43,3 +43,67 @@ export const verifyOtp = async (req, res) => {
   const tokens = generateTokens({ userId: user._id });
   sendResponse(res, 200, "Otp Verified", { user, ...tokens });
 };
+
+
+export const signUp = async (req, res) => {
+  const mobile = req.body.mobile;
+  const fname = req.body.fname;
+  const lname = req.body.lname;
+  const email = req.body.email;
+
+  let user = await User.findOne({ mobile: mobile });
+  if (!user) {
+    return sendResponse(res, 400, "USER DOES NOT EXIST,pls verify otp");
+  }else{
+    const saveUser = await User.updateOne({ mobile: req.body.mobile },{
+      fname:fname,
+      lname:lname,
+      email:email
+    });
+    if(saveUser){
+      sendResponse(res, 200, "User SignUp successful", {saveUser});
+    }
+  }
+
+};
+
+//Get Profile by ID [Populate services later ]
+export const getprofile = async (req, res) => {
+//  const cId = req.userData.customerId
+  const cId = req.params.cId
+  console.log('CID',cId)
+  let user = await User.findById({_id:cId});
+  if (!user) {
+    return sendResponse(res, 400, "Profile Does not exist");
+  }else{
+     return sendResponse(res, 200, "Profile Fetched successfully",{user});
+  }
+};
+
+/*
+// Get profile
+export const profile = async (req, res, next) => {
+  try {
+    let profile = await Customer.findById(
+      req.userData.customerId,
+      "_id fname lname email phone addresses service country status"
+    )
+      .populate("service", "name description pricing ")
+      .lean();
+
+    if (!profile) {
+      throw {
+        status: 404,
+        message: "Customer not found",
+      };
+    }
+
+    res.status(200).json({
+      result: "success",
+      profile: profile,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+*/

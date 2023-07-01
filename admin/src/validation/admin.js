@@ -9,7 +9,13 @@ const adminCreate = Joi.object({
     role:  Joi.string().required(),
 
   });
+
+  const adminlogin = Joi.object({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+  });
   
 export default {
-  adminCreate
+  adminCreate,
+  adminlogin
 };

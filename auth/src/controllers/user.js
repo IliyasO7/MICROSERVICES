@@ -1,5 +1,6 @@
 import User from "../../../shared/models/user.js";
 import Address from "../../../shared/models/address.js";
+import Bank from "../../../shared/models/bank.js";
 import * as smsService from "../../../shared/services/sms.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
@@ -90,14 +91,10 @@ export const addAddress = async (req, res) => {
   const pincode= req.body.pincode;
   const country= req.body.country;
   const defaultValue = req.body.default
-
-  let user = await User.findById({ _id: customerData._id });
-  if (!user) {
-    return sendResponse(res, 400, "Profile Does not exist");
-  } else {    
+   
           let createNewAddress = await Address.create(
             {
-                  user:user,
+                  user:customerData._id,
                   default: defaultValue,
                   address: address,
                   city: city,
@@ -106,7 +103,7 @@ export const addAddress = async (req, res) => {
                   country:country,
             })
             return sendResponse(res, 200, "New Address Added Successfully", { createNewAddress });
-         }
+    
 };
 
 //UPDATE ADDRESS
@@ -120,12 +117,8 @@ export const updateAddress = async (req, res) => {
   const country= req.body.country;
   const defaultValue = req.body.default
 
-  let user = await User.findById({ _id: customerData._id });
-  if (!user) {
-    return sendResponse(res, 400, "Profile Does not exist");
-  } else {    
           let updateAddress = await Address.updateOne(
-            { user:user },
+            { user:customerData._id },
             {
                   default: defaultValue,
                   address: address,
@@ -135,42 +128,30 @@ export const updateAddress = async (req, res) => {
                   country:country,
             })
             return sendResponse(res, 200, "New Address Updated Successfully", { updateAddress });
-         }
+         
 };
 
 
 //GET ADDRESS
 export const getAddress = async (req, res) => {
   const customerData = req.user;
-  let user = await User.findById({ _id: customerData._id });
-  if (!user) {
-    return sendResponse(res, 400, "Profile Does not exist");
-  } else {  
 
-       let userAddress = await Address.find({ user:user });
+       let userAddress = await Address.find({ user:customerData._id });
        return sendResponse(res, 200, "Address Fetched Successfully", { userAddress });
-    
-    }
 };
 
 
 //set Default Address
 export const setDefaultAddress = async (req, res) => {
   const customerData = req.user;
-  const setDefault = req.body.default;
-  let user = await User.findById({ _id: customerData._id });
-  if (!user) {
-    return sendResponse(res, 400, "Profile Does not exist");
-  } else {  
+  const setDefault = req.body.default; 
 
        let updateDefaultAddress = await Address.updateOne(
-        { user:user },
+        { user:customerData._id },
         {
           default:setDefault
         });
        return sendResponse(res, 200, "Address Fetched Successfully", { updateDefaultAddress });
-    
-    }
 };
 
 //Delete Address
@@ -193,4 +174,49 @@ export const userRoleUpdate = async (req, res) => {
           isOwner: ownerStatus
         })
         return sendResponse(res, 200, "Role Updated Successfully", { roleUpdate });
+};
+
+
+//Add User Bank Details
+export const addBankDetails = async (req, res) => {
+  const customerData = req.user;
+  const name = req.body.name;
+  const accountNo = req.body.accountNumber;
+  const ifsc = req.body.ifscCode;
+  const defaultValue = false || req.body.default; 
+
+    let bankDetail = await Bank.create(
+        { 
+          user:customerData._id,
+          name:name,
+          accountNumber:accountNo,
+          ifscCode: ifsc,
+          default:defaultValue
+
+        })                
+        return sendResponse(res, 200, "Bank Details added Successfully", { bankDetail });
+};
+
+//Update User Bank Details
+export const updateBankDetails = async (req, res) => {
+  const customerData = req.user;
+  const name = req.body.name;
+  const accountNo = req.body.accountNumber;
+  const ifsc = req.body.ifscCode;
+ 
+    let bankDetail = await Bank.updateOne(
+        { user:customerData._id,},
+        { 
+          name:name,
+          accountNumber:accountNo,
+          ifscCode: ifsc,
+        })                
+        return sendResponse(res, 200, "Bank Details updated Successfully", { bankDetail });
+};
+
+//GET BANK DETAILS
+export const getBankDetails = async (req, res) => {
+  const customerData = req.user;
+       let bankDetails = await Bank.find({ user:customerData._id });
+       return sendResponse(res, 200, "Bank Details Fetched Successfully", { bankDetails });
 };

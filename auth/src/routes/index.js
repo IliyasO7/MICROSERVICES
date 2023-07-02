@@ -6,6 +6,7 @@ const router = Router();
 
 router.use("/user", userRouter);
 
+
 router.use((req, res) => {
   sendResponse(res, 404, "Route Not Found", null, { path: req.path });
 });

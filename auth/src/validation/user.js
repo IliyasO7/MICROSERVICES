@@ -35,9 +35,12 @@ const userRoles = Joi.object({
 
 });
 
-
-
-
+const bankInfo = Joi.object({
+  name: Joi.string().required(),
+  accountNumber: Joi.number().required(),
+  ifscCode: Joi.string().required(),
+  default: Joi.boolean()
+});
 
 export default {
   sendOtp,
@@ -45,6 +48,7 @@ export default {
   updateProfile,
   address,
   setDefault,
-  userRoles
+  userRoles,
+  bankInfo
 
 };

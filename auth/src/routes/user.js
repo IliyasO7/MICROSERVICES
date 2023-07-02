@@ -74,4 +74,21 @@ router.post(
   controller.userRoleUpdate
 )
 
+router.post(
+  "/bank-details", 
+  checkAuth(),
+  validate(validation.bankInfo),
+  controller.addBankDetails);
+
+router.post(
+  "/update-bank-details", 
+  checkAuth(),
+  validate(validation.bankInfo),
+  controller.updateBankDetails);
+
+ router.get(
+  "/get-bank-details", 
+  checkAuth(),
+  controller.getBankDetails);
+
 export default router;

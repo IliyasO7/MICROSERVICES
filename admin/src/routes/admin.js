@@ -7,7 +7,7 @@ import { validate,checkAuth,checkAuthAdmin } from "../../../shared/utils/helper.
 const router = Router();
 
 
-router.post('/adminlogin',
+router.post('/login',
 validate(validation.adminlogin),
 controller.loginAdmin);
 

@@ -1,4 +1,5 @@
 import Admin from "../../../shared/models/admin.js";
+import User from "../../../shared/models/user.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
@@ -22,8 +23,9 @@ export const createAdmin = async (req, res) => {
             const totalAdmins = await Admin.countDocuments({});
             console.log('total Admins',totalAdmins);
             let currentAdminNo = totalAdmins + 1;
-          //  let currentAdminNo =  1;
+           // let currentAdminNo =  1;
             const sku = `HJ-ODS-ADMIN-${currentAdminNo}`
+           // const sku = `HJ-RENTAL-ADMIN-${currentAdminNo}`
             const saveUser = await Admin.create({ 
                 adminId: sku,
                 username: username,

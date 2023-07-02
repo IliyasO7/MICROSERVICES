@@ -10,6 +10,8 @@ const schema = mongoose.Schema(
     status: { type: String, default: "Active" },
     rating: { type: Number, default: 0, required: true },
     isProfileCompleted: { type: Boolean, default: false },
+    isTenant: { type: Boolean, default: false },
+    isOwner: { type: Boolean, default: false },
   },
   {
     timestamp: true,

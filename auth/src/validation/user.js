@@ -28,6 +28,14 @@ const setDefault = Joi.object({
   default: Joi.boolean().required(),
 });
 
+const userRoles = Joi.object({
+  isTenant: Joi.boolean(),
+  isOwner: Joi.boolean(),
+  mobile: Joi.string().length(10).required(),
+
+});
+
+
 
 
 
@@ -37,5 +45,6 @@ export default {
   updateProfile,
   address,
   setDefault,
+  userRoles
 
 };

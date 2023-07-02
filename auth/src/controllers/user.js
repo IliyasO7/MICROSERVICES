@@ -165,7 +165,9 @@ export const setDefaultAddress = async (req, res) => {
 
        let updateDefaultAddress = await Address.updateOne(
         { user:user },
-        {default:setDefault});
+        {
+          default:setDefault
+        });
        return sendResponse(res, 200, "Address Fetched Successfully", { updateDefaultAddress });
     
     }
@@ -176,4 +178,19 @@ export const deleteAddress = async (req, res) => {
   const addressID = req.params.addressId;
        let deletedAddress = await Address.deleteOne({ _id: addressID });
        return sendResponse(res, 200, "Address Deleted Successfully");
+};
+
+//Update User Role
+export const userRoleUpdate = async (req, res) => {
+  const tenantStatus = false || req.body.isTenant;
+  const ownerStatus = false || req.body.isOwner;
+  const mobile = req.body.mobile;
+
+    let roleUpdate = await User.updateOne(
+        { mobile:mobile },
+        { 
+          isTenant:tenantStatus,
+          isOwner: ownerStatus
+        })
+        return sendResponse(res, 200, "Role Updated Successfully", { roleUpdate });
 };

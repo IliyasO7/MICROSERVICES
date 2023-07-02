@@ -66,4 +66,12 @@ router.delete(
   controller.deleteAddress
 )
 
+//Update User Role
+router.post(
+  '/update-role',
+  checkAuth(),
+  validate(validation.userRoles),
+  controller.userRoleUpdate
+)
+
 export default router;

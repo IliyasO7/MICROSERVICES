@@ -1,7 +1,7 @@
 import * as controller from "../controllers/user.js";
 import Router from "express";
 import validation from "../validation/user.js";
-import { checkAuth, validate } from "../../../shared/utils/helper.js";
+import { checkAuth, validate ,checkAuthAdmin} from "../../../shared/utils/helper.js";
 //import { isLoggedIn } from "../utils/auth.js";
 
 const router = Router();
@@ -106,5 +106,11 @@ router.get(
   "/uid-details", 
   checkAuth(),
   controller.getUidDetails);
+
+  router.post(
+    "/save-owner", 
+    checkAuthAdmin(),
+    validate(validation.saveOwner),
+    controller.saveOwner);
 
 export default router;

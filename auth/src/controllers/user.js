@@ -246,3 +246,44 @@ export const getUidDetails = async (req, res) => {
        let uidDetails = await Uid.find({ user:customerData._id });
        return sendResponse(res, 200, "UID Details Fetched Successfully", { uidDetails });
 };
+
+
+export const saveOwner = async (req, res) => {
+
+  const fname = req.body.fname;
+  const email = req.body.email;
+  const phone = req.body.mobile;
+  const name = req.body.name;
+  const accountNo = req.body.accountNumber;
+  const ifsc = req.body.ifscCode;
+  const aadharNo = req.body.aadharCardNumber;
+  const panNo = req.body.panCardNumber;
+  const ownerStatus = req.body.isOwner;
+
+      const saveUser = await User.create(
+        {
+          fname: fname,
+          email: email,
+          mobile: phone,
+          isOwner:ownerStatus
+        });
+    
+        let userBankDetails = await Bank.create(
+          { 
+            user:saveUser._id,
+            name:name,
+            accountNumber:accountNo,
+            ifscCode: ifsc,
+            default:true 
+
+          }) 
+
+        let uIdDetails = await Uid.create(
+          { 
+            user:saveUser._id,
+            aadharCardNumber:  aadharNo,
+            panCardNumber: panNo,
+          }) 
+
+  sendResponse(res, 200, "Owner Added successful", {saveUser,userBankDetails,uIdDetails});
+};

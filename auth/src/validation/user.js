@@ -46,6 +46,19 @@ const uid = Joi.object({
   aadharCardNumber:  Joi.number().min(12).required(),
   panCardNumber: Joi.string().length(10).required(),
 });
+
+const saveOwner = Joi.object({
+  fname: Joi.string().required(),
+  email: Joi.string().lowercase().email().required(),
+  mobile: Joi.string().length(10).required(),
+  aadharCardNumber:  Joi.number().min(12).required(),
+  panCardNumber: Joi.string().length(10).required(),
+  name: Joi.string().required(),
+  accountNumber: Joi.number().required(),
+  ifscCode: Joi.string().required(),
+  isOwner: Joi.boolean().required(),
+  
+});
 export default {
   sendOtp,
   verifYOtp,
@@ -54,6 +67,7 @@ export default {
   setDefault,
   userRoles,
   bankInfo,
-  uid
+  uid,
+  saveOwner
 
 };

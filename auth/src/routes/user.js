@@ -74,21 +74,37 @@ router.post(
   controller.userRoleUpdate
 )
 
+//add Bank Details
 router.post(
   "/bank-details", 
   checkAuth(),
   validate(validation.bankInfo),
   controller.addBankDetails);
 
+//update Bank Details
 router.post(
   "/update-bank-details", 
   checkAuth(),
   validate(validation.bankInfo),
   controller.updateBankDetails);
 
+//get Bank Details
  router.get(
   "/get-bank-details", 
   checkAuth(),
   controller.getBankDetails);
+
+//add Uid And Pan Number
+router.post(
+  "/uid-details", 
+  checkAuth(),
+  validate(validation.uid),
+  controller.addUid);
+
+//get Uid
+router.get(
+  "/uid-details", 
+  checkAuth(),
+  controller.getUidDetails);
 
 export default router;

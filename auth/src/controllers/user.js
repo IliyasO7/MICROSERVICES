@@ -1,6 +1,7 @@
 import User from "../../../shared/models/user.js";
 import Address from "../../../shared/models/address.js";
 import Bank from "../../../shared/models/bank.js";
+import Uid from "../../../shared/models/uid.js";
 import * as smsService from "../../../shared/services/sms.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
@@ -72,11 +73,14 @@ export const getprofile = async (req, res) => {
   const customerData = req.user;
   console.log('Data',customerData);
   let user = await User.findById({ _id: customerData._id });
-  let userAddress = await Address.find({user: user});
+  let userAddress = await Address.find({user: customerData._id});
+  let uid = await Uid.find({ user:customerData._id });
+  let bankDetails = await Bank.find({ user:customerData._id });
+
   if (!user) {
     return sendResponse(res, 400, "Profile Does not exist");
   } else {
-    return sendResponse(res, 200, "Profile Fetched successfully", { user,userAddress });
+    return sendResponse(res, 200, "Profile Fetched successfully", { user,userAddress,bankDetails,uid });
   }
 };
 
@@ -219,4 +223,26 @@ export const getBankDetails = async (req, res) => {
   const customerData = req.user;
        let bankDetails = await Bank.find({ user:customerData._id });
        return sendResponse(res, 200, "Bank Details Fetched Successfully", { bankDetails });
+};
+
+
+//Add User Uid Details
+export const addUid = async (req, res) => {
+  const customerData = req.user;
+  const aadharNo = req.body.aadharCardNumber;
+  const panNo = req.body.panCardNumber;
+    let uIdDetails = await Uid.create(
+        { 
+          user:customerData._id,
+          aadharCardNumber:  aadharNo,
+          panCardNumber: panNo,
+        })                
+        return sendResponse(res, 200, "UID Details added Successfully", { uIdDetails });
+};
+
+//GET Uid DETAILS
+export const getUidDetails = async (req, res) => {
+  const customerData = req.user;
+       let uidDetails = await Uid.find({ user:customerData._id });
+       return sendResponse(res, 200, "UID Details Fetched Successfully", { uidDetails });
 };

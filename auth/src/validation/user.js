@@ -42,6 +42,10 @@ const bankInfo = Joi.object({
   default: Joi.boolean()
 });
 
+const uid = Joi.object({
+  aadharCardNumber:  Joi.number().min(12).required(),
+  panCardNumber: Joi.string().length(10).required(),
+});
 export default {
   sendOtp,
   verifYOtp,
@@ -49,6 +53,7 @@ export default {
   address,
   setDefault,
   userRoles,
-  bankInfo
+  bankInfo,
+  uid
 
 };

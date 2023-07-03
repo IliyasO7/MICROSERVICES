@@ -134,6 +134,22 @@ router.post(
   validate(validation.saveTenant),
   controller.saveTenant);
 
+//Get All Bookings
+router.get(
+  "/get-bookings", 
+  checkAuthAdmin(),
+  controller.getAllBookings);
+
+
+//Get All Tenants
+router.get(
+  "/get-Tenants", 
+  checkAuthAdmin(),
+  controller.getAllTenants);
+
+
+
+
 
 
 

@@ -388,3 +388,18 @@ export const saveTenant = async (req, res) => {
 
   sendResponse(res, 200, "Tenant Added successfully", {saveUser,updatedInventoryData,Bookings});
 };
+
+//GET Inventory Details
+export const getAllBookings = async (req, res) => {
+  const userId = req.user;
+       let allBookings = await Booking.find({ createdBy :userId });
+       return sendResponse(res, 200, "Bookings Fetched Successfully", { allBookings });
+};
+
+
+//GET All Tenants
+export const getAllTenants = async (req, res) => {
+  console.log('inside get all tenant');
+       let allTenants = await User.find({ isTenant: true });
+       return sendResponse(res, 200, "All Tenants Fetched Successfully", { allTenants });
+};

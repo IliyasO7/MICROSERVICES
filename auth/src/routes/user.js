@@ -107,10 +107,36 @@ router.get(
   checkAuth(),
   controller.getUidDetails);
 
-  router.post(
-    "/save-owner", 
-    checkAuthAdmin(),
-    validate(validation.saveOwner),
-    controller.saveOwner);
+//Add Owner
+router.post(
+  "/save-owner", 
+  checkAuthAdmin(),
+  validate(validation.saveOwner),
+  controller.saveOwner);
+
+//Add Inventory
+router.post(
+  "/addProperty/:ownerId", 
+  checkAuthAdmin(),
+  validate(validation.saveInventory),
+  controller.saveInventory);
+
+//Get All Inventories
+router.get(
+  "/getInventories", 
+  checkAuthAdmin(),
+  controller.getInventoryDetails);
+
+//Add Owner
+router.post(
+  "/save-tenant", 
+  checkAuthAdmin(),
+  validate(validation.saveTenant),
+  controller.saveTenant);
+
+
+
+
+
 
 export default router;

@@ -59,6 +59,30 @@ const saveOwner = Joi.object({
   isOwner: Joi.boolean().required(),
   
 });
+
+const saveInventory = Joi.object({
+  propertyName: Joi.string().required(),
+  address: Joi.string().required(),
+  floor: Joi.string().required(),
+  carpetArea: Joi.string().required(),
+  geolocation: Joi.string(),
+  rent: Joi.number().required(),
+  securityDeposit: Joi.number().required(),
+
+});
+
+const saveTenant = Joi.object({
+  fname: Joi.string().required(),
+  email: Joi.string().lowercase().email().required(),
+  mobile: Joi.string().length(10).required(),
+  inventoryId :  Joi.string().required(),
+  isTenant: Joi.boolean().required(),
+  tokenAdvance:Joi.number().required(),
+ // moveIdDate:Joi.date().required(),
+});
+
+
+
 export default {
   sendOtp,
   verifYOtp,
@@ -68,6 +92,8 @@ export default {
   userRoles,
   bankInfo,
   uid,
-  saveOwner
+  saveOwner,
+  saveInventory,
+  saveTenant
 
 };

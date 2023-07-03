@@ -2,11 +2,17 @@ import User from "../../../shared/models/user.js";
 import Address from "../../../shared/models/address.js";
 import Bank from "../../../shared/models/bank.js";
 import Uid from "../../../shared/models/uid.js";
+import Inventory from "../../../shared/models/inventory.js";
+import Booking from "../../../shared/models/Booking.js";
 import * as smsService from "../../../shared/services/sms.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
+
+import user from "../validation/user.js";
+
+
 //import mongoose  from "mongoose";
 export const sendOtp = async (req, res) => {
   const otp = "0000" || generateOtp();
@@ -286,4 +292,99 @@ export const saveOwner = async (req, res) => {
           }) 
 
   sendResponse(res, 200, "Owner Added successful", {saveUser,userBankDetails,uIdDetails});
+};
+
+export const saveInventory = async (req, res) => {
+
+  const userId = req.params.ownerId;
+  const propertyName = req.body.propertyName;
+  const address= req.body.address;
+  const floor= req.body.floor;
+  const carpetArea= req.body.carpetArea;
+  const geolocation= req.body.geolocation;
+  const rent=req.body.rent;
+  const securityDeposit= req.body.securityDeposit;
+  const adminData = req.user;
+
+
+
+  const totalInventory = await Inventory.countDocuments({});
+  console.log('total Inventory',totalInventory);
+  let currentPropertyNo = totalInventory + 1;
+  const sku = `HJR${currentPropertyNo}`
+  console.log('SKU',sku);
+
+        const createInventory = await Inventory.create({
+          inventoryId: sku,
+          user:userId,
+          propertyName: req.body.propertyName,
+          address: req.body.address,
+          floor: req.body.floor,
+          carpetArea: req.body.carpetArea,
+          geolocation: req.body.geolocation,
+          rent:req.body.rent,
+          securityDeposit: req.body.securityDeposit,
+          createdBy:adminData._id,
+
+      })
+
+  sendResponse(res, 200, "Inventory Saved Successful", {createInventory});
+};
+
+
+//GET Inventory Details
+export const getInventoryDetails = async (req, res) => {
+  const userId = req.user;
+       let allInventories = await Inventory.find({ createdBy :userId });
+       return sendResponse(res, 200, "Inventories Fetched Successfully", { allInventories });
+};
+
+
+export const saveTenant = async (req, res) => {
+
+  const fname = req.body.fname;
+  const email = req.body.email;
+  const mobile = req.body.mobile;
+  const inventoryId = req.body.inventoryId;
+  const tenantStatus= req.body.isTenant;
+  const tokenAdvance = req.body.tokenAdvance;
+  const moveInDate = new Date() || req.body.moveInDate;
+  const admin = req.user;
+  const to = req.body.ownerId;
+
+      const saveUser = await User.create(
+        {
+          fname: fname,
+          email: email,
+          mobile: mobile,
+          isTenant: tenantStatus,
+        });
+    
+      const updatedInventoryData = await Inventory.updateOne(
+        { _id: inventoryId },
+        { 
+          moveInDate : moveInDate,
+          tokenAdvance:tokenAdvance
+        })
+
+        const totalBookings = await Booking.countDocuments({});
+        console.log('total Inventory',totalBookings);
+        let currentBookingNo = totalBookings + 1;
+        const sku = `HJR${currentBookingNo}`
+        console.log('SKU',sku);
+  
+        const inventoryDetails = await Inventory.findOne({_id : inventoryId})
+        console.log('INVENTORY', inventoryDetails);
+
+
+
+      const Bookings = await Booking.create({
+        from: saveUser._id,     
+        bookingId: sku,
+        inventory: inventoryId,  
+        to : inventoryDetails.user,
+        createdBy:admin,
+      })
+
+  sendResponse(res, 200, "Tenant Added successfully", {saveUser,updatedInventoryData,Bookings});
 };

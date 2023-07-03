@@ -54,7 +54,7 @@ export const loginAdmin = async (req, res) => {
         let verifyPassword = await bcrypt.compare(password, adminData.password)
         if(verifyPassword){
             const tokens = generateTokens({ userId: adminData._id });
-            return sendResponse(res, 200, "Admin Login Successfully", {tokens});
+            return sendResponse(res, 200, "Admin Login Successfully", {tokens,adminData});
         } 
      }     
 };

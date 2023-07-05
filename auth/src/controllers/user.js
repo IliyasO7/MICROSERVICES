@@ -339,6 +339,23 @@ export const getInventoryDetails = async (req, res) => {
        return sendResponse(res, 200, "Inventories Fetched Successfully", { allInventories });
 };
 
+//GET Inventory Details
+export const getAllInventoryDetails = async (req, res) => {
+  const userId = req.user;
+       let allInventoriesData = await Inventory.find({});
+       return sendResponse(res, 200, "All Inventories Fetched Successfully", { allInventoriesData });
+};
+
+//GET Owner Inventory Details
+export const getOwnerInventory = async (req, res) => {
+  const userId = req.user;
+  let user = await User.findOne({ mobile: req.params.mobile });
+
+       let allInventoriesData = await Inventory.find({ user:user });
+       return sendResponse(res, 200, "All Owner Inventories Fetched Successfully", { allInventoriesData });
+};
+
+
 
 export const saveTenant = async (req, res) => {
 

@@ -121,11 +121,23 @@ router.post(
   validate(validation.saveInventory),
   controller.saveInventory);
 
-//Get All Inventories
+//Get All Inventories of logged in Admin
 router.get(
-  "/getInventories", 
+  "/get-admin-inventories", 
   checkAuthAdmin(),
   controller.getInventoryDetails);
+
+//Get All Inventories
+router.get(
+  "/get-all-inventories", 
+  checkAuthAdmin(),
+  controller.getAllInventoryDetails);
+
+//Get Owner Inventories
+router.get(
+  "/get-owner-inventories/:mobile", 
+  checkAuthAdmin(),
+  controller.getOwnerInventory);
 
 //Add Owner
 router.post(

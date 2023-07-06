@@ -10,7 +10,7 @@ import redis from "../../../shared/utils/redis.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
 
-import user from "../validation/user.js";
+
 
 
 //import mongoose  from "mongoose";
@@ -413,10 +413,56 @@ export const getAllBookings = async (req, res) => {
        return sendResponse(res, 200, "Bookings Fetched Successfully", { allBookings });
 };
 
+//GET Inventory Details
+export const getBookingDetails = async (req, res) => {
+       let allBookings = await Booking.find({ bookingId : req.params.bookingId }).populate('inventory').populate('from').populate('to');
+       return sendResponse(res, 200, "Bookings Fetched Successfully", { allBookings });
+};
+
 
 //GET All Tenants
 export const getAllTenants = async (req, res) => {
   console.log('inside get all tenant');
        let allTenants = await User.find({ isTenant: true });
        return sendResponse(res, 200, "All Tenants Fetched Successfully", { allTenants });
+};
+
+
+//GET OWNER Property Counts wrt to owner Login
+export const getOwnerloggedInInventoryCounts = async (req, res) => {
+  const userId = req.user;
+  console.log('userId',userId);
+
+  const user =  await User.find({_id: userId._id})
+  let allInventories = await Inventory.find(
+      { user:user });
+
+      let  allProperties = allInventories.length;
+
+       let vacantInventoryCount = await Inventory.find(
+        { user:user },
+        {
+          vacant:true
+        });
+    console.log('vacant',vacantInventoryCount.length)
+    console.log('all Properties',allProperties)
+    let  vacantCount = vacantInventoryCount.length;
+
+
+    let occupiedCount = allProperties - vacantCount;
+       return sendResponse(res, 200, "All Owner Inventories Fetched Successfully", { allProperties,vacantCount, occupiedCount });
+};
+
+//GET OWNER Property wrt to owner Login
+export const getOwnerloggedInInventoryData = async (req, res) => {
+  const userId = req.user;
+  console.log('userId',userId);
+
+  const user =  await User.find({_id: userId._id})
+  let allInventoriesData = await Inventory.find(
+      { user:user });
+
+      let  allInventoriesCount = allInventoriesData.length;
+
+       return sendResponse(res, 200, "All Owner Inventories Fetched Successfully", { allInventoriesData,allInventoriesCount });
 };

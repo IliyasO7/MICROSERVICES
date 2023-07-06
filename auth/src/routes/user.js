@@ -28,6 +28,21 @@ router.get(
   controller.getprofile
 );
 
+// Get Owner Property wrt to owner login
+router.get(
+  "/get-user-owner-properties",
+  checkAuth(),
+  controller.getOwnerloggedInInventoryCounts
+);
+
+// Get Owner Property wrt to owner login
+router.get(
+  "/get-user-owner-allpropertyData",
+  checkAuth(),
+  controller.getOwnerloggedInInventoryData
+);
+
+
 // Add Address
 router.post(
   "/addAddress",
@@ -151,6 +166,12 @@ router.get(
   "/get-bookings", 
   checkAuthAdmin(),
   controller.getAllBookings);
+
+//Get All Bookings
+router.get(
+  "/get-bookings/:bookingId", 
+  checkAuthAdmin(),
+  controller.getBookingDetails);
 
 
 //Get All Tenants

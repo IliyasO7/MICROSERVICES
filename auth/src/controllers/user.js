@@ -300,6 +300,8 @@ export const saveInventory = async (req, res) => {
   const propertyName = req.body.propertyName;
   const address= req.body.address;
   const floor= req.body.floor;
+  const door= req.body.door;
+  const bhk= req.body.bhk;
   const carpetArea= req.body.carpetArea;
   const geolocation= req.body.geolocation;
   const rent=req.body.rent;
@@ -354,8 +356,6 @@ export const getOwnerInventory = async (req, res) => {
        let allInventoriesData = await Inventory.find({ user:user });
        return sendResponse(res, 200, "All Owner Inventories Fetched Successfully", { allInventoriesData });
 };
-
-
 
 export const saveTenant = async (req, res) => {
 

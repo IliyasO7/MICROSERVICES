@@ -142,6 +142,12 @@ router.get(
   checkAuthAdmin(),
   controller.getInventoryDetails);
 
+//Get All Inventories of logged in Admin
+router.get(
+  "/get-admin-inventories/:inventoryId", 
+  checkAuthAdmin(),
+  controller.getInventorywithId);
+
 //Get All Inventories
 router.get(
   "/get-all-inventories", 
@@ -154,7 +160,19 @@ router.get(
   checkAuthAdmin(),
   controller.getOwnerInventory);
 
-//Add Owner
+//Get Owner Inventories
+router.get(
+  "/get-owner-inventory", 
+  checkAuth(),
+  controller.getOwnerInventoryList);
+
+//Get Owner Inventory with id
+router.get(
+  "/get-owner-inventory/:inventoryId", 
+  checkAuth(),
+  controller.getOwnerInventoryDetails);
+
+//Add Tenant
 router.post(
   "/save-tenant", 
   checkAuthAdmin(),
@@ -167,7 +185,7 @@ router.get(
   checkAuthAdmin(),
   controller.getAllBookings);
 
-//Get All Bookings
+//Get All Booking Details
 router.get(
   "/get-bookings/:bookingId", 
   checkAuthAdmin(),

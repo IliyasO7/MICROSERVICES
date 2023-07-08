@@ -104,6 +104,7 @@ router.post(
     body('bankAccountNumber').isNumeric().notEmpty().withMessage('Invalid bank account number'),
     body('bankIfscCode').notEmpty().withMessage('Invalid IFSC'),
     body('paymentReceiptNumber').notEmpty().withMessage('Invalid payment receipt number'),
+    
   ],
   checkValidation,
   vendorController.update

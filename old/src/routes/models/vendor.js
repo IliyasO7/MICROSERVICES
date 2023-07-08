@@ -30,9 +30,9 @@ const vendorSchema = mongoose.Schema({
         }
       ]
     },
-    aadharCardNumber: { type: String, default: null, required: true },
+    aadharCardNumber: { type: Number, default: null, required: true },
     aadhar: { type: String, default: null, },
-    bankAccountNumber: { type: String, default: null, required: true },
+    bankAccountNumber: { type: Number, default: null, required: true },
     bankIfscCode: { type: String, default: null, required: true },
     bankDocument: { type: String, default: null },
     gst: { type: String, default: null},

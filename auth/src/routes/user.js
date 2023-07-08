@@ -200,6 +200,14 @@ router.get(
 
 
 
+// tenant after login 
+//Get All Booking Details for Token
+router.get(
+  "/get-tenant-booking", 
+  checkAuth(),
+  controller.getTenantBookingDetails);
+
+
 
 
 

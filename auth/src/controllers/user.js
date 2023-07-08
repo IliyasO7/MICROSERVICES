@@ -516,3 +516,14 @@ export const getOwnerloggedInInventoryData = async (req, res) => {
 
        return sendResponse(res, 200, "All Owner Inventories Fetched Successfully", { allInventoriesData,allInventoriesCount });
 };
+
+
+
+//GET Inventory Details of Tenant
+export const getTenantBookingDetails = async (req, res) => {
+  const user = req.user;
+  let allBookings = await Booking.find({from: user }).populate('inventory');
+   console.log('All Bookings', allBookings);
+   ///const tokenAdvance = allBookings[0].inventory.tokenAdvance;
+  return sendResponse(res, 200, "Tenant Bookings Fetched Successfully", { allBookings });
+};

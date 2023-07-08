@@ -5,12 +5,15 @@ const _ = require('lodash')
 const fs = require('fs')
 const PhoneNumber = require('awesome-phonenumber')
 const bcrypt = require('bcrypt')
-const Service = require('../../models/service');
+const Service = require('../../models/service')
 // Models
 const Vendor = require('../../models/vendor')
+const VendorServices = require('../../models/vendorServices')
 
 // Services
 const bunnycdn = require('../../services/bunnycdn')
+const vendor = require('../../models/vendor')
+//const vendorServices = require('../../models/vendorServices')
 
 // List
 exports.list = async (req, res, next) => {
@@ -20,12 +23,32 @@ exports.list = async (req, res, next) => {
       status: req.query.status || undefined
     }
 
-    let vendors = await Vendor.find(_.omitBy(filters, _.isNil), 'vendorId ownerName businessName serviceProvided status createdAt').lean()
+    let vendors = await Vendor.find(_.omitBy(filters, _.isNil), 'vendorId ownerName businessName typeOfVendor serviceProvided serviceArea fullfillment_ratio acceptance_ratio completedjobs missedjobs phone status createdAt ').lean()
+
+    const vendorsList = []
+    for(eachVendor of vendors){
+      var vendor ={}
+      vendor = eachVendor
+      let vs = await VendorServices.find({vendor : eachVendor}).populate('service').lean()
+      if(vs.length>0){
+        let vendorServicesArray =[]
+        console.log('service',vs);
+        for(each of vs){
+          //vendor.service = each.service.name;
+          let service= {};
+          service.name = each.service.name;
+          service._id = each.service._id;
+          vendorServicesArray.push(service)
+        }  
+       vendor.serviceArray = vendorServicesArray
+      }
+      vendorsList.push(vendor);
+    }
 
     res.status(200).json({
       result: 'success',
       count: vendors.length,
-      vendors: vendors,
+      vendor:vendorsList
     })
 
   } catch (err) {
@@ -37,20 +60,13 @@ exports.list = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   try {
     console.log('inside create vendor',req.body.serviceProvided);
-    if(req.body.serviceProvided){
-    for await(eachService of req.body.serviceProvided){
-      console.log('Each Service',eachService);
-       const service = await Service.findById(eachService).lean()
-       console.log('service:',service);
-       if(!service){
-        throw 'No such service'
-       }
-    }
-  }
+    const adminData = req.userData;
+    let adminEmail = adminData.email;
+    let adminId = adminData._id;
     // Format phone number
     let phone = new PhoneNumber(req.body.phone, 'IN')
     if (!phone.isValid()) {
-      throw new Error('Invalid phone number')
+      throw 'Invalid phone number'
     }
 
     // Check if vendor is already registered
@@ -68,7 +84,7 @@ exports.create = async (req, res, next) => {
     let vendorMongooseId = mongoose.Types.ObjectId()
 
     // Create new vendor
-    await new Vendor({
+   let vendorData =  await new Vendor({
       _id: vendorMongooseId,
       'vendorId': vendorId,
       'ownerName': req.body.ownerName,
@@ -78,7 +94,8 @@ exports.create = async (req, res, next) => {
       'homeAddress': req.body.homeAddress,
       'businessName': req.body.businessName,
       'officeAddress': req.body.officeAddress,
-      'serviceProvided': req.body.serviceProvided,
+      //'serviceProvided': req.body.serviceProvided,
+      'typeOfVendor':req.body.typeOfVendor,
       'teamSize': req.body.teamSize,
       'inBusinessSince': req.body.inBusinessSince,
       'languagesKnown': req.body.languagesKnown,
@@ -94,64 +111,39 @@ exports.create = async (req, res, next) => {
       'payment': req.body.payment,
       'paymentReceiptNumber': req.body.paymentReceiptNumber,
       'paymentReceipt': req.body.paymentReceipt,
-      'status': req.body.status
+      'status': req.body.status,
+      'createdBy': adminEmail,
     }).save()
 
+    for await( eachService of req.body.serviceProvided ){
+      console.log('Each Service',eachService);
+      let service = await Service.findById(eachService).lean()
+      if(!service){
+       throw 'No such service'
+      }
+
+      let vendorServicesExists = await VendorServices.findOne({vendor:vendor, service:service})
+
+      if(vendorServicesExists){
+        throw 'service already Exists'
+      }
+
+      console.log('services:',service);
+      let vendorServiceMongooseId = new mongoose.Types.ObjectId()
+      let vendorServices = await VendorServices.create({
+        _id: vendorServiceMongooseId,
+        vendor:vendorData,
+        service:service
+      })
+   }
+
+  // let allvendorServices = await VendorServices.find({vendor:vendor}).populate('Services').populate('Vendor');  
+
+    console.log('after save');
     res.json({
       result: 'success',
       vendorId: vendorId,
-      vendorMongooseId
-    })
-
-  } catch (err) {
-    next(err)
-  }
-}
-
-
-// Vendor create
-exports.testVendor = async (req, res, next) => {
-  try {
-
-    // Generate vendorId
-    let vendorId = await randomstring.generate({ length: 8, charset: 'alphanumeric', capitalization: 'uppercase' })
-
-    let vendorMongooseId = mongoose.Types.ObjectId()
-
-    // Create new vendor
-    await new Vendor({
-      _id: vendorMongooseId,
-      'vendorId': vendorId,
-      'ownerName': req.body.ownerName,
-      'phone': req.body.phone,
-      'additionalPhone': req.body.additionalPhone,
-      'password': req.body.password,
-      'homeAddress': req.body.homeAddress,
-      'businessName': req.body.businessName,
-      'officeAddress': req.body.officeAddress,
-      'serviceProvided': req.body.serviceProvided,
-      'teamSize': req.body.teamSize,
-      'inBusinessSince': req.body.inBusinessSince,
-      'languagesKnown': req.body.languagesKnown,
-      'serviceArea': req.body.serviceArea,
-      'aadharCardNumber': req.body.aadharCardNumber,
-      'aadhar': req.body.aadhar,
-      'bankAccountNumber': req.body.bankAccountNumber,
-      'bankIfscCode': req.body.bankIfscCode,
-      'bankDocument': req.body.bankDocument,
-      'gst': req.body.gst,
-      'gstDocumentUpload': req.body.gstDocumentUpload,
-      'agreementUpload': req.body.agreementUpload,
-      'payment': req.body.payment,
-      'paymentReceiptNumber': req.body.paymentReceiptNumber,
-      'paymentReceipt': req.body.paymentReceipt,
-      'status': req.body.status
-    }).save()
-
-    res.json({
-      result: 'success',
-      vendorId: vendorId,
-      vendorMongooseId
+      vendorMongooseId,
     })
 
   } catch (err) {
@@ -244,10 +236,23 @@ exports.updateMedia = async (req, res, next) => {
 // Get profile
 exports.profile = async (req, res, next) => {
   try {
-  
-    let vendor = await Vendor.findById(req.params.vendorId).populate().lean()
+    let vendor = {};
+    let vendors = await Vendor.findById(req.params.vendorId).populate().lean()
 
-    if (!vendor) {
+    vendor = vendors;
+
+    let vs = await VendorServices.find({vendor:vendors}).populate('service')
+
+    let vendorservices = [];
+    for(each of vs){
+      let service = {};
+      service.name = each.service.name
+      service.id = each.service.id
+      vendorservices.push(service)
+    }
+    vendor.service = vendorservices;
+
+    if (!vendors) {
       throw {
         status: 404,
         message: 'Vendor not found'
@@ -267,8 +272,8 @@ exports.profile = async (req, res, next) => {
 // Update profile
 exports.update = async (req, res, next) => {
   try {
-
-    let vendor = await Vendor.findById(req.params.vendorId).lean()
+    console.log('inside Update');
+    let vendor = await Vendor.findById({_id:req.params.vendorId}).lean()
 
     if (!vendor) {
       throw {
@@ -286,7 +291,8 @@ exports.update = async (req, res, next) => {
         'homeAddress': req.body.homeAddress,
         'businessName': req.body.businessName,
         'officeAddress': req.body.officeAddress,
-        'serviceProvided': req.body.serviceProvided,
+       // 'serviceProvided': req.body.serviceProvided,
+        'typeOfVendor':req.body.typeOfVendor,
         'teamSize': req.body.teamSize,
         'inBusinessSince': req.body.inBusinessSince,
         'languagesKnown': req.body.languagesKnown,
@@ -306,9 +312,31 @@ exports.update = async (req, res, next) => {
       }
     })
 
+    for await( eachService of req.body.serviceProvided ){
+      console.log('Each Service',eachService);
+      let service = await Service.findById(eachService).lean()
+      if(!service){
+       throw 'No such service'
+      }
+
+      let vendorServicesExists = await VendorServices.find({vendor:vendor, service:service})
+
+      if(vendorServicesExists){
+        throw 'service already Exists'
+      }
+      console.log('services:',service);
+      let vendorServiceMongooseId = new mongoose.Types.ObjectId()
+      let vendorServices = await VendorServices.create({
+        _id: vendorServiceMongooseId,
+        vendor:vendor,
+        service:service
+      })
+   }
+
     res.status(200).json({
       result: 'success',
-      message: 'Vendor Updated'
+      message: 'Vendor Updated',
+
     })
 
   } catch (err) {

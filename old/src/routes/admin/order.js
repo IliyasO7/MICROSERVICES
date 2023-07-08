@@ -34,15 +34,29 @@ router.post(
   orderController.updateStatus
 )
 
+// Update order status
+router.post(
+  '/:orderId/pauseStatus',
+  auth.isAdmin,
+  [
+    body('paused').notEmpty().withMessage('Invalid status')
+  ],
+  checkValidation,
+  orderController.updatePause
+)
+
 // Update order note
 router.post(
   '/:orderId/note',
   auth.isAdmin,
-  [
-    body('note').notEmpty().withMessage('Invalid note')
-  ],
-  checkValidation,
-  orderController.updateNote
+  orderController.createNote
+)
+
+// Update order note
+router.get(
+  '/:orderId/note',
+  auth.isAdmin,
+  orderController.getNotes
 )
 
 // Assign vendor
@@ -61,6 +75,25 @@ router.delete(
   '/:orderId',
   auth.isAdmin,
   orderController.delete
+)
+
+// Update order status
+router.post(
+  '/reschedule/:orderId',
+  [
+    body('serviceDate').notEmpty().withMessage('serviceDate is required'),
+    body('serviceTime').notEmpty().withMessage('serviceTime is required'),
+  ],
+  checkValidation,
+  auth.isAdmin,
+  orderController.rescheduleJob
+)
+
+// Update order status
+router.get(
+  '/reschedule/:orderId',
+  auth.isAdmin,
+  orderController.getRescheduleJob
 )
 
 module.exports = router

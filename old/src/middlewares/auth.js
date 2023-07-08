@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 
+const Admin = require('../models/admin')
+
 // Check if customer is logged In
 exports.isLoggedIn = async (req, res, next) => {
   try {
@@ -25,6 +27,9 @@ exports.isAdmin = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_KEY)
     if (decoded.role == 'admin') {
       req.userData = decoded
+      let admin = await Admin.findOne({_id : decoded.adminId})
+      req.userData = admin
+      console.log('req user Data', req.userData);
       next()
     } else {
       throw new Error('You are not admin')

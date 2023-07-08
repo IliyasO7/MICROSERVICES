@@ -55,36 +55,12 @@ router.get(
   vendorOrderController.list
 )
 
-//get bucketList of vendor
-router.get(
-  '/bucketList/:orderId',
-  auth.isVendor,
-  vendorOrderController.bucketlist
-)
-
-//update job status
-router.get(
-  '/bucketList/:orderId',
-  auth.isVendor,
-  vendorOrderController.updateJobStatus
-)
-
-//update job status
-router.get(
-  '/bucketList/orderDetails/:orderId',
-  auth.isVendor,
-  vendorOrderController.getBucketWithOrderId
-)
-
-
-
 // Get order details
 router.get(
   '/:orderId',
   auth.isVendor,
   vendorOrderController.details
 )
-
 
 // Update order price
 router.post(

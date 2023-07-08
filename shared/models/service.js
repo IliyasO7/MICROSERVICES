@@ -1,8 +1,7 @@
-const mongoose = require('mongoose')
-const timestamp = require('mongoose-timestamp')
+import mongoose from "mongoose";
 
-const serviceSchema = mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+const schema = mongoose.Schema(
+  {
     name: { type: String, required: true },
     slug: { type: String, required: true },
     category: { type: String, required: true },
@@ -53,9 +52,12 @@ const serviceSchema = mongoose.Schema({
       }
     ],
     status: { type: String, default: 'Active' },
-})
+ },
+  {
+    timestamp: true,
+  }
+);
 
-  
-serviceSchema.plugin(timestamp)
-  
-module.exports = mongoose.model('Service', serviceSchema)
+const Service = mongoose.model("service", schema);
+
+export default Service;

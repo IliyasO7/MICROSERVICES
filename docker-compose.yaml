@@ -33,12 +33,12 @@ services:
     container_name: redis
     image: redis
 
-  # old:
-  #   container_name: old
-  #   build: ./old
-  #   volumes:
-  #     - ./old:/app/src
-  #     - ./shared:/app/shared  
+  old:
+    container_name: old
+    build: ./old
+    volumes:
+      - ./old:/app/src
+      - ./shared:/app/shared  
 
     env_file:
       - .env

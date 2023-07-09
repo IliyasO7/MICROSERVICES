@@ -1,14 +1,20 @@
-import '../../shared/models/index.js';
+import "../../shared/models/index.js";
 import "./utils/config.js";
 import boot from "./utils/boot.js";
 import express from "express";
 import { sendResponse } from "../../shared/utils/helper.js";
- import routes from './routes/index.js';
+import routes from "./routes/index.js";
 
 const app = express();
 
 app.set("reverse proxy", 1);
-
+app.use(
+  cors({
+    "Access-Control-Allow-Origin": "*", // 'https://housejoygroup.com/',
+    Vary: "Origin",
+    methods: ["GET", "POST", "HEAD", "DELETE", "PUT", "PATCH", "OPTIONS"],
+  })
+);
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -16,7 +22,7 @@ app.use(
   })
 );
 
- app.use(routes);
+app.use(routes);
 app.get("/", (req, res) => {
   sendResponse(res, 200, "Server is working");
 });

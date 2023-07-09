@@ -44,7 +44,7 @@ exports.login = async (req, res, next) => {
 exports.profile = async (req, res, next) => {
   try {
 
-    let admin = await Admin.findById(req.userData.adminId, '_id username fname lname phone status').lean()
+    let admin = await Admin.findById(req.userData._id, '_id username fname lname phone status').lean()
 
     if (!admin) {
       throw {
@@ -67,7 +67,7 @@ exports.profile = async (req, res, next) => {
 exports.updateProfile = async (req, res, next) => {
   try {
 
-    await Admin.updateOne({ _id: req.userData.adminId }, {
+    await Admin.updateOne({ _id: req.userData._id }, {
       $set: {
         fname: req.body.fname,
         lname: req.body.lname,

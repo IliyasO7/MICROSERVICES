@@ -5,13 +5,13 @@ import routes from "./routes/index.js";
 const app = express();
 
 app.set("reverse proxy", 1);
-app.use(
-  cors({
-    "Access-Control-Allow-Origin": "*", // 'https://housejoygroup.com/',
-    Vary: "Origin",
-    methods: ["GET", "POST", "HEAD", "DELETE", "PUT", "PATCH", "OPTIONS"],
-  })
-);
+// app.use(
+//   cors({
+//     "Access-Control-Allow-Origin": "*", // 'https://housejoygroup.com/',
+//     Vary: "Origin",
+//     methods: ["GET", "POST", "HEAD", "DELETE", "PUT", "PATCH", "OPTIONS"],
+//   })
+// );
 app.use(express.json());
 app.use(
   express.urlencoded({

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const timestamp = require('mongoose-timestamp');
+const mongoose = require("mongoose");
+const timestamp = require("mongoose-timestamp");
 
 const adminSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -8,9 +8,9 @@ const adminSchema = mongoose.Schema({
   lname: { type: String, required: true },
   email: { type: String, unique: true, lowercase: true, required: true },
   password: { type: String, required: true },
-  status: { type: String, default: 'Active' }
-})
+  status: { type: String, default: "Active" },
+});
 
-adminSchema.plugin(timestamp)
+adminSchema.plugin(timestamp);
 
-module.exports = mongoose.model('Admin', adminSchema)
+module.exports = mongoose.model("Admin", adminSchema);

@@ -272,6 +272,10 @@ exports.profile = async (req, res, next) => {
 // Update profile
 exports.update = async (req, res, next) => {
   try {
+    const adminData = req.userData;
+    let adminEmail = adminData.email;
+    let adminId = adminData._id;
+
     console.log('inside Update');
     let vendor = await Vendor.findById({_id:req.params.vendorId}).lean()
 
@@ -308,7 +312,8 @@ exports.update = async (req, res, next) => {
         'payment': req.body.payment,
         'paymentReceiptNumber': req.body.paymentReceiptNumber,
         'paymentReceipt': req.body.paymentReceipt,
-        'status': req.body.status
+        'status': req.body.status,
+        'createdBy': adminEmail,
       }
     })
 

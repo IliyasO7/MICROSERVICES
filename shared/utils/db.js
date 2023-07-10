@@ -20,7 +20,10 @@ mongoose.set("debug", (collectionName, methodName, methodArgs) => {
 mongoose.connection.on("error", console.log);
 
 export async function connectMongoDB() {
-  await mongoose.connect(process.env.MONGODB_URL);
+  console.log(process.env.MONGODB_URL);
+  await mongoose.connect(process.env.MONGODB_URL, {
+    dbName: "housejoy-prod",
+  });
 
   console.log("MongoDB is connected");
 }

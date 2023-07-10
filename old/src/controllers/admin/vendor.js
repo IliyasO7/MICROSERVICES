@@ -352,6 +352,7 @@ exports.update = async (req, res, next) => {
 // Update profile
 exports.RemoveVendorServices = async (req, res, next) => {
   try {
+    console.log('inside Vendor Services');
     const adminData = req.userData;
     let adminEmail = adminData.email;
     let adminId = adminData._id;
@@ -368,14 +369,28 @@ exports.RemoveVendorServices = async (req, res, next) => {
     for await( eachService of req.body.serviceProvided ){
       console.log('Each Service',eachService);
       let service = await Service.findById(eachService).lean()
+      console.log('service', service);
       if(!service){
        throw 'No such service'
       }
-      let vendorServicesExists = await VendorServices.updateOne({vendor:vendor, service:service},
+
+      let vendorServicesremoved = await VendorServices.updateOne(
+        {vendor:vendor, service:service},
         {
           isActive:false,
+        },
+        {
+          upsert:true,
+       //   new:true,
         }
-        )
+      )
+
+      if(vendorServicesremoved){
+        res.status(200).json({
+          result: 'success',
+          message: 'Vendor Updated',
+        })
+       }
 
  /*     console.log('services:',service);
       let vendorServiceMongooseId = new mongoose.Types.ObjectId()
@@ -386,11 +401,9 @@ exports.RemoveVendorServices = async (req, res, next) => {
       })  */ 
    }
 
-    res.status(200).json({
-      result: 'success',
-      message: 'Vendor Updated',
+ 
 
-    })
+
 
   } catch (err) {
     next(err)

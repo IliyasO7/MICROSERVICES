@@ -21,7 +21,7 @@ router.get(
 
 // List
 router.post(
-  '/removeVendorServices',
+  '/removeVendorServices/:vendorId',
   auth.isAdmin,
   vendorController.RemoveVendorServices
 )

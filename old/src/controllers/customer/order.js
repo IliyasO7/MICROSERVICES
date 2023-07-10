@@ -133,7 +133,6 @@ exports.coupon = async (req, res, next) => {
   }
 }
 
-
 // Create order
 exports.create = async (req, res, next) => {
   try {
@@ -196,6 +195,14 @@ exports.create = async (req, res, next) => {
     if(req.body.isFinal){
 
       let orderId = _.toUpper(randomstring.generate(7))
+
+      const totalOrders = await Order.countDocuments({});
+      console.log('total Inventory',totalOrders);
+      let currentOrderNo = totalOrders + 1;
+      let orderNo = `HJ-ODS-${currentOrderNo}`;
+      console.log('Order Sku',orderNo);
+
+      
       let now = new Date();
       now = new Date(now.getTime() + 330*60000);
       let nowStr = now.toString();
@@ -204,6 +211,7 @@ exports.create = async (req, res, next) => {
       await new Order({
         _id: mongoose.Types.ObjectId(),
         orderId: orderId,
+        orderNo:orderNo,
         customer: req.userData.customerId,
         service: service._id,
         address: req.body.address,
@@ -215,6 +223,7 @@ exports.create = async (req, res, next) => {
       }).save()
 
       order.orderId = orderId
+      order.orderNo = orderNo
 
       
       // Send SMS

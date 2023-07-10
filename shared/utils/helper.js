@@ -145,6 +145,7 @@ export const checkAuthAdmin = () => (req, res, next) => {
       return;
     }
     // @ts-ignore
+    console.log('here in check Admin auth');
     const user = await Admin.findOne({ _id: payload.userId }).lean();
     if (!user) {
       return sendResponse(res, 404, "User not found");

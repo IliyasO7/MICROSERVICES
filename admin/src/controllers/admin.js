@@ -43,6 +43,7 @@ export const createSuperAdmin = async (req, res) => {
 };
 
 export const createOdsAdmin = async (req, res) => {
+    console.log('create ODS ADMIN');
 
     const superAdmin = req.user;
     const username = req.body.username;

@@ -45,7 +45,7 @@ exports.login = async (req, res, next) => {
 exports.profile = async (req, res, next) => {
   try {
 
-    let admin = await Admin.findById(req.userData._id, '_id username fname lname phone status').lean()
+    let admin = await Admin.findById(req.userData._id, '_id adminId username fname lname phone status role').lean()
 
     if (!admin) {
       throw {

@@ -119,7 +119,7 @@ router.post(
     body('businessName').notEmpty().withMessage('Invalid business name'),
     body('officeAddress').optional({ nullable: true }),
     body('typeOfVendor').notEmpty().withMessage('Type Of Vendor Required'),
-    body('serviceProvided').notEmpty().withMessage('Invalid service provided'),
+  //  body('serviceProvided').notEmpty().withMessage('Invalid service provided'),
     body('teamSize').notEmpty().withMessage('Invalid team size' ),
     body('inBusinessSince').notEmpty().withMessage('Invalid Business years'),
     body('languagesKnown').notEmpty().withMessage('Invalid language known'),

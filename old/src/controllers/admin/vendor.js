@@ -317,26 +317,6 @@ exports.update = async (req, res, next) => {
       }
     })
 
-    for await( eachService of req.body.serviceProvided ){
-      console.log('Each Service',eachService);
-      let service = await Service.findById(eachService).lean()
-      if(!service){
-       throw 'No such service'
-      }
-
-      let vendorServicesExists = await VendorServices.deleteOne({vendor:vendor, service:service})
-
-    
-
-      console.log('services:',service);
-      let vendorServiceMongooseId = new mongoose.Types.ObjectId()
-      let vendorServices = await VendorServices.create({
-        _id: vendorServiceMongooseId,
-        vendor:vendor,
-        service:service
-      })
-   }
-
     res.status(200).json({
       result: 'success',
       message: 'Vendor Updated',
@@ -525,3 +505,27 @@ exports.delete = async (req, res, next) => {
     next(err)
   }
 }
+
+/*
+
+    for await( eachService of req.body.serviceProvided ){
+      console.log('Each Service',eachService);
+      let service = await Service.findById(eachService).lean()
+      if(!service){
+       throw 'No such service'
+      }
+
+      let vendorServicesExists = await VendorServices.deleteOne({vendor:vendor, service:service})
+
+    
+
+      console.log('services:',service);
+      let vendorServiceMongooseId = new mongoose.Types.ObjectId()
+      let vendorServices = await VendorServices.create({
+        _id: vendorServiceMongooseId,
+        vendor:vendor,
+        service:service
+      })
+   }
+
+   */

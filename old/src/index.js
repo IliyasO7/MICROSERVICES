@@ -12,13 +12,13 @@ const path = require("path");
 global.appRoot = path.resolve(__dirname);
 
 app.use(morgan("dev"));
-app.use(
-  cors({
-    "Access-Control-Allow-Origin": "*", // 'https://housejoygroup.com/',
-    Vary: "Origin",
-    methods: ["GET", "POST", "HEAD", "DELETE", "PUT", "PATCH", "OPTIONS"],
-  })
-);
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

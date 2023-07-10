@@ -19,6 +19,13 @@ router.get(
   vendorController.list
 )
 
+// List
+router.post(
+  '/removeVendorServices',
+  auth.isAdmin,
+  vendorController.RemoveVendorServices
+)
+
 // Add vendor
 router.post(
   '/',

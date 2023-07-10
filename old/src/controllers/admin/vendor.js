@@ -324,11 +324,10 @@ exports.update = async (req, res, next) => {
        throw 'No such service'
       }
 
-      let vendorServicesExists = await VendorServices.find({vendor:vendor, service:service})
+      let vendorServicesExists = await VendorServices.deleteOne({vendor:vendor, service:service})
 
-      if(vendorServicesExists){
-        throw 'service already Exists'
-      }
+    
+
       console.log('services:',service);
       let vendorServiceMongooseId = new mongoose.Types.ObjectId()
       let vendorServices = await VendorServices.create({
@@ -342,6 +341,154 @@ exports.update = async (req, res, next) => {
       result: 'success',
       message: 'Vendor Updated',
 
+    })
+
+  } catch (err) {
+    next(err)
+  }
+}
+
+
+// Update profile
+exports.RemoveVendorServices = async (req, res, next) => {
+  try {
+    const adminData = req.userData;
+    let adminEmail = adminData.email;
+    let adminId = adminData._id;
+
+    console.log('inside Update');
+    let vendor = await Vendor.findById({_id:req.params.vendorId}).lean()
+
+    if (!vendor) {
+      throw {
+        status: 404,
+        message:  'Vendor not found'
+      }
+    }
+    for await( eachService of req.body.serviceProvided ){
+      console.log('Each Service',eachService);
+      let service = await Service.findById(eachService).lean()
+      if(!service){
+       throw 'No such service'
+      }
+      let vendorServicesExists = await VendorServices.updateOne({vendor:vendor, service:service},
+        {
+          isActive:false,
+        }
+        )
+
+ /*     console.log('services:',service);
+      let vendorServiceMongooseId = new mongoose.Types.ObjectId()
+      let vendorServices = await VendorServices.create({
+        _id: vendorServiceMongooseId,
+        vendor:vendor,
+        service:service
+      })  */ 
+   }
+
+    res.status(200).json({
+      result: 'success',
+      message: 'Vendor Updated',
+
+    })
+
+  } catch (err) {
+    next(err)
+  }
+}
+
+
+// Add vendor Services
+exports.AddVendorServices = async (req, res, next) => {
+  try {
+    if(!req.body.serviceProvided){
+      throw {
+        status: 500,
+        message:  'Service Provided Parameters Required'
+      }
+    }
+    if(!req.params.vendorId){
+      throw {
+        status: 500,
+        message:  'VendorId Parameters Required'
+      }
+
+    }
+    const adminData = req.userData;
+    let adminEmail = adminData.email;
+    let adminId = adminData._id;
+
+    console.log('inside Update');
+    let vendor = await Vendor.findById({_id:req.params.vendorId}).lean()
+
+    if (!vendor) {
+      throw {
+        status: 500,
+        message:  'Vendor not found'
+      }
+    }
+    for await( eachService of req.body.serviceProvided ){
+      console.log('Each Service',eachService);
+      let service = await Service.findById(eachService).lean()
+      if(!service){
+        throw {
+          status: 500,
+          message:  'No such service'
+        }
+      }
+      console.log('services:',service);
+      let allvendorServices = await VendorServices.findOne({vendor:vendor, service:service, isActive:true});
+      if(allvendorServices){
+        throw {
+          status: 500,
+          message:  'vendor service already Exists'
+        }
+      }
+      let vendorServiceMongooseId = new mongoose.Types.ObjectId()
+      let vendorServices = await VendorServices.create({
+        _id: vendorServiceMongooseId,
+        vendor:vendor,
+        service:service
+      })  
+   }
+    res.status(200).json({
+      result: 'success',
+      message: 'Vendor Updated',
+
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+// Get vendor Services
+exports.getVendorServices = async (req, res, next) => {
+  try {
+
+    if(!req.params.vendorId){
+      throw {
+        status: 500,
+        message:  'VendorId Parameters Required'
+      }
+    }
+    let vendor = await Vendor.findById(req.params.vendorId).populate().lean()
+    if (!vendor) {
+      throw {
+        status: 404,
+        message: 'Vendor not found'
+      }
+    }
+
+    let allvendorServices = await VendorServices.find({vendor:vendor, isActive:true});
+
+
+
+
+
+    res.status(200).json({
+      result: 'success',
+      message: "Vendor Services Fetched Successfully",
+      allvendorServices: allvendorServices
     })
 
   } catch (err) {

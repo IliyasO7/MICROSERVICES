@@ -5,7 +5,7 @@ const morgan = require("morgan"); // morgan logger
 const cors = require("cors"); // cors
 const bodyParser = require("body-parser"); // body parser
 const mongoose = require("mongoose"); // mongoose
-const logger = require("./middlewares/logger");
+// const logger = require("./middlewares/logger");
 const app = express();
 const path = require("path");
 
@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 // connect database
 
 // logger middleware
-app.use(logger.logRequests);
+// app.use(logger.logRequests);
 // Inlcude routes
 require("./routes")(app);
 

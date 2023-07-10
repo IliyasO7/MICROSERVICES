@@ -466,8 +466,7 @@ exports.AddVendorServices = async (req, res, next) => {
    }
     res.status(200).json({
       result: 'success',
-      message: 'Vendor Updated',
-
+      message: 'Vendor Updated with Service',
     })
   } catch (err) {
     next(err)
@@ -491,19 +490,12 @@ exports.getVendorServices = async (req, res, next) => {
         message: 'Vendor not found'
       }
     }
-
     let allvendorServices = await VendorServices.find({vendor:vendor, isActive:true});
-
-
-
-
-
     res.status(200).json({
       result: 'success',
       message: "Vendor Services Fetched Successfully",
       allvendorServices: allvendorServices
     })
-
   } catch (err) {
     next(err)
   }

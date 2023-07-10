@@ -19,11 +19,28 @@ router.get(
   vendorController.list
 )
 
+
 // List
+router.get(
+  '/get-vendor-services/:vendorId',
+  auth.isAdmin,
+  vendorController.getVendorServices
+)
+
+
+// Remove vendor Services
 router.post(
   '/removeVendorServices/:vendorId',
   auth.isAdmin,
   vendorController.RemoveVendorServices
+)
+
+
+//Add Vendor Services
+router.post(
+  '/addVendorServices/:vendorId',
+  auth.isAdmin,
+  vendorController.AddVendorServices
 )
 
 // Add vendor

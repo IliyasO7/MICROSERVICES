@@ -239,7 +239,7 @@ exports.profile = async (req, res, next) => {
     let vendor = {};
     let vendors = await Vendor.findById(req.params.vendorId).populate().lean()
 
-
+    vendor = vendors
     console.log('vendors is', vendors);
 
     let vs = await VendorServices.find({vendor:vendors, isActive:true}).populate('service')

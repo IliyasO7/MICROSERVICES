@@ -19,6 +19,30 @@ router.get(
   vendorController.list
 )
 
+
+// List
+router.get(
+  '/get-vendor-services/:vendorId',
+  auth.isAdmin,
+  vendorController.getVendorServices
+)
+
+
+// Remove vendor Services
+router.post(
+  '/removeVendorServices/:vendorId',
+  auth.isAdmin,
+  vendorController.RemoveVendorServices
+)
+
+
+//Add Vendor Services
+router.post(
+  '/addVendorServices/:vendorId',
+  auth.isAdmin,
+  vendorController.AddVendorServices
+)
+
 // Add vendor
 router.post(
   '/',
@@ -95,7 +119,7 @@ router.post(
     body('businessName').notEmpty().withMessage('Invalid business name'),
     body('officeAddress').optional({ nullable: true }),
     body('typeOfVendor').notEmpty().withMessage('Type Of Vendor Required'),
-    body('serviceProvided').notEmpty().withMessage('Invalid service provided'),
+  //  body('serviceProvided').notEmpty().withMessage('Invalid service provided'),
     body('teamSize').notEmpty().withMessage('Invalid team size' ),
     body('inBusinessSince').notEmpty().withMessage('Invalid Business years'),
     body('languagesKnown').notEmpty().withMessage('Invalid language known'),

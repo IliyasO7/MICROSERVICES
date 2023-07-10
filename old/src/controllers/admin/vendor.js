@@ -239,15 +239,17 @@ exports.profile = async (req, res, next) => {
     let vendor = {};
     let vendors = await Vendor.findById(req.params.vendorId).populate().lean()
 
-    vendor = vendors;
 
-    let vs = await VendorServices.find({vendor:vendors}).populate('service')
+    console.log('vendors is', vendors);
+
+    let vs = await VendorServices.find({vendor:vendors, isActive:true}).populate('service')
+    console.log('vs is:', vs);
 
     let vendorservices = [];
     for(each of vs){
       let service = {};
       service.name = each.service.name
-      service.id = each.service.id
+      service.id = each.service._id
       vendorservices.push(service)
     }
     vendor.service = vendorservices;

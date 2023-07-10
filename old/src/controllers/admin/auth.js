@@ -32,7 +32,8 @@ exports.login = async (req, res, next) => {
 
     res.status(200).json({
       result: 'success',
-      token: token
+      token: token,
+      admin: admin
     })
 
   } catch (err) {

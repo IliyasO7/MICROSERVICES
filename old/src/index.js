@@ -12,14 +12,6 @@ const path = require("path");
 global.appRoot = path.resolve(__dirname);
 
 app.use(morgan("dev"));
-app.options("*", cors());
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "*");
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
-});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

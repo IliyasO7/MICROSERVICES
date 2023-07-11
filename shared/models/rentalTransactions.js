@@ -8,10 +8,12 @@ const schema = mongoose.Schema(
         transactionType:{ type:String,default:null }, //RENT TOKEN SD
         transactionId: { type: String, default: null },
         paymentDate: { type:Date, required:true },
+        paidFrom: {type:Date, required:true},
+        paidUntil:{ type:Date, required:true },
         amount: { type: Number, default: null  },
         gateway: { type: String, default: null  },
         mode: { type: String, default: null },
-        status: { type: String, default: 'Pending' },
+        status: { type: String, default: 'PENDING' },
     },
     {
         timestamp: true,

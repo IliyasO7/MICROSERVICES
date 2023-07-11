@@ -322,6 +322,8 @@ export const saveInventory = async (req, res) => {
           propertyName: req.body.propertyName,
           address: req.body.address,
           floor: req.body.floor,
+          bhk:req.body.bhk,
+          door:req.body.door,
           carpetArea: req.body.carpetArea,
           geolocation: req.body.geolocation,
           rent:req.body.rent,

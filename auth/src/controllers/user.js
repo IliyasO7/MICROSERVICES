@@ -4,6 +4,7 @@ import Bank from "../../../shared/models/bank.js";
 import Uid from "../../../shared/models/uid.js";
 import Inventory from "../../../shared/models/inventory.js";
 import Booking from "../../../shared/models/Booking.js";
+import RentalTransactions from "../../../shared/models/rentalTransactions.js";
 import * as smsService from "../../../shared/services/sms.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
@@ -399,6 +400,9 @@ export const saveTenant = async (req, res) => {
   const tenantStatus= req.body.isTenant;
   const tokenAdvance = req.body.tokenAdvance;
   const moveInDate = new Date() || req.body.moveInDate;
+  console.log('move in',moveInDate);
+  console.log(' req body move in',req.body.moveInDate);
+
   const admin = req.user;
   const to = req.body.ownerId;
 
@@ -427,16 +431,60 @@ export const saveTenant = async (req, res) => {
         console.log('INVENTORY', inventoryDetails);
 
 
+              const Bookings = await Booking.create({
+                from: saveUser._id,     
+                bookingId: sku,
+                inventory: inventoryId,  
+                to : inventoryDetails.user,
+                createdBy:admin,
+              })
 
-      const Bookings = await Booking.create({
-        from: saveUser._id,     
-        bookingId: sku,
-        inventory: inventoryId,  
-        to : inventoryDetails.user,
-        createdBy:admin,
-      })
+      /*
+        from: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },     
+        to : { type: mongoose.Schema.Types.ObjectId, ref: 'user',required:true},    
+        bookingId: {  type: mongoose.Schema.Types.ObjectId, ref: 'booking', required: true },
+        transactionType:{ type:String,default:null }, //RENT TOKEN SD
+        transactionId: { type: String, default: null },
+        paymentDate: { type:Date, required:true },
+        paidFrom: {type:Date, required:true},
+        paidUntil:{ type:Date, required:true },
+        amount: { type: Number, default: null  },
+        gateway: { type: String, default: null  },
+        mode: { type: String, default: null },
+        status: { type: String, default: 'PENDING' },
 
-  sendResponse(res, 200, "Tenant Added successfully", {saveUser,updatedInventoryData,Bookings});
+      */
+
+      //  const moveInDate = new Date("2023-07-11T05:55:04.603+00:00")
+      console.log('move In date',moveInDate)
+   //   const d = moveInDate.getMonth() +1 ;
+   //   console.log(d)
+      const paidFromStartMonth =  moveInDate.getMonth() + 1;
+      console.log('month',paidFromStartMonth);
+      const paidFromStartDate =  1 ;
+      const paidYear =  moveInDate.getFullYear();
+      console.log(paidYear)
+      //console.log(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`)
+      const paidFrom = new Date(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`);
+      const nextMonth = moveInDate.getMonth() + 2
+      console.log('next month',nextMonth)
+      const paidUntil = new Date(`${paidYear}-${nextMonth}-${paidFromStartDate}`)
+      console.log(paidUntil)
+
+        const rentTransaction = await  RentalTransactions.create({
+          from: saveUser._id,     
+          bookingId: Bookings,
+          transactionType: 'RENT',
+          to : inventoryDetails.user,
+          amount: inventoryDetails.rent,
+          createdBy:admin,
+          paidFrom: paidFrom,
+          paidUntil:paidUntil,
+        })
+
+
+
+  sendResponse(res, 200, "Tenant Added successfully", {saveUser,updatedInventoryData,Bookings,rentTransaction});
 };
 
 

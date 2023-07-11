@@ -7,7 +7,7 @@ const schema = mongoose.Schema(
         bookingId: {  type: mongoose.Schema.Types.ObjectId, ref: 'booking', required: true },
         transactionType:{ type:String,default:null }, //RENT TOKEN SD
         transactionId: { type: String, default: null },
-        paymentDate: { type:Date, required:true },
+        paymentDate: { type:Date, default:null},
         paidFrom: {type:Date, required:true},
         paidUntil:{ type:Date, required:true },
         amount: { type: Number, default: null  },

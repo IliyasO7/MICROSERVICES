@@ -11,6 +11,7 @@ const path = require("path");
 
 global.appRoot = path.resolve(__dirname);
 
+app.options("*", cors());
 app.use(morgan("dev"));
 
 app.use(bodyParser.json());

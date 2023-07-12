@@ -9,7 +9,12 @@ const app = express();
 
 app.set("reverse proxy", 1);
 
+app.options("/*", (_, res) => {
+  res.sendStatus(200);
+});
+
 app.use(express.json());
+
 app.use(
   express.urlencoded({
     extended: true,

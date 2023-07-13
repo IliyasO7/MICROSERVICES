@@ -3,15 +3,15 @@ import mongoose from "mongoose";
 
 const schema = mongoose.Schema(
     {
-        from: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },     
+        owner: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },     
         bookingId: { type: String, required: true},
         inventory: { type: mongoose.Schema.Types.ObjectId, ref: 'Inventory',required:true},  
-        to : { type: mongoose.Schema.Types.ObjectId, ref: 'user',required:true}, 
-        currentBookingType:{ type: String,default:'TOKEN' , required: true},
+        tenant : { type: mongoose.Schema.Types.ObjectId, ref: 'user',required:true}, 
+        currentBookingType:{ type: String,default:'TOKEN' , required: true}, //enums dalne hai
         tokenAmount :{ status :{ type : String,default:'unpaid'},amount : { type : Number,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions' }},
         serviceCharge :{ status :{ type:String,  default:'unpaid'},amount : { type : Number,default:null},paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}},
         securityDeposit :{ status :{ type:String,  default:'unpaid'},amount : { type : Number,default:null},paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}},
-       // tokenAmount :{ status :{ type : String,default:'unpaid'}},
+       // totalAmount :{ status :{ type : String,default:'unpaid'}}, pending
        // sdAmount :{ status :{ type:String,  default:'unpaid'}},
        // rentAmount:{ status :{ type:String,  default:'unpaid'}, amount:{ type:Number,default:null }, paymentDue:{ type: Date, default:null },paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions' } },
        // rentPaymentStatus:{ type: String, default:'unpaid' },

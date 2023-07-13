@@ -9,6 +9,7 @@ const schema = mongoose.Schema(
         bankDocument: { type: String, default: null },
         cancelledCheque: { type: String, default: null },
         default: { type: Boolean, default: false },
+        verifiedBy:{type: mongoose.Schema.Types.ObjectId, ref: 'admin'},
     },
     {
         timestamp: true,

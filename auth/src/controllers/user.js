@@ -10,12 +10,12 @@ import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
-
-
+//mport { uploadToBunnyCdn } from "../../../shared/utils/bunnycdn.js";
 
 
 //import mongoose  from "mongoose";
 export const sendOtp = async (req, res) => {
+ 
   const otp = "0000" || generateOtp();
 
   await redis.setEx(
@@ -577,3 +577,6 @@ export const getTenantBookingDetails = async (req, res) => {
    ///const tokenAdvance = allBookings[0].inventory.tokenAdvance;
   return sendResponse(res, 200, "Tenant Bookings Fetched Successfully", { allBookings });
 };
+
+
+

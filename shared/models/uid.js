@@ -7,6 +7,8 @@ const schema = mongoose.Schema(
         aadharDocument: { type: String, default: null },
         panCardNumber: { type: String, default: null, required: true },
         panCardDocument: { type: String, default: null},
+        isVerified: {type:Boolean , default:false},
+        verifiedBy:{type: mongoose.Schema.Types.ObjectId, ref: 'admin',}
     },
     {
         timestamp: true,

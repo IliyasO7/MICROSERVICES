@@ -154,7 +154,6 @@ exports.create = async (req, res, next) => {
 // Update media
 exports.updateMedia = async (req, res, next) => {
   try {
-
     let vendor = await Vendor.findById(req.params.vendorId).lean()
     if(!vendor){
       throw new Error(`Vendor not found`)

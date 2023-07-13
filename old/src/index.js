@@ -1,3 +1,4 @@
+require('express-async-errors');
 require("dotenv").config(); //environment variables
 const boot = require("./utils/boot");
 const express = require("express"); //express webserver
@@ -8,6 +9,7 @@ const mongoose = require("mongoose"); // mongoose
 // const logger = require("./middlewares/logger");
 const app = express();
 const path = require("path");
+
 
 global.appRoot = path.resolve(__dirname);
 
@@ -37,6 +39,7 @@ app.use("/web", (req, res, next) => {
     message: err.message || err,
   });
 });
+/*
 // Error handling
 app.use((err, req, res, next) => {
   err.status = err.status || 500;
@@ -46,6 +49,18 @@ app.use((err, req, res, next) => {
     message: err.message || err,
   });
 });
+*/
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({
+    status: 500,
+    message: "internal server error",
+    data:null,
+    error:err
+    
+  });
+});
+
 
 boot().then(() => {
   app.listen(process.env.PORT, () => {

@@ -1,3 +1,4 @@
+import 'express-async-errors'
 import boot from "./utils/boot.js";
 import express from "express";
 import { sendResponse } from "../../shared/utils/helper.js";
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
   sendResponse(res, 200, "Server is working");
 });
 
+/*
 app.use((err, req, res, next) => {
   //   console.error(err);
   if (err) {
@@ -30,6 +32,12 @@ app.use((err, req, res, next) => {
   }
 });
 
+*/
+app.use((err, req, res, next) => {
+  console.error(err);
+  sendResponse(res, 500, "internal server error",null,err);
+});
+ 
 // app.use((req, res) => {
 //   sendResponse(res, 404, "Route Not Found", { path: req.path });
 // });

@@ -3,7 +3,6 @@ import client from "axios";
 import User from "../models/user.js";
 import Admin from "../models/admin.js";
 import jwt from "jsonwebtoken";
-
 export const sendResponse = (
   res,
   statusCode,

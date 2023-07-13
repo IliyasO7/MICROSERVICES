@@ -37,10 +37,24 @@ const adminCreate = Joi.object({
     isOwner: Joi.boolean().required(),
     
   });
+
+  const saveInventory = Joi.object({
+    propertyName: Joi.string().required(),
+    address: Joi.string().required(),
+    floor: Joi.string().required(),
+    door: Joi.string(),
+    bhk: Joi.string().required(),
+    carpetArea: Joi.string().required(),
+    geolocation: Joi.string(),
+    rent: Joi.number().required(),
+    securityDeposit: Joi.number().required(),
+  
+  });
   
 export default {
   adminCreate,
   adminlogin,
   saveUserTenant,
-  saveUserOwner
+  saveUserOwner,
+  saveInventory
 };

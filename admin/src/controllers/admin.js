@@ -720,3 +720,100 @@ export const updateMedia = async (req, res, next) => {
       next(err)
     }
   }
+
+
+  export const saveInventory = async (req, res) => {
+
+    const userId = req.params.ownerId;
+    const propertyName = req.body.propertyName;
+    const address= req.body.address;
+    const floor= req.body.floor;
+    const door= req.body.door;
+    const bhk= req.body.bhk;
+    const carpetArea= req.body.carpetArea;
+    const geolocation= req.body.geolocation;
+    const rent=req.body.rent;
+    const securityDeposit= req.body.securityDeposit;
+    const adminData = req.user;
+  
+  
+  
+    const totalInventory = await Inventory.countDocuments({});
+    console.log('total Inventory',totalInventory);
+    let currentPropertyNo = totalInventory + 1;
+    const sku = `HJR${currentPropertyNo}`
+    console.log('SKU',sku);
+  
+          const createInventory = await Inventory.create({
+            inventoryId: sku,
+            user:userId,
+            propertyName: req.body.propertyName,
+            address: req.body.address,
+            floor: req.body.floor,
+            bhk:req.body.bhk,
+            door:req.body.door,
+            carpetArea: req.body.carpetArea,
+            geolocation: req.body.geolocation,
+            rent:req.body.rent,
+            securityDeposit: req.body.securityDeposit,
+            createdBy:adminData._id,
+  
+        })
+  
+    sendResponse(res, 200, "Inventory Saved Successful", {createInventory});
+  };
+
+  //GET Inventory Details
+export const getInventoryDetails = async (req, res) => {
+  const userId = req.user;
+       let allInventories = await Inventory.find({ createdBy :userId });
+       return sendResponse(res, 200, "Inventories Fetched Successfully", { allInventories });
+};
+
+//GET Inventory Details With Inventory ID
+export const getInventorywithId = async (req, res) => {
+  const userId = req.user;
+       let inventory = await Inventory.find({ inventoryId : req.params.inventoryId });
+       return sendResponse(res, 200, "Inventory Data Fetched Successfully", { inventory });
+};
+
+
+//GET Inventory Details
+export const getAllInventoryDetails = async (req, res) => {
+  const userId = req.user;
+       let allInventoriesData = await Inventory.find({});
+       return sendResponse(res, 200, "All Inventories Fetched Successfully", { allInventoriesData });
+};
+
+
+//GET Owner Inventory With Mobile No
+export const getOwnerInventory = async (req, res) => {
+  const userId = req.user;
+  let user = await User.findOne({ mobile: req.params.mobile });
+
+       let allInventoriesData = await Inventory.find({ user:user });
+       return sendResponse(res, 200, "All Owner Inventories Fetched Successfully", { allInventoriesData });
+};
+
+//GET Inventory Details
+export const getAllBookings = async (req, res) => {
+  const userId = req.user;
+       let allBookings = await Booking.find({ createdBy :userId });
+       return sendResponse(res, 200, "Bookings Fetched Successfully", { allBookings });
+};
+
+
+//GET Inventory Details WRT ADMIN
+export const getBookingDetails = async (req, res) => {
+  let allBookings = await Booking.find({ bookingId : req.params.bookingId }).populate('inventory').populate('owner').populate('tenant');
+  return sendResponse(res, 200, "Bookings Fetched Successfully", { allBookings });
+};
+
+
+
+//GET All Tenants
+export const getAllTenants = async (req, res) => {
+  console.log('inside get all tenant');
+       let allTenants = await User.find({ isTenant: true });
+       return sendResponse(res, 200, "All Tenants Fetched Successfully", { allTenants });
+};

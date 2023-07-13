@@ -95,5 +95,55 @@ router.post(
 "/owner/:ownerId/media", 
 checkAuthAdmin(),
 controller.updateMedia);
-    
+
+//Add Inventory
+router.post(
+"/addProperty/:ownerId", 
+checkAuthAdmin(),
+validate(validation.saveInventory),
+controller.saveInventory);
+
+//Get All Inventories of logged in Admin
+router.get(
+"/get-admin-inventories", 
+checkAuthAdmin(),
+controller.getInventoryDetails);
+
+//Get All Inventories of logged in Admin
+router.get(
+"/get-admin-inventories/:inventoryId", 
+checkAuthAdmin(),
+controller.getInventorywithId);
+  
+//Get All Inventories
+router.get(
+"/get-all-inventories", 
+checkAuthAdmin(),
+controller.getAllInventoryDetails);
+
+
+//Get Owner Inventories
+router.get(
+"/get-owner-inventories/:mobile", 
+checkAuthAdmin(),
+controller.getOwnerInventory);
+
+//Get All Bookings
+router.get(
+"/get-bookings", 
+checkAuthAdmin(),
+controller.getAllBookings);
+
+//Get All Booking Details
+router.get(
+"/get-bookings/:bookingId", 
+checkAuthAdmin(),
+controller.getBookingDetails);
+  
+//Get All Tenants
+router.get(
+"/get-Tenants", 
+checkAuthAdmin(),
+controller.getAllTenants);
+
 export default router;

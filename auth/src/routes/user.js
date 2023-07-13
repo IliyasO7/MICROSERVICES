@@ -160,13 +160,14 @@ router.get(
   checkAuthAdmin(),
   controller.getOwnerInventory);
 
-//Get Owner Inventories
+
+//Get Owner Inventories AUTH
 router.get(
   "/get-owner-inventory", 
   checkAuth(),
   controller.getOwnerInventoryList);
 
-//Get Owner Inventory with id
+//Get Owner Inventory with id AUTH
 router.get(
   "/get-owner-inventory/:inventoryId", 
   checkAuth(),

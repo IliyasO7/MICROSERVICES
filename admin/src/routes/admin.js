@@ -78,12 +78,22 @@ checkAuthAdmin(),
 validate(validation.saveUserOwner),
 controller.updateOwner);
 
+//Get Admin Owner 
+router.get(
+"/get-admin-owner", 
+checkAuthAdmin(),
+controller.getAdminOwners);
+    
+//Get ALL Owner 
+router.get(
+"/get-all-owner", 
+checkAuthAdmin(),
+controller.getAllOwners);
+
 //Add Owner with media
 router.post(
 "/owner/:ownerId/media", 
 checkAuthAdmin(),
 controller.updateMedia);
-
-    
     
 export default router;

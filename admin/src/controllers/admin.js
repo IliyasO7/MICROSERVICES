@@ -545,6 +545,29 @@ export const createAUpdateTenant = async (req, res) => {
         return sendResponse(res, 400, "Owner Does Not Exist");
     }   
 };
+
+export const getAdminOwners = async (req, res) => {
+  const admin =req.user;
+      let owner = await RentalOwner.find({ createdBy: admin })
+      console.log('Owner',owner);
+      if(owner){
+          return sendResponse(res, 200, "Owner List Fetched", {owner});
+      }else{
+          return sendResponse(res, 400, "User Does Not Exist As Owner");
+      }
+};
+
+export const getAllOwners = async (req, res) => {
+  
+      let owner = await RentalOwner.find({})
+      console.log('Owner',owner);
+      if(owner){
+          return sendResponse(res, 200, "Owner List Fetched", {owner});
+      }else{
+          return sendResponse(res, 400, "Owners Not Found");
+      }
+};
+
   
 
   export const createOwner = async (req, res) => {

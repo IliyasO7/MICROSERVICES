@@ -44,7 +44,7 @@ router.post(
 
 router.post( // auth.isLoggedIn,
   '/vendorFilter/:orderId',
-  orderController.vendorFilter
+  orderController.newVendorFilter
 )
 
 // Delete order

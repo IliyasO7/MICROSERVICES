@@ -1,7 +1,7 @@
 const BunnyStorage = require('bunnycdn-storage').default
 
 // Upload file
-exports.uploadToBunnyCdn = async (params) => {
+exports.upload = async (params) => {
     try {
 
         // Params: [fileData, savingPath]

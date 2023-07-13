@@ -10,7 +10,7 @@ const schema = mongoose.Schema({
     lname: { type: String, required: true },
     email: { type: String, unique: true, lowercase: true, required: true },
     password: { type: String, required: true },
-    status: { type: String, default: 'Active' },
+    status: { type: String, default: 'ACTIVE', enum : ['ACTIVE','INACTIVE'] },
     createdBy:{ type: String, default:null,  }
   },
   {

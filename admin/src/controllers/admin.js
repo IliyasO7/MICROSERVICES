@@ -859,3 +859,10 @@ export const getAllTenants = async (req, res) => {
        let allTenants = await RentalTenant.find({ });
        return sendResponse(res, 200, "All Tenants Fetched Successfully", { allTenants });
 };
+
+//GET All Tenants
+export const getAllowners = async (req, res) => {
+  console.log('inside get all tenant');
+       let allOwners = await RentalOwner.find({ });
+       return sendResponse(res, 200, "All Owners Fetched Successfully", { allOwners });
+};

@@ -160,4 +160,10 @@ router.get(
 checkAuthAdmin(),
 controller.getAllTenants);
 
+//Get All Tenants
+router.get(
+  "/get-all-owners", 
+  checkAuthAdmin(),
+  controller.getAllowners);
+
 export default router;

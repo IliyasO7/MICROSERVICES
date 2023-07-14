@@ -9,8 +9,12 @@ import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import RentalOwner from "../../../shared/models/rentalOwner.js";
-import { uploadToBunnyCdn } from "../../../shared/utils/bunnycdn.js";
+//import { default as bunnycdn  } from "bunnycdn-storage"
+//import {bunnycdn } from "../../../old/src/services/bunnycdn.js";
+//const bunnycdn = require("../../../old/src/services/bunnycdn.js")
+//import * as bunnycdn from "../utils/bunnycdn.js";
 import  fs  from  "fs";
+
 export const createSuperAdmin = async (req, res) => {
 
     const username = req.body.username;
@@ -548,7 +552,7 @@ export const createAUpdateTenant = async (req, res) => {
 
 export const getAdminOwners = async (req, res) => {
   const admin =req.user;
-      let owner = await RentalOwner.find({ createdBy: admin })
+      let owner = await RentalOwner.find({ createdBy: admin }).populate('user').populate('createdBy')
       console.log('Owner',owner);
       if(owner){
           return sendResponse(res, 200, "Owner List Fetched", {owner});
@@ -656,9 +660,10 @@ export const getAllOwners = async (req, res) => {
 
 
   // Update Owner media
-export const updateMedia = async (req, res, next) => {
+export const updateOwnerMedia = async (req, res, next) => {
     try {
-      console.log('Req.body',req);
+   //   const bunnyStorage = await new BunnyStorage(process.env.BUNNYCDN_API_KEY, process.env.BUNNYCDN_STORAGE_ZONE);
+   //   console.log('Req.body',req);
       let owner = await RentalOwner.findOne({user: req.params.ownerId}).lean()
       console.log("OWNER", owner);
       if(!owner){
@@ -672,21 +677,35 @@ export const updateMedia = async (req, res, next) => {
         //serviceAgreementUpload: undefined,
       }
       console.log('before files');
+     console.log('Req Files', req.files);
+     console.log('Req Files aadhar', req.files.aadhar);
+  //   console.log('Req Files aadhar', req.files.aadhar);
+
+   
       
-    console.log('req files', req.files);
-    console.log('req file', req.file);
-      console.log('req files :',req.files.aadhar);
-  
-      // Upload owner Aadhar to CDN
-      if(req.files.aadhar){
-        await bunnycdn.upload({
-          fileData: fs.readFileSync(req.files.aadhar[0].path),
-          savingPath: `/owner/aadhars/${owner._id}-${req.files.aadhar[0].originalname}`
-        })
+  /*    if(req.files.aadhar){
+        console.log('here');
+        await bunnycdn.upload(
+        fs.readFileSync(req.files.aadhar[0].path)
+        ,`/owner/aadhars/${owner._id}-${req.files.aadhar[0].originalname}`)
+
         fs.unlinkSync(req.files.aadhar[0].path)
         data.aadhar = `${process.env.CDN_URL}/owner/aadhars/${vendor._id}-${req.files.aadhar[0].originalname}`
       }
-
+      console.log('print');
+  */
+      // Upload owner Aadhar to CDN
+      if(req.files.aadhar){
+        console.log('here');
+        console.log('OWNER ID',owner._id );
+        let path =  `/owner/aadhars/${owner._id}}`;
+        let fileData =  fs.readFileSync(req.files.aadhar);
+        await bunnycdn.upload(fileData,path)
+        console.log('after');
+        fs.unlinkSync(req.files.aadhar)
+        data.aadhar = `${process.env.CDN_URL}/owner/aadhars/${owner._id}-${req.files.aadhar[0].originalname}`
+      }
+      console.log('print');
       // Upload owner Pan to CDN
       if(req.files.pan){
         await bunnycdn.upload({

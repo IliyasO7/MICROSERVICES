@@ -12,8 +12,10 @@ import RentalOwner from "../../../shared/models/rentalOwner.js";
 //import { default as bunnycdn  } from "bunnycdn-storage"
 //import {bunnycdn } from "../../../old/src/services/bunnycdn.js";
 //const bunnycdn = require("../../../old/src/services/bunnycdn.js")
-//import * as bunnycdn from "../utils/bunnycdn.js";
+import * as bunnycdn from "../utils/bunnycdn.js";
+import BunnyStorage from "bunnycdn-storage"
 import  fs  from  "fs";
+import axios from "axios";
 
 export const createSuperAdmin = async (req, res) => {
 
@@ -598,6 +600,9 @@ export const getAllOwners = async (req, res) => {
 
           const createOwner = await RentalOwner.create({
             user:saveUser,
+       //     aadhar:req.body.aadhar,
+      //      pan:req.body.pan,
+      //      cancelledCheque: req.body.cancelledCheque,
             createdBy:admin,
             aadharCardNumber:aadharNo,
             panCardNumber: panNo,
@@ -669,7 +674,6 @@ export const updateOwnerMedia = async (req, res, next) => {
       if(!owner){
         return sendResponse(res, 400, "Owner Does Not Exist");
       }
-  
       let data = {
         aadhar: undefined,
         pan: undefined,
@@ -679,53 +683,72 @@ export const updateOwnerMedia = async (req, res, next) => {
       console.log('before files');
      console.log('Req Files', req.files);
      console.log('Req Files aadhar', req.files.aadhar);
-  //   console.log('Req Files aadhar', req.files.aadhar);
 
-   
-      
-  /*    if(req.files.aadhar){
-        console.log('here');
-        await bunnycdn.upload(
-        fs.readFileSync(req.files.aadhar[0].path)
-        ,`/owner/aadhars/${owner._id}-${req.files.aadhar[0].originalname}`)
-
-        fs.unlinkSync(req.files.aadhar[0].path)
-        data.aadhar = `${process.env.CDN_URL}/owner/aadhars/${vendor._id}-${req.files.aadhar[0].originalname}`
-      }
-      console.log('print');
-  */
-      // Upload owner Aadhar to CDN
-      if(req.files.aadhar){
-        console.log('here');
-        console.log('OWNER ID',owner._id );
-        let path =  `/owner/aadhars/${owner._id}}`;
-        let fileData =  fs.readFileSync(req.files.aadhar);
-        await bunnycdn.upload(fileData,path)
-        console.log('after');
-        fs.unlinkSync(req.files.aadhar)
-        data.aadhar = `${process.env.CDN_URL}/owner/aadhars/${owner._id}-${req.files.aadhar[0].originalname}`
-      }
-      console.log('print');
-      // Upload owner Pan to CDN
-      if(req.files.pan){
-        await bunnycdn.upload({
-          fileData: fs.readFileSync(req.files.pan[0].path),
-          savingPath: `/owner/pans/${owner._id}-${req.files.pan[0].originalname}`
-          })
-          fs.unlinkSync(req.files.pan[0].path)
-          data.pan = `${process.env.CDN_URL}/owner/pans/${owner._id}-${req.files.pan[0].originalname}`
+    if(req.files.aadhar){
+    //      console.log('Req Files aadhar', req.files.aadhar);
+          const options = {
+            method: 'PUT',
+            url: `https://storage.bunnycdn.com/housejoy/owner/aadhars/${req.files.aadhar[0].originalname}`,
+            headers: {
+            'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+            'content-type': 'multipart/form-data',
+          },
+          data:  fs.readFileSync(req.files.aadhar[0].path), 
+        };
+      //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
+            const OwnerAdhr= await axios(options, function (error, response, body) {
+                    if (error) throw new Error(error);
+                    console.log(body);
+                  });   
+            if(OwnerAdhr.status === 201){
+              data.aadhar = `https://housejoy.b-cdn.net/owner/aadhars/${owner._id}-${req.files.aadhar[0].originalname}`
         }
-  
-      // Upload bankDocument to CDN
-      if(req.files.cancelledCheque){
-        await bunnycdn.upload({
-          fileData: fs.readFileSync(req.files.cancelledCheque[0].path),
-          savingPath: `/owner/cancelledCheques/${owner._id}-${req.files.cancelledCheque[0].originalname}`
-        })
-        fs.unlinkSync(req.files.bankDocument[0].path)
-        data.cancelledCheque = `${process.env.CDN_URL}/owner/cancelledCheques/${owner._id}-${req.files.cancelledCheque[0].originalname}`
-      }
-  
+    }
+
+    if(req.files.pan){
+   //   console.log('Req Files aadhar', req.files.pan);
+          const options = {
+            method: 'PUT',
+            url: `https://storage.bunnycdn.com/housejoy/owner/pan/${req.files.pan[0].originalname}`,
+            headers: {
+            'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+            'content-type': 'multipart/form-data',
+          },
+          data:  fs.readFileSync(req.files.pan[0].path), 
+        };
+  //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
+        const OwnerPan= await axios(options, function (error, response, body) {
+                if (error) throw new Error(error);
+                console.log(body);
+              });   
+       // console.log('response cdn',responseCDN);
+        if(OwnerPan.status === 201){
+          data.pan = `https://housejoy.b-cdn.net/owner/pan/${owner._id}-${req.files.pan[0].originalname}`
+    }
+}
+
+if(req.files.cancelledCheque){
+        //   console.log('Req Files aadhar', req.files.pan);
+          const options = {
+            method: 'PUT',
+            url: `https://storage.bunnycdn.com/housejoy/owner/cancelledCheque/${req.files.cancelledCheque[0].originalname}`,
+            headers: {
+            'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+            'content-type': 'multipart/form-data',
+          },
+          data:  fs.readFileSync(req.files.cancelledCheque[0].path), 
+        };
+ //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
+            const OwnerCancelledCheque= await axios(options, function (error, response, body) {
+                    if (error) throw new Error(error);
+                    console.log(body);
+                  });   
+    //   console.log('response cdn',responseCDN);
+
+            if(OwnerCancelledCheque.status === 201){
+              data.cancelledCheque = `https://housejoy.b-cdn.net/owner/cancelledCheque/${owner._id}-${req.files.cancelledCheque[0].originalname}`
+        }
+} 
       // Update in database
       await RentalOwner.updateOne({ _id: owner._id }, {
         $set: data

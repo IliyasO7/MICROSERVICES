@@ -3,7 +3,10 @@ import Router from "express";
 import validation from "../validation/admin.js";
 import { validate,checkAuthAdmin } from "../../../shared/utils/helper.js";
 //import { isLoggedIn } from "../utils/auth.js";
-
+import fs from "fs";
+import multer from "multer"
+//const multer = require('multer')
+const upload = multer({dest: 'uplaod/'})
 const router = Router();
 
 
@@ -94,11 +97,22 @@ controller.getAllOwners);
 router.post(
 "/owner/:ownerId/media", 
 checkAuthAdmin(),
+upload.fields([
+    {
+      name: 'aadhar',
+    },
+    {
+      name:'pan'
+    },
+    {
+      name:'cancelledCheque'
+    }
+  ]),
 controller.updateOwnerMedia);
 
 //Add Inventory
 router.post(
-"/addProperty/:ownerId", 
+"/add-property/:ownerId", 
 checkAuthAdmin(),
 validate(validation.saveInventory),
 controller.saveInventory);

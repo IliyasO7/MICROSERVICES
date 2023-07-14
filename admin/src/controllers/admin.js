@@ -856,6 +856,6 @@ export const getBookingDetails = async (req, res) => {
 //GET All Tenants
 export const getAllTenants = async (req, res) => {
   console.log('inside get all tenant');
-       let allTenants = await User.find({ isTenant: true });
+       let allTenants = await RentalTenant.find({ });
        return sendResponse(res, 200, "All Tenants Fetched Successfully", { allTenants });
 };

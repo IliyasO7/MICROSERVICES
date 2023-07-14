@@ -94,7 +94,7 @@ controller.getAllOwners);
 router.post(
 "/owner/:ownerId/media", 
 checkAuthAdmin(),
-controller.updateMedia);
+controller.updateOwnerMedia);
 
 //Add Inventory
 router.post(

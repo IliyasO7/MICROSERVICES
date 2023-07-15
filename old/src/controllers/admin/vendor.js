@@ -166,7 +166,7 @@ exports.updateMedia = async (req, res, next) => {
       agreementUpload: undefined,
       paymentReceipt: undefined
     }
-
+  
     // Upload Aadhar to CDN
     if(req.files.aadhar){
       await bunnycdn.upload({

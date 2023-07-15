@@ -6,7 +6,6 @@ import express from "express";
 import { sendResponse } from "../../shared/utils/helper.js";
 import routes from "./routes/index.js";
 
-
 const app = express();
 
 app.set("reverse proxy", 1);

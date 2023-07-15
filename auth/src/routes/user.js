@@ -94,7 +94,7 @@ router.post(
   "/bank-details", 
   checkAuth(),
   validate(validation.bankInfo),
-  controller.addBankDetails);
+  controller.addBankDetails); 
 
 //update Bank Details
 router.post(

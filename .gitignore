@@ -1,3 +1,6 @@
+admin/uplaod
+auth/uplaod
+.
 # Logs
 logs
 *.log
@@ -128,3 +131,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+admin/uplaod/4f72a5c0dd7f75251d164c338179e207

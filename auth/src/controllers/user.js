@@ -13,6 +13,8 @@ import redis from "../../../shared/utils/redis.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
 import rentalTenant from "../../../shared/models/rentalTental.js";
+import fs from 'fs';
+import axios from "axios";
 //import { uploadToBunnyCdn } from "../../../shared/utils/bunnycdn.js";
 
 
@@ -585,13 +587,10 @@ export const getTenantBookingDetails = async (req, res) => {
 
 export const verifyKyc = async (req, res) => {
   const user = req.user;
-  const aadharNo = req.body.aadharCardNumber;
-  const panNo = req.body.panCardNumber;
-
   let data = {
     aadhar: undefined,
     pan: undefined,
-    cancelledCheque: undefined,
+    //cancelledCheque: undefined,
     //serviceAgreementUpload: undefined,
   }
 
@@ -612,7 +611,7 @@ export const verifyKyc = async (req, res) => {
                     });   
                   if(tenantAdhr.status === 201){
                     data.aadhar = `https://housejoy.b-cdn.net/tenant/aadhars/${user._id}-${req.files.aadhar[0].originalname}`
-              }
+                  }
             }
 
       if(req.files.pan){
@@ -639,11 +638,21 @@ export const verifyKyc = async (req, res) => {
             const updateTenantKyc = await RentalTenant.updateOne(
               { user:user },
               {
-                aadharCardNumber:aadharNo,
-                panCardNumber:panNo,
                 aadhar:data.aadhar,
                 pan:data.pan
               })
             return sendResponse(res, 200, "KYC Updated Successfully");
 };
 
+export const updateTenantAddharPan = async (req, res) => {
+  const user = req.user;
+  let aadharCardNumber = req.body.aadharCardNumber;
+  let panCardNumber = req.body.panCardNumber; 
+              const updateTenantKyc = await RentalTenant.updateOne(
+              { user:user },
+              {
+                aadharCardNumber: aadharCardNumber,
+                panCardNumber: panCardNumber
+              })
+            return sendResponse(res, 200, "UID Updated Successfully");
+};

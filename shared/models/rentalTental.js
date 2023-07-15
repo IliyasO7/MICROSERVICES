@@ -8,7 +8,7 @@ const schema = mongoose.Schema(
     activatedBy :{type: mongoose.Schema.Types.ObjectId, ref: 'admin'},
     aadharCardNumber : { type: Number, default: null },
     aadhar : { type: String, default: null },
-    panCardNumber : { type: String, default: null,  },
+    panCardNumber : { type: String, default: null},
     pan : { type: String, default: null},
     isdocumentsVerified : {type:Boolean , default:false, },
     documnetsVerifiedBy:{type: mongoose.Schema.Types.ObjectId, ref: 'admin',},

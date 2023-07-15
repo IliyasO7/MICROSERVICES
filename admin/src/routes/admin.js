@@ -117,6 +117,29 @@ checkAuthAdmin(),
 validate(validation.saveInventory),
 controller.saveInventory);
 
+router.post(
+  "/property-images/:inventoryId/media", 
+  checkAuthAdmin(),
+  upload.fields([
+      {
+        name: 'mainImage',
+      },
+      {
+        name:'entranceImage'
+      },
+      {
+        name:'livingImage'
+      },
+      {
+        name:'kitchenImage'
+      },
+      {
+        name:'bedroomImage'
+      }
+    ]),
+  controller.updatePropertyImages);
+
+
 //Get All Inventories of logged in Admin
 router.get(
 "/get-admin-inventories", 

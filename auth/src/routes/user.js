@@ -17,7 +17,6 @@ router.post(
 router.post(
   "/tenant/update-kyc",
   checkAuth(),
-  validate(validation.verifyKyc),
   upload.fields([
     {
       name: 'aadhar',
@@ -27,6 +26,13 @@ router.post(
     },
   ]),
   controller.verifyKyc
+);
+
+router.post(
+  "/tenant/update-aadharPan",
+  checkAuth(),
+  validate(validation.verifyKyc),
+  controller.updateTenantAddharPan
 );
 
 // Signup

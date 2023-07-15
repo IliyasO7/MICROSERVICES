@@ -5,12 +5,15 @@ import Uid from "../../../shared/models/uid.js";
 import Inventory from "../../../shared/models/inventory.js";
 import Booking from "../../../shared/models/Booking.js";
 import RentalTransactions from "../../../shared/models/rentalTransactions.js";
+import RentalTenant from "../../../shared/models/rentalTental.js";
+import RentalOwner from "../../../shared/models/rentalOwner.js";
 import * as smsService from "../../../shared/services/sms.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
-//mport { uploadToBunnyCdn } from "../../../shared/utils/bunnycdn.js";
+import rentalTenant from "../../../shared/models/rentalTental.js";
+//import { uploadToBunnyCdn } from "../../../shared/utils/bunnycdn.js";
 
 
 //import mongoose  from "mongoose";
@@ -572,11 +575,75 @@ export const getOwnerloggedInInventoryData = async (req, res) => {
 //GET Inventory Details of Tenant
 export const getTenantBookingDetails = async (req, res) => {
   const user = req.user;
-  let allBookings = await Booking.find({from: user }).populate('inventory');
-   console.log('All Bookings', allBookings);
+  let tenantBookings = await Booking.find({tenant: user }).populate('inventory');
+  // console.log('All Bookings', allBookings);
    ///const tokenAdvance = allBookings[0].inventory.tokenAdvance;
-  return sendResponse(res, 200, "Tenant Bookings Fetched Successfully", { allBookings });
+  return sendResponse(res, 200, "Tenant Bookings Fetched Successfully", { tenantBookings });
 };
 
 
+
+export const verifyKyc = async (req, res) => {
+  const user = req.user;
+  const aadharNo = req.body.aadharCardNumber;
+  const panNo = req.body.panCardNumber;
+
+  let data = {
+    aadhar: undefined,
+    pan: undefined,
+    cancelledCheque: undefined,
+    //serviceAgreementUpload: undefined,
+  }
+
+    if(req.files.aadhar){
+                const options = {
+                  method: 'PUT',
+                  url: `https://storage.bunnycdn.com/housejoy/tenant/aadhars/${user._id}-${req.files.aadhar[0].originalname}`,
+                  headers: {
+                  'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+                  'content-type': 'multipart/form-data',
+                },
+                data:  fs.readFileSync(req.files.aadhar[0].path), 
+              };
+
+                const tenantAdhr= await axios(options, function (error, response, body) {
+                      if (error) throw new Error(error);
+                      console.log(body);
+                    });   
+                  if(tenantAdhr.status === 201){
+                    data.aadhar = `https://housejoy.b-cdn.net/tenant/aadhars/${user._id}-${req.files.aadhar[0].originalname}`
+              }
+            }
+
+      if(req.files.pan){
+                  const options = {
+                    method: 'PUT',
+                    url: `https://storage.bunnycdn.com/housejoy/tenant/pan/${user._id}-${req.files.pan[0].originalname}`,
+                    headers: {
+                    'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+                    'content-type': 'multipart/form-data',
+                  },
+                  data:  fs.readFileSync(req.files.pan[0].path), 
+                };
+
+                const tenantPan= await axios(options, function (error, response, body) {
+                        if (error) throw new Error(error);
+                        console.log(body);
+                      });  
+
+                  if(tenantPan.status === 201){
+                    data.pan = `https://housejoy.b-cdn.net/tenant/pan/${user._id}-${req.files.pan[0].originalname}`
+                  }
+              }
+
+            const updateTenantKyc = await RentalTenant.updateOne(
+              { user:user },
+              {
+                aadharCardNumber:aadharNo,
+                panCardNumber:panNo,
+                aadhar:data.aadhar,
+                pan:data.pan
+              })
+            return sendResponse(res, 200, "KYC Updated Successfully");
+};
 

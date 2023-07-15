@@ -7,9 +7,9 @@ const schema = mongoose.Schema(
     createdBy :{type: mongoose.Schema.Types.ObjectId, ref: 'admin'},
     activatedBy :{type: mongoose.Schema.Types.ObjectId, ref: 'admin'},
     aadharCardNumber : { type: Number, default: null },
-    aadharDocument : { type: String, default: null },
+    aadhar : { type: String, default: null },
     panCardNumber : { type: String, default: null,  },
-    panCardDocument : { type: String, default: null},
+    pan : { type: String, default: null},
     isdocumentsVerified : {type:Boolean , default:false, },
     documnetsVerifiedBy:{type: mongoose.Schema.Types.ObjectId, ref: 'admin',},
     //tenantDocument 

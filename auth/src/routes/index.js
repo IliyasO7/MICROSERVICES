@@ -4,7 +4,7 @@ import Router from "express";
 
 const router = Router();
 
-router.use("/user", userRouter);
+router.use("/", userRouter);
 
 
 router.use((req, res) => {

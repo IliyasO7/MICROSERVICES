@@ -47,6 +47,11 @@ const uid = Joi.object({
   panCardNumber: Joi.string().length(10).required(),
 });
 
+const verifyKyc = Joi.object({
+  aadharCardNumber:  Joi.number().min(12).required(),
+  panCardNumber: Joi.string().length(10).required(),
+});
+
 const saveOwner = Joi.object({
   fname: Joi.string().required(),
   email: Joi.string().lowercase().email().required(),
@@ -96,6 +101,7 @@ export default {
   uid,
   saveOwner,
   saveInventory,
-  saveTenant
+  saveTenant,
+  verifyKyc
 
 };

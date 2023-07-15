@@ -2,7 +2,8 @@ import * as controller from "../controllers/user.js";
 import Router from "express";
 import validation from "../validation/user.js";
 import { checkAuth, validate ,checkAuthAdmin} from "../../../shared/utils/helper.js";
-
+import multer from "multer";
+const upload = multer({dest: 'uplaod/'})
 
 const router = Router();
 
@@ -11,6 +12,21 @@ router.post(
   "/verify-otp",
   validate(validation.verifYOtp),
   controller.verifyOtp
+);
+
+router.post(
+  "/tenant/update-kyc",
+  checkAuth(),
+  validate(validation.verifyKyc),
+  upload.fields([
+    {
+      name: 'aadhar',
+    },
+    {
+      name:'pan'
+    },
+  ]),
+  controller.verifyKyc
 );
 
 // Signup

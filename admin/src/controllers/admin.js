@@ -191,7 +191,7 @@ export const createTenant = async (req, res) => {
             fname: fname,
             email: email,
             mobile: mobile,
-            isTenant: tenantStatus,
+          //  isTenant: tenantStatus,
           });
 
         const createUserAsTenant = await RentalTenant.create({
@@ -251,7 +251,7 @@ export const createTenant = async (req, res) => {
                       paidFrom: paidFrom,
                       paidUntil:paidUntil,
                 })  
-    sendResponse(res, 200, "Tenant Added successfully", {saveUser,createUserAsTenant,updatedInventoryData,Bookings,rentTransaction});
+    sendResponse(res, 200, "Tenant And Booking Added successfully", {saveUser,createUserAsTenant,updatedInventoryData,Bookings,rentTransaction});
 
 };
 

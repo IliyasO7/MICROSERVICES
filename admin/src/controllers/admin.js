@@ -224,8 +224,8 @@ export const createTenant = async (req, res) => {
                   owner : inventoryDetails.user,
                   createdBy:admin,
                   balanceAmount:pendingDeposit ,
-                  'tokenAdvance.amount':  tokenAdvance,
-                  'securityDeposit.amount': pendingDeposit
+                  'tokenAmount.amount':  tokenAdvance,
+                  'securityDeposit.amount': inventoryDetails.securityDeposit
                 })
 
               //  console.log('move In date',moveInDate)

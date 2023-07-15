@@ -12,8 +12,7 @@ import RentalOwner from "../../../shared/models/rentalOwner.js";
 //import { default as bunnycdn  } from "bunnycdn-storage"
 //import {bunnycdn } from "../../../old/src/services/bunnycdn.js";
 //const bunnycdn = require("../../../old/src/services/bunnycdn.js")
-import * as bunnycdn from "../utils/bunnycdn.js";
-import BunnyStorage from "bunnycdn-storage"
+
 import  fs  from  "fs";
 import axios from "axios";
 
@@ -215,6 +214,7 @@ export const createTenant = async (req, res) => {
     
           const inventoryDetails = await Inventory.findOne({_id : inventoryId})
           console.log('INVENTORY', inventoryDetails);
+          const pendingDeposit = inventoryDetails.securityDeposit - tokenAdvance;
   
   
                 const Bookings = await Booking.create({
@@ -223,34 +223,34 @@ export const createTenant = async (req, res) => {
                   inventory: inventoryId,  
                   owner : inventoryDetails.user,
                   createdBy:admin,
+                  balanceAmount:pendingDeposit ,
+                  'tokenAdvance.amount':  tokenAdvance,
+                  'securityDeposit.amount': pendingDeposit
                 })
-    
-                //  const moveInDate = new Date("2023-07-11T05:55:04.603+00:00")
-                console.log('move In date',moveInDate)
-            //   const d = moveInDate.getMonth() +1 ;
-            //   console.log(d)
+
+              //  console.log('move In date',moveInDate)
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
-                console.log('month',paidFromStartMonth);
+              //  console.log('month',paidFromStartMonth);
                 const paidFromStartDate =  1 ;
                 const paidYear =  moveInDate.getFullYear();
-                console.log(paidYear)
+               // console.log(paidYear)
                 //console.log(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`)
                 const paidFrom = new Date(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`);
                 const nextMonth = moveInDate.getMonth() + 2
-                console.log('next month',nextMonth)
+               // console.log('next month',nextMonth)
                 const paidUntil = new Date(`${paidYear}-${nextMonth}-${paidFromStartDate}`)
-                console.log(paidUntil)
+               // console.log(paidUntil)
   
-          const rentTransaction = await  RentalTransactions.create({
-                from: saveUser._id,     
-                bookingId: Bookings,
-                transactionType: 'RENT',
-                to : inventoryDetails.user,
-                amount: inventoryDetails.rent,
-                createdBy:admin,
-                paidFrom: paidFrom,
-                paidUntil:paidUntil,
-          })  
+                const rentTransaction = await  RentalTransactions.create({
+                      from: saveUser._id,     
+                      bookingId: Bookings,
+                      transactionType: 'RENT',
+                      to : inventoryDetails.user,
+                      amount: inventoryDetails.rent,
+                      createdBy:admin,
+                      paidFrom: paidFrom,
+                      paidUntil:paidUntil,
+                })  
     sendResponse(res, 200, "Tenant Added successfully", {saveUser,createUserAsTenant,updatedInventoryData,Bookings,rentTransaction});
 
 };

@@ -50,11 +50,24 @@ const adminCreate = Joi.object({
     securityDeposit: Joi.number().required(),
   
   });
+
+  const addCategory = Joi.object({
+    name: Joi.string().required(),
+    type: Joi.string().required(),
+  });
+
+  const updateCategory = Joi.object({
+    name: Joi.string().required(),
+  });
+
+
   
 export default {
   adminCreate,
   adminlogin,
   saveUserTenant,
   saveUserOwner,
-  saveInventory
+  saveInventory,
+  addCategory,
+  updateCategory
 };

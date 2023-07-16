@@ -9,6 +9,9 @@ import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
 import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import RentalOwner from "../../../shared/models/rentalOwner.js";
+import newCategory from "../../../shared/models/category.js";
+import dayjs from 'dayjs';
+
 //import { default as bunnycdn  } from "bunnycdn-storage"
 //import {bunnycdn } from "../../../old/src/services/bunnycdn.js";
 //const bunnycdn = require("../../../old/src/services/bunnycdn.js")
@@ -809,14 +812,14 @@ if(req.files.cancelledCheque){
   //GET Inventory Details
 export const getInventoryDetails = async (req, res) => {
   const userId = req.user;
-       let allInventories = await Inventory.find({ createdBy :userId });
+       let allInventories = await Inventory.find({ createdBy :userId }).populate('user')
        return sendResponse(res, 200, "Inventories Fetched Successfully", { allInventories });
 };
 
 //GET Inventory Details With Inventory ID
 export const getInventorywithId = async (req, res) => {
   const userId = req.user;
-       let inventory = await Inventory.find({ inventoryId : req.params.inventoryId });
+       let inventory = await Inventory.find({ inventoryId : req.params.inventoryId }).populate('user');
        return sendResponse(res, 200, "Inventory Data Fetched Successfully", { inventory });
 };
 
@@ -824,7 +827,7 @@ export const getInventorywithId = async (req, res) => {
 //GET Inventory Details
 export const getAllInventoryDetails = async (req, res) => {
   const userId = req.user;
-       let allInventoriesData = await Inventory.find({});
+       let allInventoriesData = await Inventory.find({}).populate('user')
        return sendResponse(res, 200, "All Inventories Fetched Successfully", { allInventoriesData });
 };
 
@@ -834,7 +837,7 @@ export const getOwnerInventory = async (req, res) => {
   const userId = req.user;
   let user = await User.findOne({ mobile: req.params.mobile });
 
-       let allInventoriesData = await Inventory.find({ user:user });
+       let allInventoriesData = await Inventory.find({ user:user }).populate('user')
        return sendResponse(res, 200, "All Owner Inventories Fetched Successfully", { allInventoriesData });
 };
 
@@ -1003,3 +1006,66 @@ export const getAllowners = async (req, res) => {
       next(err)
     }
   }
+
+
+  
+export const createCategory = async (req, res) => {
+  try{
+      let admin = req.user;
+      let category = await newCategory.findOne({ name: req.body.name })
+      if (category) {
+          return sendResponse(res, 409, "the category with this name already exists");         
+      }
+    let categoryDetails  = await newCategory.create({
+        name: req.body.name,
+        type: req.body.type,
+        createdBy: admin,
+      })
+      if(categoryDetails) sendResponse(res, 200, "Category Created Successfully", {categoryDetails});
+  }
+  catch{
+      throw {
+          status: 500,
+          message:"internal server error"
+      }   
+  }
+}
+
+
+export const updateCategory = async (req, res) => {
+  try{
+          let admin = req.user;
+          await newCategory.updateOne({ _id: req.params.categoryId }, {
+              $set: {
+              name: req.body.name,
+              updatedAt: dayjs()
+              }
+          })
+          let category = await newCategory.findOne({ _id: req.params.categoryId })
+          if (!category) {
+              return sendResponse(res, 409, "category does not exist");         
+          }
+          if(category) sendResponse(res, 200, "Category Updated Successfully", {category});
+      }
+  catch{
+      throw {
+          status: 500,
+          message:"internal server error"
+      }
+  }    
+}
+
+
+export const deleteCategory = async (req, res) => {
+  try{
+       await newCategory.deleteOne({ _id: req.params.categoryId })
+           sendResponse(res, 200, "Success",);
+  }
+  catch{
+      throw {
+          status: 500,
+          message:"internal server error"
+      }
+  }    
+}
+

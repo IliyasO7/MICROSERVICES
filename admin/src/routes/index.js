@@ -6,6 +6,7 @@ const router = Router();
 
 router.use("/", adminRouter);
 
+
 router.use((req, res) => {
   sendResponse(res, 404, "Route Not Found", null, { path: req.path });
 });

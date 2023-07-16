@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
 import mongoose from "mongoose";
-
 const schema = mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -12,16 +10,7 @@ const schema = mongoose.Schema(
   }
 );
 
-const category = mongoose.model("category", schema);
+const Category = mongoose.model("newcategories", schema);
 
-export default category;
-/*
-const categorySchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  name: { type: String, required: true },
-  type: { type: String, required: true },
-});
+export default Category;
 
-categorySchema.plugin(timestamp);
-
-module.exports = mongoose.model("Category", categorySchema);*/

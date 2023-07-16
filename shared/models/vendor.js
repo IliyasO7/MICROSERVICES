@@ -52,7 +52,7 @@ const schema = mongoose.Schema(
     missedjobs:{ type: Number,default: 0 },
     totalAssignedJobs:{ type: Number,default: 0 },
     threshold:{ type: Boolean,default: 'false',required:true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },  
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin',  },  
   },
   {
     timestamp: true,

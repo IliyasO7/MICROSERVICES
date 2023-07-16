@@ -5,11 +5,12 @@ const schema = mongoose.Schema(
     name: { type: String, required: true },
     slug: { type: String, required: true },
     category: { type: String, required: true },
+  //  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null,required:true },
     icon: { type: String, default: null },
     banners: [
       { type: String, defaut: null }
     ],
-    commission: { type: String, defaut: null},
+    commission: { type: String, defaut: null },
     includedContent: { type: String, default: null },
     excludedContent: { type: String, default: null },
     about: { type: String, default: null },
@@ -52,6 +53,7 @@ const schema = mongoose.Schema(
       }
     ],
     status: { type: String, default: 'Active' },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin' }, 
  },
   {
     timestamp: true,

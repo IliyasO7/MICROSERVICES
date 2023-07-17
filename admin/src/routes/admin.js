@@ -138,8 +138,9 @@ router.post(
         name:'bedroomImage'
       }
     ]),
-  controller.updatePropertyImages);
-/*
+  controller.updateArrayPropertyImages);
+
+  /*
   router.post(
     "/array-property-images/:inventoryId/media", 
     checkAuthAdmin(),
@@ -160,8 +161,8 @@ router.post(
           name:'bedroomImage'
         }
       ]),
-    controller.updateArrayPropertyImages);*/
-
+    controller.updateArrayPropertyImages);
+*/
 //Get All Inventories of logged in Admin
 router.get(
 "/get-admin-inventories", 

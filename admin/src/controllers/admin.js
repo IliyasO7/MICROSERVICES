@@ -901,7 +901,7 @@ export const getAllowners = async (req, res) => {
     //      console.log('Req Files aadhar', req.files.aadhar);
           const options = {
             method: 'PUT',
-            url: `https://storage.bunnycdn.com/housejoy/owner/inventory/main/${req.files.mainImage[0].originalname}`,
+            url: `https://storage.bunnycdn.com/housejoy/owner/inventory/main/${inventory._id}-${req.files.mainImage[0].originalname}`,
             headers: {
             'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
             'content-type': 'multipart/form-data',
@@ -1076,7 +1076,7 @@ export const deleteCategory = async (req, res) => {
   }    
 }
 
-/*
+
 
   // Update Owner media
   export const updateArrayPropertyImages = async (req, res, next) => {
@@ -1087,137 +1087,146 @@ export const deleteCategory = async (req, res) => {
         return sendResponse(res, 400, "Inventory Does Not Exist");
       }
       let data = {
-        mainImage: undefined,
-        entranceImage: undefined,
-        kitchenImage: undefined,
-        livingImage:undefined,
-        bedroomImage:undefined
+        mainImage: [],
+        entranceImage: [],
+        kitchenImage: [],
+        livingImage:[],
+        bedroomImage:[]
         //serviceAgreementUpload: undefined,
       }
-      console.log('before files');
-      console.log('main Image',req.files.mainImage);
+
 
 
     if(req.files.mainImage){
+      console.log('here');
       for(let i=0;i<req.files.mainImage.length;i++){
-        console.log('Length is:',req.files.mainImage.length);
-        console.log(req.files);
 
-
+        const options = {
+          method: 'PUT',
+          url: `https://storage.bunnycdn.com/housejoy/owner/inventory/main/${inventory._id}-${req.files.mainImage[i].originalname}`,
+          headers: {
+          'AccessKey': process.env.BUNNYCDN_API_KEY,
+          'content-type': 'multipart/form-data',
+        },
+        data:  fs.readFileSync(req.files.mainImage[i].path), 
+      };
+          const mainImages= await axios(options, function (error, response, body) {
+                  if (error) throw new Error(error);
+                  console.log(body);
+                });   
+          if(mainImages.status === 201){
+            data.mainImage[i] = `https://housejoy.b-cdn.net/owner/inventory/main/${inventory._id}-${req.files.mainImage[i].originalname}`
       }
+      await Inventory.updateOne({ _id: inventory._id }, {
+        $set: data
+      })
     }
-      /*
+  }
+
+
+    if(req.files.entranceImage){
+      for(let i=0;i<req.files.entranceImage.length;i++){
+        const options = {
+          method: 'PUT',
+          url: `https://storage.bunnycdn.com/housejoy/owner/inventory/entrance/${inventory._id}-${req.files.entranceImage[i].originalname}`,
+          headers: {
+          'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+          'content-type': 'multipart/form-data',
+        },
+        data:  fs.readFileSync(req.files.entranceImage[i].path), 
+      };
+          const entranceImages= await axios(options, function (error, response, body) {
+                  if (error) throw new Error(error);
+                  console.log(body);
+                });   
+          if(entranceImages.status === 201){
+            data.entranceImage[i] = `https://housejoy.b-cdn.net/owner/inventory/entrance/${inventory._id}-${req.files.entranceImage[i].originalname}`
+            
+          }
+          await Inventory.updateOne({ _id: inventory._id }, {
+            $set: data
+          })
+        }
+      }
+
+
+      if(req.files.livingImage){
+        for(let i=0;i<req.files.livingImage.length;i++){
           const options = {
             method: 'PUT',
-            url: `https://storage.bunnycdn.com/housejoy/owner/inventory/main/${req.files.mainImage[0].originalname}`,
+            url: `https://storage.bunnycdn.com/housejoy/owner/inventory/living/${inventory._id}-${req.files.livingImage[i].originalname}`,
             headers: {
-            'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+            'AccessKey':  process.env.BUNNYCDN_API_KEY,
             'content-type': 'multipart/form-data',
           },
-          data:  fs.readFileSync(req.files.mainImage[0].path), 
+          data:  fs.readFileSync(req.files.livingImage[i].path), 
         };
-            const mainImages= await axios(options, function (error, response, body) {
+            const livingImages= await axios(options, function (error, response, body) {
                     if (error) throw new Error(error);
                     console.log(body);
                   });   
-            if(mainImages.status === 201){
-              data.mainImage = `https://housejoy.b-cdn.net/owner/inventory/main/${inventory._id}-${req.files.mainImage[0].originalname}`
+            if(livingImages.status === 201){
+              data.livingImage[i] = `https://housejoy.b-cdn.net/owner/inventory/living/${inventory._id}-${req.files.livingImage[i].originalname}`
+            }
+          await Inventory.updateOne({ _id: inventory._id },{
+            $set: data
+          })
         }
-    }
-*/
-    /*
-    if(req.files.entranceImage){
-      //      console.log('Req Files aadhar', req.files.aadhar);
+      }
+      
+        if(req.files.bedroomImage){
+          for(let i=0;i<req.files.bedroomImage.length;i++){
             const options = {
               method: 'PUT',
-              url: `https://storage.bunnycdn.com/housejoy/owner/inventory/entrance/${req.files.entranceImage[0].originalname}`,
+              url: `https://storage.bunnycdn.com/housejoy/owner/inventory/bedroom/${inventory._id}-${req.files.bedroomImage[i].originalname}`,
               headers: {
-              'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+              'AccessKey':  process.env.BUNNYCDN_API_KEY,
               'content-type': 'multipart/form-data',
             },
-            data:  fs.readFileSync(req.files.entranceImage[0].path), 
+            data:  fs.readFileSync(req.files.bedroomImage[i].path), 
           };
-        //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
-              const entranceImages= await axios(options, function (error, response, body) {
+              const bedroomImages= await axios(options, function (error, response, body) {
                       if (error) throw new Error(error);
                       console.log(body);
                     });   
-              if(entranceImages.status === 201){
-                data.entranceImage = `https://housejoy.b-cdn.net/owner/inventory/entrance/${inventory._id}-${req.files.entranceImage[0].originalname}`
-          }
+              if(bedroomImages.status === 201){
+                data.bedroomImage[i] = `https://housejoy.b-cdn.net/owner/inventory/bedroom/${inventory._id}-${req.files.bedroomImage[i].originalname}`
+            }
+            await Inventory.updateOne({ _id: inventory._id },{
+              $set: data
+            })
       }
-
-      if(req.files.livingImage){
-        //      console.log('Req Files aadhar', req.files.aadhar);
+   }
+            
+          if(req.files.kitchenImage){
+            for(let i=0;i<req.files.kitchenImage.length;i++){
               const options = {
                 method: 'PUT',
-                url: `https://storage.bunnycdn.com/housejoy/owner/inventory/living/${req.files.livingImage[0].originalname}`,
+                url: `https://storage.bunnycdn.com/housejoy/owner/inventory/kitchen/${inventory._id}-${req.files.kitchenImage[i].originalname}`,
                 headers: {
-                'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+                'AccessKey':  process.env.BUNNYCDN_API_KEY,
                 'content-type': 'multipart/form-data',
               },
-              data:  fs.readFileSync(req.files.livingImage[0].path), 
+              data:  fs.readFileSync(req.files.kitchenImage[i].path), 
             };
-          //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
-                const livingImages= await axios(options, function (error, response, body) {
+          
+                const kitchenImages= await axios(options, function (error, response, body) {
                         if (error) throw new Error(error);
                         console.log(body);
                       });   
-                if(livingImages.status === 201){
-                  data.livingImage = `https://housejoy.b-cdn.net/owner/inventory/living/${inventory._id}-${req.files.livingImage[0].originalname}`
-            }
-        }
-
-        if(req.files.bedroomImage){
-          //      console.log('Req Files aadhar', req.files.aadhar);
-                const options = {
-                  method: 'PUT',
-                  url: `https://storage.bunnycdn.com/housejoy/owner/inventory/bedroom/${req.files.bedroomImage[0].originalname}`,
-                  headers: {
-                  'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
-                  'content-type': 'multipart/form-data',
-                },
-                data:  fs.readFileSync(req.files.bedroomImage[0].path), 
-              };
-            //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
-                  const bedroomImages= await axios(options, function (error, response, body) {
-                          if (error) throw new Error(error);
-                          console.log(body);
-                        });   
-                  if(bedroomImages.status === 201){
-                    data.bedroomImage = `https://housejoy.b-cdn.net/owner/inventory/bedroom/${inventory._id}-${req.files.bedroomImage[0].originalname}`
+                if(kitchenImages.status === 201){
+                  data.kitchenImage[i] = `https://housejoy.b-cdn.net/owner/inventory/kitchen/${inventory._id}-${req.files.kitchenImage[i].originalname}`
               }
-          }
-
-          if(req.files.kitchenImage){
-            //      console.log('Req Files aadhar', req.files.aadhar);
-                  const options = {
-                    method: 'PUT',
-                    url: `https://storage.bunnycdn.com/housejoy/owner/inventory/kitchen/${req.files.kitchenImage[0].originalname}`,
-                    headers: {
-                    'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
-                    'content-type': 'multipart/form-data',
-                  },
-                  data:  fs.readFileSync(req.files.kitchenImage[0].path), 
-                };
-              //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
-                    const kitchenImages= await axios(options, function (error, response, body) {
-                            if (error) throw new Error(error);
-                            console.log(body);
-                          });   
-                    if(kitchenImages.status === 201){
-                      data.kitchenImage = `https://housejoy.b-cdn.net/owner/inventory/kitchen/${inventory._id}-${req.files.kitchenImage[0].originalname}`
-                }
-            }
-
-      // Update in database
-      await Inventory.updateOne({ _id: inventory._id }, {
-        $set: data
-      }) 
+                   
+              await Inventory.updateOne({ _id: inventory._id }, {
+                $set: data
+              })
+        } 
+    }
       res.json({
         result: 'success'
       })
     } catch (err) {
       next(err)
     }
-  }*/
+  }

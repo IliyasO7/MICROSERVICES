@@ -190,12 +190,14 @@ export const createTenant = async (req, res) => {
     const to = req.body.ownerId;
 
     const userCheck = await User.findOne({mobile: mobile})
-
-    const tenantCheck = await RentalOwner.find({user:userCheck._id})
-    if(tenantCheck){
-      sendResponse(res, 400, "Tenant Already Exists", );
+    if(userCheck){
+      const tenantCheck = await RentalOwner.find({user:userCheck._id})
+      if(tenantCheck){
+        sendResponse(res, 400, "Tenant Already Exists", );
+      }
     }
-  
+
+
         const saveUser = await User.create(
           {
             fname: fname,
@@ -601,13 +603,14 @@ export const getAllOwners = async (req, res) => {
 
     const admin = req.user;
 
-    const userCheck = await User.findOne({mobile: mobile})
-
-    const ownerCheck = await RentalOwner.find({user:userCheck._id})
-    if(ownerCheck){
-      sendResponse(res, 400, "Owner Already Exists", );
+    const userCheck = await User.findOne({mobile: phone})
+    if(userCheck){
+      const ownerCheck = await RentalOwner.find({user:userCheck._id})
+      if(ownerCheck){
+        sendResponse(res, 400, "Owner Already Exists", );
+      }
     }
-  
+
         const saveUser = await User.create(
           {
             fname: fname,
@@ -1073,3 +1076,148 @@ export const deleteCategory = async (req, res) => {
   }    
 }
 
+/*
+
+  // Update Owner media
+  export const updateArrayPropertyImages = async (req, res, next) => {
+    try {
+      let inventory = await Inventory.findOne({ _id:req.params.inventoryId }).lean()
+
+      if(!inventory){
+        return sendResponse(res, 400, "Inventory Does Not Exist");
+      }
+      let data = {
+        mainImage: undefined,
+        entranceImage: undefined,
+        kitchenImage: undefined,
+        livingImage:undefined,
+        bedroomImage:undefined
+        //serviceAgreementUpload: undefined,
+      }
+      console.log('before files');
+      console.log('main Image',req.files.mainImage);
+
+
+    if(req.files.mainImage){
+      for(let i=0;i<req.files.mainImage.length;i++){
+        console.log('Length is:',req.files.mainImage.length);
+        console.log(req.files);
+
+
+      }
+    }
+      /*
+          const options = {
+            method: 'PUT',
+            url: `https://storage.bunnycdn.com/housejoy/owner/inventory/main/${req.files.mainImage[0].originalname}`,
+            headers: {
+            'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+            'content-type': 'multipart/form-data',
+          },
+          data:  fs.readFileSync(req.files.mainImage[0].path), 
+        };
+            const mainImages= await axios(options, function (error, response, body) {
+                    if (error) throw new Error(error);
+                    console.log(body);
+                  });   
+            if(mainImages.status === 201){
+              data.mainImage = `https://housejoy.b-cdn.net/owner/inventory/main/${inventory._id}-${req.files.mainImage[0].originalname}`
+        }
+    }
+*/
+    /*
+    if(req.files.entranceImage){
+      //      console.log('Req Files aadhar', req.files.aadhar);
+            const options = {
+              method: 'PUT',
+              url: `https://storage.bunnycdn.com/housejoy/owner/inventory/entrance/${req.files.entranceImage[0].originalname}`,
+              headers: {
+              'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+              'content-type': 'multipart/form-data',
+            },
+            data:  fs.readFileSync(req.files.entranceImage[0].path), 
+          };
+        //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
+              const entranceImages= await axios(options, function (error, response, body) {
+                      if (error) throw new Error(error);
+                      console.log(body);
+                    });   
+              if(entranceImages.status === 201){
+                data.entranceImage = `https://housejoy.b-cdn.net/owner/inventory/entrance/${inventory._id}-${req.files.entranceImage[0].originalname}`
+          }
+      }
+
+      if(req.files.livingImage){
+        //      console.log('Req Files aadhar', req.files.aadhar);
+              const options = {
+                method: 'PUT',
+                url: `https://storage.bunnycdn.com/housejoy/owner/inventory/living/${req.files.livingImage[0].originalname}`,
+                headers: {
+                'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+                'content-type': 'multipart/form-data',
+              },
+              data:  fs.readFileSync(req.files.livingImage[0].path), 
+            };
+          //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
+                const livingImages= await axios(options, function (error, response, body) {
+                        if (error) throw new Error(error);
+                        console.log(body);
+                      });   
+                if(livingImages.status === 201){
+                  data.livingImage = `https://housejoy.b-cdn.net/owner/inventory/living/${inventory._id}-${req.files.livingImage[0].originalname}`
+            }
+        }
+
+        if(req.files.bedroomImage){
+          //      console.log('Req Files aadhar', req.files.aadhar);
+                const options = {
+                  method: 'PUT',
+                  url: `https://storage.bunnycdn.com/housejoy/owner/inventory/bedroom/${req.files.bedroomImage[0].originalname}`,
+                  headers: {
+                  'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+                  'content-type': 'multipart/form-data',
+                },
+                data:  fs.readFileSync(req.files.bedroomImage[0].path), 
+              };
+            //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
+                  const bedroomImages= await axios(options, function (error, response, body) {
+                          if (error) throw new Error(error);
+                          console.log(body);
+                        });   
+                  if(bedroomImages.status === 201){
+                    data.bedroomImage = `https://housejoy.b-cdn.net/owner/inventory/bedroom/${inventory._id}-${req.files.bedroomImage[0].originalname}`
+              }
+          }
+
+          if(req.files.kitchenImage){
+            //      console.log('Req Files aadhar', req.files.aadhar);
+                  const options = {
+                    method: 'PUT',
+                    url: `https://storage.bunnycdn.com/housejoy/owner/inventory/kitchen/${req.files.kitchenImage[0].originalname}`,
+                    headers: {
+                    'AccessKey': 'af1a5c9e-c720-4f55-b177cd11060e-86b0-47be',
+                    'content-type': 'multipart/form-data',
+                  },
+                  data:  fs.readFileSync(req.files.kitchenImage[0].path), 
+                };
+              //    https://storage.bunnycdn.com/$%7BstorageZoneName%7D/owner/aadhars/$%7Baadhar.value.files[0].name%7D%60
+                    const kitchenImages= await axios(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+                            console.log(body);
+                          });   
+                    if(kitchenImages.status === 201){
+                      data.kitchenImage = `https://housejoy.b-cdn.net/owner/inventory/kitchen/${inventory._id}-${req.files.kitchenImage[0].originalname}`
+                }
+            }
+
+      // Update in database
+      await Inventory.updateOne({ _id: inventory._id }, {
+        $set: data
+      }) 
+      res.json({
+        result: 'success'
+      })
+    } catch (err) {
+      next(err)
+    }
+  }*/

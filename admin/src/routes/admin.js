@@ -139,7 +139,28 @@ router.post(
       }
     ]),
   controller.updatePropertyImages);
-
+/*
+  router.post(
+    "/array-property-images/:inventoryId/media", 
+    checkAuthAdmin(),
+    upload.fields([
+        {
+          name: 'mainImage',
+        },
+        {
+          name:'entranceImage'
+        },
+        {
+          name:'livingImage'
+        },
+        {
+          name:'kitchenImage'
+        },
+        {
+          name:'bedroomImage'
+        }
+      ]),
+    controller.updateArrayPropertyImages);*/
 
 //Get All Inventories of logged in Admin
 router.get(

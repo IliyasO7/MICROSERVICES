@@ -188,6 +188,13 @@ export const createTenant = async (req, res) => {
   
     const admin = req.user;
     const to = req.body.ownerId;
+
+    const userCheck = await User.findOne({mobile: mobile})
+
+    const tenantCheck = await RentalOwner.find({user:userCheck._id})
+    if(tenantCheck){
+      sendResponse(res, 400, "Tenant Already Exists", );
+    }
   
         const saveUser = await User.create(
           {
@@ -593,6 +600,13 @@ export const getAllOwners = async (req, res) => {
     const ownerStatus = req.body.isOwner;
 
     const admin = req.user;
+
+    const userCheck = await User.findOne({mobile: mobile})
+
+    const ownerCheck = await RentalOwner.find({user:userCheck._id})
+    if(ownerCheck){
+      sendResponse(res, 400, "Owner Already Exists", );
+    }
   
         const saveUser = await User.create(
           {
@@ -671,6 +685,7 @@ export const getAllOwners = async (req, res) => {
   // Update Owner media
 export const updateOwnerMedia = async (req, res, next) => {
     try {
+
    //   const bunnyStorage = await new BunnyStorage(process.env.BUNNYCDN_API_KEY, process.env.BUNNYCDN_STORAGE_ZONE);
    //   console.log('Req.body',req);
       let owner = await RentalOwner.findOne({user: req.params.ownerId}).lean()

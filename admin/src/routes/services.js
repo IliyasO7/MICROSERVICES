@@ -17,5 +17,12 @@ routers.get(
     serviceController.getServices
   )
 
+/*
+  // List
+routers.get(
+  '/',
+   checkAuthAdmin(),
+  serviceController.getServices
+)*/
 
 export default routers;

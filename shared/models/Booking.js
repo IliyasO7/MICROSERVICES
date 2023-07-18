@@ -19,6 +19,7 @@ const schema = mongoose.Schema(
        // rentAmount:{ status :{ type:String,  default:'unpaid'}, amount:{ type:Number,default:null }, paymentDue:{ type: Date, default:null },paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions' } },
        // rentPaymentStatus:{ type: String, default:'unpaid' },
         rentPayments: [{  status :{ type : String,default:'UNPAID', enum : ['UNPAID','PAID'] },paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}, paymentMonth:{ type : String , enum :[ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ] }}],
+        isRentDue:{ type:Boolean,default:false },
         paymentDay: { type: Number, default: 5 },
         contractStatus:{type:String,default:"INACTIVE" , enum : ['ACTIVE','INACTIVE'],required:true }, //enums to be added
         createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },     

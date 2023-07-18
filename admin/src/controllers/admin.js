@@ -1221,3 +1221,13 @@ export const deleteCategory = async (req, res) => {
       next(err)
     }
   }
+
+
+  /*
+let fetchMonth = function(date){
+monthList = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+return monthList[date.getMonth()];
+};
+console.log("The month is:", fetchMonth(new Date("2023-07-11T05:55:04.603+00:00")));
+console.log("The month is:", fetchMonth(new Date("2023-07-11T05:55:04.603+00:00")));
+  */

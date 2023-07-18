@@ -13,15 +13,14 @@ const schema = mongoose.Schema(
         vendor: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', default: null,},
         serviceStatus: { type:String, default:"PENDING",enum : ["PENDING","ASSIGNED","STARTED","COMPLETED","CANCELLED"]},
         serviceCharge :{ /*status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']}*/percentage : { type : Number,default:5,enum:[5,8]},/* paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}*/},
-        securityDeposit :{ status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']},amount : { type : Number,default:null},paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}},
+        securityDeposit :{ status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']},amount : { type : Number,default:null},paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}}, //72 hours before MOVE IN DATE
         balanceAmount : { type: Number,default:null },
        // sdAmount :{ status :{ type:String,  default:'unpaid'}},
        // rentAmount:{ status :{ type:String,  default:'unpaid'}, amount:{ type:Number,default:null }, paymentDue:{ type: Date, default:null },paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions' } },
        // rentPaymentStatus:{ type: String, default:'unpaid' },
-        rentPayment: {  status :{ type : String,default:'UNPAID', enum : ['UNPAID','PAID'] }},
+        rentPayments: [{  status :{ type : String,default:'UNPAID', enum : ['UNPAID','PAID'] },paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}, paymentMonth:{ type : String , enum :[ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ] }}],
         paymentDay: { type: Number, default: 5 },
         contractStatus:{type:String,default:"INACTIVE" , enum : ['ACTIVE','INACTIVE'],required:true }, //enums to be added
-
         createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },     
     },
     {

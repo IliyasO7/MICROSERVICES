@@ -217,6 +217,12 @@ export const createTenant = async (req, res) => {
             moveInDate : moveInDate,
             tokenAdvance:tokenAdvance
           })
+
+          const date =  moveInDate.getDate() - 3;
+            const year =  moveInDate.getFullYear();
+            const month = moveInDate.getMonth()+1;
+            const dueDate = new Date(`${year}-${month}-${date}`);
+
   
           const totalBookings = await Booking.countDocuments({});
           let currentBookingNo = totalBookings + 1;
@@ -231,7 +237,8 @@ export const createTenant = async (req, res) => {
                   balanceAmount:inventoryDetails.securityDeposit,
                 //  'serviceCharge.percentage': req.body.serviceCharge,
                   'tokenAmount.amount':  tokenAdvance,
-                  'securityDeposit.amount': inventoryDetails.securityDeposit
+                  'securityDeposit.amount': inventoryDetails.securityDeposit,
+                  'securityDeposit.paymentDue': dueDate
                 })
 
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
@@ -1072,6 +1079,7 @@ export const deleteCategory = async (req, res) => {
   // Update Owner media
   export const updateArrayPropertyImages = async (req, res, next) => {
     try {
+      console.log("UPDATING OWNER IMAGES");
       let inventory = await Inventory.findOne({ _id:req.params.inventoryId }).lean()
 
       if(!inventory){
@@ -1087,7 +1095,7 @@ export const deleteCategory = async (req, res) => {
       }
 
 
-
+      console.log('MAIN IMAGE',req.files.mainImage);
     if(req.files.mainImage){
       console.log('here');
       for(let i=0;i<req.files.mainImage.length;i++){

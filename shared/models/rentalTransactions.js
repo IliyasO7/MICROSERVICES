@@ -5,7 +5,8 @@ const schema = mongoose.Schema(
         from: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },     
         to : { type: mongoose.Schema.Types.ObjectId, ref: 'user',required:true},    
         bookingId: {  type: mongoose.Schema.Types.ObjectId, ref: 'booking', required: true },
-        transactionType:{ type:String,default:null,enum : ['RENT','SERVICE', 'TOKEN', 'SECUIRITY'] }, //RENT TOKEN SD
+        transactionType:{ type:String,default:null, }, //RENT TOKEN SD
+        transactionFor:{type:String,default:null,enum : ['RENT','SERVICE', 'TOKEN', 'SECUIRITY'] },
         transactionId: { type: String, default: null },
         paymentDate: { type:Date, default:null},
         paidFrom: {type:Date, required:true},

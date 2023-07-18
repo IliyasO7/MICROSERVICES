@@ -219,29 +219,21 @@ export const createTenant = async (req, res) => {
           })
   
           const totalBookings = await Booking.countDocuments({});
-          console.log('total Inventory',totalBookings);
           let currentBookingNo = totalBookings + 1;
           const sku = `HJR${currentBookingNo}`
-          console.log('SKU',sku);
-    
           const inventoryDetails = await Inventory.findOne({_id : inventoryId})
-          console.log('INVENTORY', inventoryDetails);
-          const pendingDeposit = inventoryDetails.securityDeposit - tokenAdvance;
-  
-  
                 const Bookings = await Booking.create({
                   tenant: saveUser._id,     
                   bookingId: sku,
                   inventory: inventoryId,  
                   owner : inventoryDetails.user,
                   createdBy:admin,
-                  balanceAmount:pendingDeposit,
+                  balanceAmount:inventoryDetails.securityDeposit,
                 //  'serviceCharge.percentage': req.body.serviceCharge,
                   'tokenAmount.amount':  tokenAdvance,
                   'securityDeposit.amount': inventoryDetails.securityDeposit
                 })
 
-              //  console.log('move In date',moveInDate)
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
               //  console.log('month',paidFromStartMonth);
                 const paidFromStartDate =  1 ;
@@ -257,7 +249,7 @@ export const createTenant = async (req, res) => {
                 const rentTransaction = await  RentalTransactions.create({
                       from: saveUser._id,     
                       bookingId: Bookings,
-                      transactionType: 'RENT',
+                      transactionFor: 'RENT',
                       to : inventoryDetails.user,
                       amount: inventoryDetails.rent,
                       createdBy:admin,
@@ -265,7 +257,6 @@ export const createTenant = async (req, res) => {
                       paidUntil:paidUntil,
                 })  
     sendResponse(res, 200, "Tenant And Booking Added successfully", {saveUser,createUserAsTenant,updatedInventoryData,Bookings,rentTransaction});
-
 };
 
 export const updateTenant = async (req, res) => {

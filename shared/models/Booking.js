@@ -12,7 +12,7 @@ const schema = mongoose.Schema(
         service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service',default:null },
         vendor: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', default: null,},
         serviceStatus: { type:String, default:"PENDING",enum : ["PENDING","ASSIGNED","STARTED","COMPLETED","CANCELLED"]},
-        serviceCharge :{ status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']},percentage : { type : Number,default:5,enum:[5,8]},paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}},
+        serviceCharge :{ /*status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']}*/percentage : { type : Number,default:5,enum:[5,8]},/* paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}*/},
         securityDeposit :{ status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']},amount : { type : Number,default:null},paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}},
         balanceAmount : { type: Number,default:null },
        // sdAmount :{ status :{ type:String,  default:'unpaid'}},

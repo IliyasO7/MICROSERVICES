@@ -235,6 +235,7 @@ export const createTenant = async (req, res) => {
                   owner : inventoryDetails.user,
                   createdBy:admin,
                   balanceAmount:inventoryDetails.securityDeposit,
+                  rentAmount:  inventoryDetails.rent,
                 //  'serviceCharge.percentage': req.body.serviceCharge,
                   'tokenAmount.amount':  tokenAdvance,
                   'securityDeposit.amount': inventoryDetails.securityDeposit,

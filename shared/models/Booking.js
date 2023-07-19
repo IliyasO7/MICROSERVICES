@@ -15,6 +15,7 @@ const schema = mongoose.Schema(
         serviceCharge :{ /*status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']}*/percentage : { type : Number,default:5,enum:[5,8]},/* paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}*/},
         securityDeposit :{ status :{ type:String,  default:'UNPAID', enum : ['UNPAID','PAID']},amount : { type : Number,default:null},paymentDue: { type: Date,default:null},paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions'}}, //72 hours before MOVE IN DATE
         balanceAmount : { type: Number,default:null },
+        rentAmount :{ type:Number, default:null },
        // sdAmount :{ status :{ type:String,  default:'unpaid'}},
        // rentAmount:{ status :{ type:String,  default:'unpaid'}, amount:{ type:Number,default:null }, paymentDue:{ type: Date, default:null },paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'rentalTransactions' } },
        // rentPaymentStatus:{ type: String, default:'unpaid' },

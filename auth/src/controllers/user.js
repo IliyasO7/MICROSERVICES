@@ -664,11 +664,12 @@ export const updateTenantAddharPan = async (req, res) => {
 
 //Get Assets
 export const getAssets = async (req, res) => {
-    let service = {}
+
     const services  = await Service.find({})
     let assets= [];
 
     for(var i=0;i<services.length;i++){
+      let service = {}
       service.icon = services[i].icon
       service.name = services[i].name
       service.slug = services[i].slug

@@ -849,7 +849,7 @@ export const getOwnerInventory = async (req, res) => {
 //GET Inventory Details
 export const getAllBookings = async (req, res) => {
   const userId = req.user;
-       let allBookings = await Booking.find({ createdBy :userId });
+       let allBookings = await Booking.find({ createdBy :userId }).populate('owner').populate('tenant')
        return sendResponse(res, 200, "Bookings Fetched Successfully", { allBookings });
 };
 

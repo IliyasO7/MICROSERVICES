@@ -87,6 +87,12 @@ router.get(
 "/get-admin-owner", 
 checkAuthAdmin(),
 controller.getAdminOwners);
+
+//Get Admin Owner 
+router.get(
+  "/get-admin-tenants", 
+  checkAuthAdmin(),
+  controller.getAdminTenants);
     
 //Get ALL Owner 
 router.get(

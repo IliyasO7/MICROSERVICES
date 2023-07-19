@@ -869,6 +869,13 @@ export const getAllTenants = async (req, res) => {
        return sendResponse(res, 200, "All Tenants Fetched Successfully", { allTenants });
 };
 
+  //GET Inventory Details
+  export const getAdminTenants = async (req, res) => {
+    const userId = req.user;
+         let tenants =  await RentalTenant.find({createdBy:userId }).populate('user').populate('createdBy')
+         return sendResponse(res, 200, "Inventories Fetched Successfully", { tenants });
+  };
+
 //GET All Tenants
 export const getAllowners = async (req, res) => {
   console.log('inside get all tenant');

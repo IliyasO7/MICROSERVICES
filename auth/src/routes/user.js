@@ -230,7 +230,12 @@ router.get(
   checkAuth(),
   controller.getTenantBookingDetails);
 
-
+// Get profile
+router.get(
+  "/assets",
+  checkAuth(),
+  controller.getAssets
+);
 
 
 

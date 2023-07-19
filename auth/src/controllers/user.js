@@ -16,6 +16,10 @@ import rentalTenant from "../../../shared/models/rentalTental.js";
 import fs from 'fs';
 import axios from "axios";
 //import { uploadToBunnyCdn } from "../../../shared/utils/bunnycdn.js";
+import Service from "../../../shared/models/service.js";
+
+//import { sendResponse } from "../../../shared/utils/helper.js";
+
 
 
 //import mongoose  from "mongoose";
@@ -655,4 +659,31 @@ export const updateTenantAddharPan = async (req, res) => {
                 panCardNumber: panCardNumber
               })
             return sendResponse(res, 200, "UID Updated Successfully");
+};
+
+
+//Get Assets
+export const getAssets = async (req, res) => {
+    let service = {}
+    const services  = await Service.find({})
+    let assets= [];
+
+    for(var i=0;i<services.length;i++){
+      service.icon = services[i].icon
+      service.name = services[i].name
+      service.slug = services[i].slug
+      assets.push(service)
+    }
+
+   // for(let eachService in services){
+    //  console.log("EACH SERVICE",eachService);
+   //   service.icon = eachService.icon
+   //   service.name = eachService.name
+   //   service.slug = eachService.slug
+   //   
+    //}
+    return sendResponse(res, 200, "Assets fetcehd Succesfully", {assets});
+
+     //   if(services) sendResponse(res, 200, "Services Fetched SucccessFully", {services});
+
 };

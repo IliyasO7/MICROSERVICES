@@ -176,6 +176,7 @@ export const getTenant = async (req, res) => {
 
 
 export const createTenant = async (req, res) => {
+    const createdDate = new Date();
     const fname = req.body.fname;
     const email = req.body.email;
     const mobile = req.body.mobile;
@@ -239,7 +240,8 @@ export const createTenant = async (req, res) => {
                 //  'serviceCharge.percentage': req.body.serviceCharge,
                   'tokenAmount.amount':  tokenAdvance,
                   'securityDeposit.amount': inventoryDetails.securityDeposit,
-                  'securityDeposit.paymentDue': dueDate
+                  'securityDeposit.paymentDue': dueDate,
+                  createdAt: createdDate,
                 })
 
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
@@ -575,6 +577,17 @@ export const getAdminOwners = async (req, res) => {
       }
 };
 
+export const getAllCounts = async (req, res) => {
+  const admin =req.user;
+      let owner = await RentalOwner.find({ createdBy: admin })
+      let tenant =await RentalTenant.find({ createdBy: admin })
+      let inventory =  await Inventory.find({createdby: admin })
+      let booking = await Booking.find({createdBy:admin})
+      return sendResponse(res, 200, "All Counts Fetched Successfully",
+       {ownerCount: owner.length, tenantCount:tenant.length, inventoryCount: inventory.length, bookingCount: booking.length });
+      
+};
+
 export const getAllOwners = async (req, res) => {
   
       let owner = await RentalOwner.find({})
@@ -589,7 +602,6 @@ export const getAllOwners = async (req, res) => {
   
 
   export const createOwner = async (req, res) => {
-
     const fname = req.body.fname;
     const email = req.body.email;
     const phone = req.body.mobile;
@@ -775,7 +787,7 @@ if(req.files.cancelledCheque){
 
 
   export const saveInventory = async (req, res) => {
-
+    const createdDate = new Date();
     const userId = req.params.ownerId;
     const propertyName = req.body.propertyName;
     const address= req.body.address;
@@ -809,7 +821,7 @@ if(req.files.cancelledCheque){
             rent:req.body.rent,
             securityDeposit: req.body.securityDeposit,
             createdBy:adminData._id,
-  
+            createdAt: createdDate,
         })
   
     sendResponse(res, 200, "Inventory Saved Successful", {createInventory});

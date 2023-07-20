@@ -26,7 +26,8 @@ const schema = mongoose.Schema(
         isDeleted:{ type: Boolean, default:false, required: true },
         moveInDate: { type: Date, default: null },
         moveOutDate:{ type: Date, default: null },
-        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },     
+        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },    
+        createdAt: {type:Date, default:null} 
     },
     {
         timestamp: true,

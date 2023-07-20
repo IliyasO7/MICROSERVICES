@@ -23,7 +23,8 @@ const schema = mongoose.Schema(
         isRentDue:{ type:Boolean,default:false },
         paymentDay: { type: Number, default: 5 },
         contractStatus:{type:String,default:"INACTIVE" , enum : ['ACTIVE','INACTIVE'],required:true }, //enums to be added
-        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },     
+        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },   
+        createdAt: { type:Date, default:null}  
     },
     {
         timestamp: true,

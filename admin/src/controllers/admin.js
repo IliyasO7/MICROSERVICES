@@ -159,7 +159,7 @@ export const getTenant = async (req, res) => {
     const mobile = req.params.mobile;
     let user = await User.findOne({mobile:mobile})
     if(user){
-        let tenant = await RentalTenant.findOne({user: user})
+        let tenant = await RentalTenant.findOne({user: user}).populate('user')
         let booking = await Booking.find({tenant: tenant}) 
         let transactions = await RentalTransactions.find({from:tenant})
 

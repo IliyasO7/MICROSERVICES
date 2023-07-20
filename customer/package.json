@@ -40,6 +40,8 @@
     "validate": "^5.2.0"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^20.4.2",
     "nodemon": "^2.0.22"
   }
 }

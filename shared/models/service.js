@@ -1,15 +1,13 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const schema = mongoose.Schema(
+const schema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true },
     category: { type: String, required: true },
-  //  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null,required:true },
+    //  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null,required:true },
     icon: { type: String, default: null },
-    banners: [
-      { type: String, defaut: null }
-    ],
+    banners: [{ type: String, defaut: null }],
     commission: { type: String, defaut: null },
     includedContent: { type: String, default: null },
     excludedContent: { type: String, default: null },
@@ -20,25 +18,19 @@ const schema = mongoose.Schema(
       metaDescription: { type: String, default: null },
       h1Title: { type: String, default: null },
       h2Title: { type: String, default: null },
-      howItWorks: [
-        { type: String, default: null }
-      ],
-      footerContent: { type: String, default: null }
+      howItWorks: [{ type: String, default: null }],
+      footerContent: { type: String, default: null },
     },
     pageUrl1: { type: String, default: null },
     pageUrl2: { type: String, default: null },
     faqs: [
       {
         question: { type: String, default: null },
-        answer: { type: String, default: null }
-      }
+        answer: { type: String, default: null },
+      },
     ],
-    servicableCities: [
-      { type: String, default: null, required: true }
-    ],
-    paymentModes: [
-      { type: String, default: null, required: true }
-    ],
+    servicableCities: [{ type: String, default: null, required: true }],
+    paymentModes: [{ type: String, default: null, required: true }],
     price: { type: Number, default: 0 },
     priceGuide: { type: String, default: null },
     filters: [
@@ -47,19 +39,19 @@ const schema = mongoose.Schema(
         options: [
           {
             value: { type: String, default: null },
-            price: { type: Number, default: null }
-          }
-        ]
-      }
+            price: { type: Number, default: null },
+          },
+        ],
+      },
     ],
     status: { type: String, default: 'Active' },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin' }, 
- },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin' },
+  },
   {
     timestamp: true,
   }
 );
 
-const Service = mongoose.model("service", schema);
+const Service = mongoose.model('service', schema);
 
 export default Service;

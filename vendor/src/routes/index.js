@@ -1,10 +1,10 @@
 import { sendResponse } from "../../../shared/utils/helper.js";
-import userRouter from "./user.js";
+import vendorRouter from "./vendor.js";
 import Router from "express";
 
 const router = Router();
 
-router.use("/", userRouter);
+router.use("/", vendorRouter);
 
 
 router.use((req, res) => {

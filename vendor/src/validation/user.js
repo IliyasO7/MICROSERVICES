@@ -99,8 +99,12 @@ const updateVendor = Joi.object({
   fname: Joi.string().required(),
   lname: Joi.string().required(),
   phone: Joi.string().required(),
-  password: Joi.string().required(),
   additionalMobileNumber: Joi.string().required(),
+});
+
+const updatePassword = Joi.object({
+  newpassword: Joi.string().required(),
+  oldpassword: Joi.string().required(),
 });
 
 
@@ -109,7 +113,6 @@ export default {
   sendOtp,
   verifYOtp,
   updateProfile,
-  updateVendor,
   address,
   setDefault,
   userRoles,
@@ -120,5 +123,6 @@ export default {
   saveTenant,
   verifyKyc,
   vendorlogin,
-  updateVendor
+  updateVendor,
+  updatePassword
 };

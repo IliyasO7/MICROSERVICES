@@ -118,11 +118,25 @@ export const profile = async (req, res) => {
 
  export const updateProfile = async (req, res) => {
   try{
-    let profile = await Vendor.findById(req.user._id).populate().lean()
-    if (!profile) {
-      return sendResponse(res, 400, "Profile Not Found");
+
+    let vendor = await Vendor.findById({ _id: req.user })
+    // Check if any existing profile exists with given phone 
+    if (vendor.phone != req.body.phone) {
+      let exist = await Vendor.findOne({ phone: req.body.phone })
+      if (exist) {
+        return sendResponse(res, 409, "phone already in use",);
+      }
     }
-   return sendResponse(res, 200, "success", { profile: _.omit(profile, ['password', 'aadharCardNumber', 'aadhar', 'bankDocument', 'gstDocumentUpload', 'agreementUpload', 'paymentReceiptNumber', 'paymentReceipt', 'payment']) });
+    // Update vendor profile
+    await Vendor.updateOne({ _id: req.params.vendorId }, {
+      $set: {
+        'fName': req.body.fName,
+        'lName': req.body.lName,
+        'phone': req.body.phone,
+        'additionalMobileNumber': req.body.additionalMobileNumber,
+      }
+    })
+    return sendResponse(res, 200, "vendor Updated Successfully");
   }
   catch(err){
     next(err)
@@ -130,11 +144,30 @@ export const profile = async (req, res) => {
 };
 
 
-export const getAssets = async (req, res) => {
+export const updatePassword = async (req, res) => {
+  let vendor = await Vendor.find({ _id: req.user })
 
+  let passwordCheck = await bcrypt.compare(vendor.password, req.body.oldpassword)
+  if(passwordCheck){
+      // Hash password
+    let encryptedPassword = await bcrypt.hash(req.body.newpassword,10)
+      // Update
+      await Vendor.updateOne({ _id: vendor._id }, {
+        $set: {
+          password: encryptedPassword
+        }
+      })
+      return sendResponse(res, 200, "password updated success");
+
+  }else{
+    return sendResponse(res, 409, "old passwords do not match",);
+  }
+};
+
+
+export const getAssets = async (req, res) => {
     const services  = await Service.find({})
     let assets= [];
-
     for(var i=0;i<services.length;i++){
       let service = {}
       service.icon = services[i].icon
@@ -142,7 +175,6 @@ export const getAssets = async (req, res) => {
       service.slug = services[i].slug
       assets.push(service)
     }
-
    // for(let eachService in services){
     //  console.log("EACH SERVICE",eachService);
    //   service.icon = eachService.icon
@@ -151,7 +183,5 @@ export const getAssets = async (req, res) => {
    //   
     //}
     return sendResponse(res, 200, "Assets fetcehd Succesfully", {assets});
-
      //   if(services) sendResponse(res, 200, "Services Fetched SucccessFully", {services});
-
 };

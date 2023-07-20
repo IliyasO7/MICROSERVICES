@@ -13,6 +13,7 @@ import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
 import redis from "../../../shared/utils/redis.js";
 import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
+//import Order from "../../../old/src/models/order.js";
 import rentalTenant from "../../../shared/models/rentalTental.js";
 import fs from 'fs';
 import axios from "axios";
@@ -193,4 +194,204 @@ export const getAssets = async (req, res) => {
     //}
     return sendResponse(res, 200, "Assets fetcehd Succesfully", {assets});
      //   if(services) sendResponse(res, 200, "Services Fetched SucccessFully", {services});
+};
+
+
+export const testExample = async (req, res,next) => {
+  try{
+
+  }catch(err){
+    next(err)
+  }
+
+};
+
+export const updateOrderStatus = async (req, res,next) => {
+  try{
+       // Get order
+       let order = await Order.findOne({ _id: req.params.orderId, vendor: req.user }).populate('customer', 'fname lname email phone').populate('vendor', 'vendorId ownerName businessName phone').populate('service', 'name').lean()
+       if(!order){
+        return sendResponse(res, 400, "Order Not Found");
+       }
+   
+       switch (req.body.status) {
+   
+           case 'accept':
+               await Order.updateOne({ _id: req.params.orderId }, {
+                   $set: {
+                       status: 'Assigned'
+                   }
+               })
+   
+               // Send SMS
+               await smsService.send({
+                 type: 'TXN',
+                 senderId: 'HSEJOY',
+                 templateId: '1107167903398363444',
+                 phone: order.customer.phone,
+                 message: `HouseJoy: We have assigned ${order.vendor.ownerName} for your ${order.service.name} with booking ID:${order.orderId}.
+                 Contact No: ${order.vendor.phone}. Scheduled service: ${order.serviceDate} The price will be quoted upon inspection by our professional partner. Kindly pay the Inspection Charge if you choose not to avail of the service after the visit. Book again at ${process.env.HOUSEJOY_URL}.`
+               })
+               break
+   
+           case 'reject':
+               await Order.updateOne({ _id: req.params.orderId }, {
+                   $set: {
+                       vendor: null,
+                       status: 'Pending',
+                       rejectionReason: req.body.rejectionReason
+                   }
+               })
+   
+  
+               break
+   
+           case 'start':
+               await Order.updateOne({ _id: req.params.orderId }, {
+                   $set: {
+                       status: 'Started'
+                   }
+               })
+   
+               // Send SMS
+               await smsService.send({
+                 type: 'TXN',
+                 senderId: 'HSEJOY',
+                 templateId: '1107167903334830945',
+                 phone: order.customer.phone,
+                 message: `Housejoy: ${order.vendor.ownerName} Phone no ${order.vendor.phone} has started the ${order.service.name} with booking ID: ${order.orderId}. You can pay online on the app or website under My Orders.${process.env.HOUSEJOY_URL} -Sarvaloka Services On Call Pvt Ltd`
+               })
+               break
+   
+           case 'cancel':
+               await Order.updateOne({ _id: req.params.orderId }, {
+                   $set: {
+                       status: 'Cancelled',
+                       cancellationReason: req.body.cancellationReason
+                   }
+               })
+   
+               // Send SMS
+               await smsService.send({
+                 type: 'TXN',
+                 senderId: 'HSEJOY',
+                 templateId: '1107167223463634714',
+                 phone: order.customer.phone,
+                 message: `Hi${order.customer.fname}, the service requested by ${order.vendor.ownerName} got cancelled due to a change of plans. -Sarvaloka Services On Call Pvt Ltd`
+               })
+               break
+   
+           default:
+               break
+   
+       }
+       return sendResponse(res, 200, "Order Updated Success");
+  }catch(err){
+    next(err)
+  }
+
+};
+
+export const list = async (req, res,next) => {
+  try{
+    let filters = {
+      vendor: req.user.vendorId,
+      status: req.query.status || undefined
+    }
+    let orders = await Order.find(_.omitBy(filters, _.isNil), 'orderId customer service payment createdAt status serviceDate serviceTime assignedAt').populate('customer', '_id fname lname email phone').populate('service', 'name category').lean()
+
+    return sendResponse(res, 200, "success", {count:orders.length,orders:orders});
+
+  }catch(err){
+    next(err)
+  }
+
+};
+
+
+export const orderDetails = async (req, res,next) => {
+  try{
+    let order = await Order.findOne({ _id: req.params.orderId, vendor: req.user.vendorId }).populate('customer', 'fname lname phone email').populate('service', 'name slug category').lean()
+    if (!order) {        
+       return sendResponse(res, 404, "order not found")
+    }
+    return sendResponse(res, 200, "success",{order:order} )
+  }catch(err){
+    next(err)
+  }
+};
+
+
+export const updatePrice = async (req, res,next) => {
+  try{      
+        let order = await Order.findOne({ _id: req.params.orderId, vendor: req.user.vendorId }).lean()
+        if (!order) {
+            return sendResponse(res, 400, "order Not found")
+        }
+        // Update price
+        await Order.updateOne({ _id: req.params.orderId}, {
+          $set: {
+            payment: req.body.payment
+          }
+        })
+         return sendResponse(res, 200, "price updated successfully" )
+  }catch(err){
+    next(err)
+  }
+
+};
+
+
+export const sendJobCompletionOtp = async (req, res,next) => {
+  try{
+    let order = await Order.findOne({ _id: req.params.orderId, vendor: req.user }).populate('customer', 'fname lname phone email').lean()
+    if(!order){
+      throw new Error(`Order not found`)
+    }
+    const otp = "0000" || generateOtp();
+    await redis.setEx(
+      `mobile:${order.customer.phone}`,
+      60 * 3,
+      await bcrypt.hash(otp, 12)
+    );
+    // Send OTP
+    await smsService.send({
+      type: 'TXN',
+      senderId: 'HSEJOY',
+      templateId: '1107167674560761949',
+      phone: order.customer.phone,
+      message: `Dear ${order.customer.fname},
+      Our expert has attempted to complete the job. Please share OTP ${otp} if the job is completed. Reach out to ${process.env.HELPLINE_NUMBER} if the attempt is wrong. Happy Service -Sarvaloka Services On Call Pvt Ltd`
+    })
+    
+  }catch(err){
+    next(err)
+  }
+};
+
+
+export const verifyJobCompletionOtp = async (req, res,next) => {
+  try{
+    
+        const mobile = req.body.mobile;
+        const key = `mobile:${mobile}`;
+        const otp = await redis.get(key);
+
+        const isValid = await bcrypt.compare(req.body.otp, otp || "");
+        if (!isValid){
+           return sendResponse(res, 400, "Invalid OTP");
+        }else{
+            // Update Order status
+            let order = await Order.findOne({ orderId: req.params.orderId })
+            await Order.updateOne({ _id: order._id }, {
+              $set: {
+                status: 'Completed'
+              }
+            })
+          await redis.del(key);
+          sendResponse(res, 200, "Order Updated as Comlpeted");
+        }
+  }catch(err){
+    next(err)
+  }
 };

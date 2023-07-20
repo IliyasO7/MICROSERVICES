@@ -7,8 +7,10 @@ const upload = multer({dest: 'uplaod/'})
 
 const router = Router();
 
+//Send OTP
 router.post("/send-otp", validate(validation.sendOtp), controller.sendOtp);
 
+//Verify OTP
 router.post(
   "/verify-otp",
   validate(validation.verifYOtp),
@@ -22,12 +24,14 @@ router.get(
   controller.getAssets
 );
 
+//login
 router.post(
   "/login",
   validate(validation.vendorlogin),
   controller.login
 );
 
+//logout
 router.post(
   "/logout",
   controller.logOut
@@ -55,5 +59,79 @@ router.post(
   validate(validation.updatePassword),
   controller.updatePassword
 )
+
+// Update order status
+router.post(
+  '/:orderId/status',
+  checkVendorAuth(),
+  validate(validation.orderStatus),
+  controller.updateOrderStatus
+)
+
+
+//Get List
+router.get(
+  '/',
+  checkVendorAuth(),
+  controller.list
+)
+// Get order details
+router.get(
+  '/:orderId',
+  checkVendorAuth(),
+  controller.orderDetails
+)
+
+//Update Order Price
+router.post(
+  '/:orderId/updateprice',
+  checkVendorAuth(),
+  controller.updatePrice
+)
+
+// Send Completion OTP
+router.post(
+  '/:orderId/sendCompletionOtp',
+  checkVendorAuth(),
+  controller.sendJobCompletionOtp
+)
+
+
+// Verify Job Completion OTP
+router.post(
+  '/:orderId/verifyCompletionOtp',
+  checkVendorAuth(),
+  controller.verifyJobCompletionOtp
+)
+
+
+/*
+// Update Before Image media
+router.post(
+  '/:orderId/beforeJobImage',
+  auth.isVendor,
+  upload.fields([
+    {
+      name: 'beforeJobImage',
+      maxCount: 1
+    }
+  ]),
+  vendorOrderController.beforeJobImage
+)
+
+// Update After Image media
+router.post(
+  '/:orderId/afterJobImage',
+  auth.isVendor,
+  upload.fields([
+    {
+      name: 'afterJobImage',
+      maxCount: 1
+    }
+  ]),
+  vendorOrderController.afterJobImage
+)
+*/
+
 
 export default router;

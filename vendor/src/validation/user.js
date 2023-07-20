@@ -107,6 +107,10 @@ const updatePassword = Joi.object({
   oldpassword: Joi.string().required(),
 });
 
+const orderStatus =  Joi.object({
+  status: Joi.string().required(),
+});
+
 
 
 export default {
@@ -124,5 +128,6 @@ export default {
   verifyKyc,
   vendorlogin,
   updateVendor,
-  updatePassword
+  updatePassword,
+  orderStatus
 };

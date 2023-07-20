@@ -17,7 +17,7 @@ const adminCreate = Joi.object({
     inventoryId :  Joi.string().required(),
     isTenant: Joi.boolean().required(),
     tokenAdvance:Joi.number().required(),
-    //moveIdDate:Joi.date().required(),
+    moveInDate:Joi.date().required(),
   });
 
   const adminlogin = Joi.object({

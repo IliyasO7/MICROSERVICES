@@ -183,9 +183,12 @@ export const createTenant = async (req, res) => {
     const inventoryId = req.body.inventoryId;
     const tenantStatus= req.body.isTenant;
     const tokenAdvance = req.body.tokenAdvance;
-    const moveInDate = new Date() || req.body.moveInDate;
-    console.log('move in',moveInDate);
-    console.log(' req body move in',req.body.moveInDate);
+    const moveInDate =  req.body.moveInDate;
+    console.log('Move In Date',req.body.moveInDate);
+
+    const moveIn = new Date(moveInDate);
+    console.log('Move In',moveIn);
+ 
   
     const admin = req.user;
     const to = req.body.ownerId;
@@ -215,7 +218,7 @@ export const createTenant = async (req, res) => {
         const updatedInventoryData = await Inventory.updateOne(
           { _id: inventoryId },
           { 
-            moveInDate : moveInDate,
+            moveInDate : moveIn,
             tokenAdvance:tokenAdvance
           })
 
@@ -245,16 +248,11 @@ export const createTenant = async (req, res) => {
                 })
 
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
-              //  console.log('month',paidFromStartMonth);
                 const paidFromStartDate =  1 ;
                 const paidYear =  moveInDate.getFullYear();
-               // console.log(paidYear)
-                //console.log(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`)
                 const paidFrom = new Date(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`);
                 const nextMonth = moveInDate.getMonth() + 2
-               // console.log('next month',nextMonth)
                 const paidUntil = new Date(`${paidYear}-${nextMonth}-${paidFromStartDate}`)
-               // console.log(paidUntil)
   
                 const rentTransaction = await  RentalTransactions.create({
                       from: saveUser._id,     
@@ -315,10 +313,8 @@ export const updateTenant = async (req, res) => {
                     "tokenAmount.amount": tokenAdvance,
                 })
     
-                //  const moveInDate = new Date("2023-07-11T05:55:04.603+00:00")
+
                 console.log('move In date',moveInDate)
-            //   const d = moveInDate.getMonth() +1 ;
-            //   console.log(d)
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
                 console.log('month',paidFromStartMonth);
                 const paidFromStartDate =  1 ;

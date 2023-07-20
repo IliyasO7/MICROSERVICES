@@ -1,5 +1,7 @@
 admin/uplaod
 auth/uplaod
+vendor/uplaod
+customer/uplaod
 .
 # Logs
 logs

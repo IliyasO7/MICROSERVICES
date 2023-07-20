@@ -89,11 +89,27 @@ const saveTenant = Joi.object({
 });
 
 
+const vendorlogin = Joi.object({
+  phone: Joi.boolean().required(),
+  password: joi.string().required(),
+  fcmToken: joi.string().required(),
+});
+
+const updateVendor = Joi.object({
+  fname: Joi.string().required(),
+  lname: Joi.string().required(),
+  phone: Joi.string().required(),
+  password: Joi.string().required(),
+  additionalMobileNumber: Joi.string().required(),
+});
+
+
 
 export default {
   sendOtp,
   verifYOtp,
   updateProfile,
+  updateVendor,
   address,
   setDefault,
   userRoles,
@@ -102,6 +118,7 @@ export default {
   saveOwner,
   saveInventory,
   saveTenant,
-  verifyKyc
-
+  verifyKyc,
+  vendorlogin,
+  updateVendor
 };

@@ -1,4 +1,5 @@
 import User from "../../../shared/models/user.js";
+import Vendor from "../../../shared/models/vendor.js";
 import Address from "../../../shared/models/address.js";
 import Bank from "../../../shared/models/bank.js";
 import Uid from "../../../shared/models/uid.js";
@@ -59,6 +60,74 @@ export const verifyOtp = async (req, res) => {
   sendResponse(res, 200, "Otp Verified", { user, ...tokens });
 };
 
+
+export const login = async (req, res) => {
+try{
+    // Check login
+   let vendor = await Vendor.findOne({ phone: phone }).lean()
+
+   if (!vendor) {
+     return sendResponse(res, 400, "Invalid OTP");
+   }
+   // Verify password
+   let verifyPassword = await bcrypt.compare(password, vendor.password)
+
+   if (verifyPassword) {
+        // Save FCM token
+        let fcm =  await Vendor.updateOne({ _id: vendor._id }, {
+          $set: {
+            "fcmToken": req.body.fcmToken || null
+          }
+        })
+      const tokens = generateTokens({ userId : vendor._id }); 
+      sendResponse(res, 200, "success", { vendor, ...tokens });
+      
+   } else {
+      return sendResponse(res, 400, "Invalid Credentials");
+    }
+}
+catch(err){
+  next(err)
+  }
+};
+
+
+
+export const logOut = async (req, res) => {
+  try{
+    sendResponse(res, 200, "success");
+  }
+  catch(err){
+    next(err)
+    }
+  };
+
+export const profile = async (req, res) => {
+    try{
+      let profile = await Vendor.findById(req.user._id).populate().lean()
+      if (!profile) {
+        return sendResponse(res, 400, "Profile Not Found");
+      }
+     return sendResponse(res, 200, "success", { profile: _.omit(profile, ['password', 'aadharCardNumber', 'aadhar', 'bankDocument', 'gstDocumentUpload', 'agreementUpload', 'paymentReceiptNumber', 'paymentReceipt', 'payment']) });
+    }
+    catch(err){
+      next(err)
+      }
+ };
+  
+
+ export const updateProfile = async (req, res) => {
+  try{
+    let profile = await Vendor.findById(req.user._id).populate().lean()
+    if (!profile) {
+      return sendResponse(res, 400, "Profile Not Found");
+    }
+   return sendResponse(res, 200, "success", { profile: _.omit(profile, ['password', 'aadharCardNumber', 'aadhar', 'bankDocument', 'gstDocumentUpload', 'agreementUpload', 'paymentReceiptNumber', 'paymentReceipt', 'payment']) });
+  }
+  catch(err){
+    next(err)
+    }
+};
 
 
 export const getAssets = async (req, res) => {

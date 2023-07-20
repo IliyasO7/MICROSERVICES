@@ -90,9 +90,9 @@ const saveTenant = Joi.object({
 
 
 const vendorlogin = Joi.object({
-  phone: Joi.boolean().required(),
-  password: joi.string().required(),
-  fcmToken: joi.string().required(),
+  phone: Joi.string().required(),
+  password: Joi.string().required(),
+  fcmToken: Joi.string().required(),
 });
 
 const updateVendor = Joi.object({

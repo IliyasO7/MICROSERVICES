@@ -18,7 +18,7 @@ import fs from 'fs';
 import axios from "axios";
 //import { uploadToBunnyCdn } from "../../../shared/utils/bunnycdn.js";
 import Service from "../../../shared/models/service.js";
-
+import _ from "lodash"
 //import mongoose  from "mongoose";
 export const sendOtp = async (req, res) => {
  
@@ -61,16 +61,18 @@ export const verifyOtp = async (req, res) => {
 };
 
 
-export const login = async (req, res) => {
+export const login = async (req, res,next) => {
 try{
+  console.log('here');
     // Check login
-   let vendor = await Vendor.findOne({ phone: phone }).lean()
+   let vendor = await Vendor.findOne({ phone: req.body.phone }).lean()
 
    if (!vendor) {
-     return sendResponse(res, 400, "Invalid OTP");
+     return sendResponse(res, 400, "Vendor Not Found");
    }
    // Verify password
-   let verifyPassword = await bcrypt.compare(password, vendor.password)
+   console.log('password',vendor.password);
+   let verifyPassword = await bcrypt.compare(req.body.password, vendor.password)
 
    if (verifyPassword) {
         // Save FCM token
@@ -88,7 +90,7 @@ try{
 }
 catch(err){
   next(err)
-  }
+}
 };
 
 
@@ -102,7 +104,7 @@ export const logOut = async (req, res) => {
     }
   };
 
-export const profile = async (req, res) => {
+export const profile = async (req, res,next) => {
     try{
       let profile = await Vendor.findById(req.user._id).populate().lean()
       if (!profile) {
@@ -144,23 +146,30 @@ export const profile = async (req, res) => {
 };
 
 
-export const updatePassword = async (req, res) => {
-  let vendor = await Vendor.find({ _id: req.user })
+export const updatePassword = async (req, res,next) => {
+  try{
+    console.log('inside udpate password');
+    let vendor = await Vendor.findOne({ _id: req.user })
+    console.log('vendor password',vendor.password);
 
-  let passwordCheck = await bcrypt.compare(vendor.password, req.body.oldpassword)
-  if(passwordCheck){
+    let passwordCheck = await bcrypt.compare(vendor.password, req.body.oldpassword)
+  
+    if(passwordCheck){
+      console.log('compare success');
       // Hash password
-    let encryptedPassword = await bcrypt.hash(req.body.newpassword,10)
-      // Update
-      await Vendor.updateOne({ _id: vendor._id }, {
-        $set: {
-          password: encryptedPassword
-        }
-      })
-      return sendResponse(res, 200, "password updated success");
-
-  }else{
-    return sendResponse(res, 409, "old passwords do not match",);
+      let encryptedPassword = await bcrypt.hash(req.body.newpassword,10)
+        // Update
+        await Vendor.updateOne({ _id: vendor._id }, {
+          $set: {
+            password: encryptedPassword
+          }
+        })
+        return sendResponse(res, 200, "password updated success");
+    }else{
+      return sendResponse(res, 409, "old passwords do not match",);
+    }
+  }catch(err){
+    next(err)
   }
 };
 

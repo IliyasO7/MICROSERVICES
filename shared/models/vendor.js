@@ -41,7 +41,7 @@ const schema = mongoose.Schema(
     status: { type: String, default: 'Active'},
     fullfillment_ratio: { type: Number,default: 1,required:true },
     acceptance_ratio: { type: Number,default: 1,required:true },
-    all_Ratings:[{ type:Number }],
+    //all_Ratings:[{ type:Number }],
     rating:{ type: Number,default: 1,required:true },
     availability:{ type: Boolean,default: 'true' },
     nonAvailability:[ 

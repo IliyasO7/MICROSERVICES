@@ -8,10 +8,9 @@ const schema = mongoose.Schema(
     mobile: { type: String, default: null, required: true },
     country: { type: String, default: "in" },
     status: { type: String, default: "Active" },
-    rating: { type: Number, default: 0, required: true },
+    rating: { type: Number, default: 1, required: true },
     isProfileCompleted: { type: Boolean, default: false },
-   // isTenant: { type: Boolean, default: false },
-   // isOwner: { type: Boolean, default: false }, 
+  
   },
   {
     timestamp: true,

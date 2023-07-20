@@ -110,7 +110,7 @@ exports.updatePause = async (req, res, next) => {
 exports.createNote = async (req, res, next) => {
   try {
     console.log('Create A Note');
-    let admin = await Admin.findOne({ _id: req.userData.adminId }).lean()
+    let admin = await Admin.findOne({ _id:req.userData }).lean()
     console.log('Admin Data :',admin);
 
    let orderDetails = await Order.findOne({orderId:req.params.orderId})

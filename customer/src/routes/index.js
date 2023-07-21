@@ -4,7 +4,7 @@ import authRoutes from './auth.js';
 import profileRoutes from './profile.js';
 
 import Router from 'express';
-import checkAuth from '../middleware/checkAuth.js';
+import  checkAuth  from '../middleware/checkAuth.js';
 
 const router = Router();
 

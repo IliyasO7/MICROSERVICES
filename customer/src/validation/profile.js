@@ -30,12 +30,12 @@ export const updateAddress = joi.object({
 
 export const createBankAccount = joi.object({
   name: joi.string().required(),
-  accountNumber: joi.string().required(),
+  accountNumber: joi.number().min(10).required(),
   ifscCode: joi.string().required(),
 });
 
 export const updateBankAccount = joi.object({
   name: joi.string(),
-  accountNumber: joi.string(),
+  accountNumber: joi.number().min(10),
   ifscCode: joi.string(),
 });

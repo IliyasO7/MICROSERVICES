@@ -16,6 +16,11 @@ router
   .get(controller.getAddresses)
   .post(validate(validation.createAddress), controller.createAddress);
 
+  router
+  .route('/new-address')
+  .post(validate(validation.createAddress), controller.addAddress);
+
+
 router
   .route('/addresses/:id')
   .get(controller.getAddressById)

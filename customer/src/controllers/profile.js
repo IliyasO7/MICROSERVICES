@@ -43,6 +43,16 @@ export const getAddresses = async (req, res) => {
 export const createAddress = async (req, res) => {
   const address = await Address.create({
     user: req.userId,
+    isDefault:true,
+    ...req.body,
+  });
+  sendResponse(res, 201, 'success', address);
+};
+
+export const addAddress = async (req, res) => {
+  const address = await Address.create({
+    user: req.userId,
+    isDefault:false,
     ...req.body,
   });
   sendResponse(res, 201, 'success', address);
@@ -86,7 +96,7 @@ export const setDefaultAddress = async (req, res) => {
 
   await Address.updateMany(
     { _id: { $ne: address._id }, user: req.userId },
-    { isDefault: false }
+    { isDefault: req.body.default }
   );
 
   sendResponse(res, 200, 'success');
@@ -102,6 +112,7 @@ export const createBankAccount = async (req, res) => {
   const bankAccount = await Bank.create({
     user: req.userId,
     ...req.body,
+    isDefault:true
   });
   sendResponse(res, 201, 'success', bankAccount);
 };
@@ -111,7 +122,7 @@ export const getBankAccountById = async (req, res) => {
     _id: req.params.id,
     user: req.userId,
   }).lean();
-  if (!bank) return sendResponse(res, 404, 'bank account not found');
+  if (!bankAccount) return sendResponse(res, 404, 'bank account not found');
 
   sendResponse(res, 200, 'success', bankAccount);
 };

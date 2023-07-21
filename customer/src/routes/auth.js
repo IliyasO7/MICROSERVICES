@@ -9,7 +9,7 @@ router.post('/send-otp', validate(validation.sendOtp), controller.sendOtp);
 
 router.post(
   '/verify-otp',
-  validate(validation.verifyOtp),
+  validate(validation.verifYOtp),
   controller.verifyOtp
 );
 

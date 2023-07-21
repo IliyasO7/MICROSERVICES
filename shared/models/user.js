@@ -4,7 +4,7 @@ const schema = new mongoose.Schema(
   {
     fname: { type: String, default: null },
     lname: { type: String, default: null },
-    email: { type: String, unique: true, lowercase: true },
+    email: { type: String, lowercase: true },
     mobile: { type: String, default: null, required: true },
     country: { type: String, default: 'in' },
     status: { type: String, default: 'Active' },

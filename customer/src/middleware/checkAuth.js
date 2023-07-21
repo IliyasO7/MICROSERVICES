@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../../../shared/models/user.js';
-
+import { sendResponse } from '../../../shared/utils/helper.js';
 export default function checkAuth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
   const secret = process.env.JWT_ACCESS_TOKEN_SECRET ?? '';

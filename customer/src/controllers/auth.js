@@ -1,10 +1,11 @@
 import bcrypt from 'bcrypt';
-import { generateOtp } from '../../../shared/utils/helper.js';
+import { generateOtp,sendResponse } from '../../../shared/utils/helper.js';
 import redis from '../../../shared/utils/redis.js';
 import User from '../../../shared/models/user.js';
 import { generateTokens } from '../../../shared/utils/token.js';
 
 export const sendOtp = async (req, res) => {
+  console.log('hello');
   const otp = '0000' || generateOtp();
 
   await redis.setEx(
@@ -38,6 +39,7 @@ export const verifyOtp = async (req, res) => {
   let user = await User.findOne({ mobile: req.body.mobile });
 
   if (!user) {
+    console.log('creating user...');
     user = await User.create({ mobile: req.body.mobile });
   }
 

@@ -24,7 +24,6 @@ const schema = mongoose.Schema(
         paymentDay: { type: Number, default: 5 },
         contractStatus:{type:String,default:"INACTIVE" , enum : ['ACTIVE','INACTIVE'],required:true }, //enums to be added
         createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'admin', required: true },   
-        isOverDue: { type:Boolean,default:false},
         createdAt: { type:Date, default:null}  
     },
     {

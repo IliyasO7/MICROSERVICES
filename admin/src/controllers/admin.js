@@ -195,7 +195,7 @@ export const createTenant = async (req, res) => {
     if(userCheck){
       const tenantCheck = await RentalOwner.find({user:userCheck._id})
       if(tenantCheck){
-        sendResponse(res, 400, "Tenant Already Exists", );
+        return  sendResponse(res, 400, "Tenant Already Exists", );
       }
     }
 
@@ -612,7 +612,7 @@ export const getAllOwners = async (req, res) => {
     if(userCheck){
       const ownerCheck = await RentalOwner.find({user:userCheck._id})
       if(ownerCheck){
-        sendResponse(res, 400, "Owner Already Exists", );
+        return sendResponse(res, 400, "Owner Already Exists", );
       }
     }
 

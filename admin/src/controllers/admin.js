@@ -160,8 +160,8 @@ export const getTenant = async (req, res) => {
     let user = await User.findOne({mobile:mobile})
     if(user){
         let tenant = await RentalTenant.findOne({user: user}).populate('user')
-        let booking = await Booking.find({tenant: tenant}) .populate('inventory')
-        let transactions = await RentalTransactions.find({from:tenant}).populate('to')
+        let booking = await Booking.find({tenant: user}) .populate('inventory')
+        let transactions = await RentalTransactions.find({from:user}).populate('to')
         if(tenant){
             return sendResponse(res, 200, "Tenant Record Found Pls Udpate", {tenant,booking,transactions});
         }else{
@@ -545,11 +545,11 @@ export const createAUpdateTenant = async (req, res) => {
     const mobile = req.params.mobile;
     let user = await User.findOne({mobile:mobile})
     if(user){
-        let owner = await RentalOwner.findOne({user: user}).populate('user')
-        let inventory = await Inventory.find({user:owner})
-        let booking = await Booking.find({owner: owner}) 
-        let transactions = await RentalTransactions.find({to:owner}).populate('from')
-        console.log('Owner',owner);
+        let owner = await RentalOwner.findOne({ user: user}).populate('user')
+        let inventory = await Inventory.find({user:user})
+        let booking = await Booking.find({owner: user}) 
+        let transactions = await RentalTransactions.find({to:user}).populate('from')
+      
         if(owner){
             return sendResponse(res, 200, "Owner Record Found Pls Udpate", {owner,inventory,booking,transactions});
         }else{

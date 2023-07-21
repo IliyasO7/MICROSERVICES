@@ -612,7 +612,7 @@ export const getAllOwners = async (req, res) => {
     if(userCheck){
       const ownerCheck = await RentalOwner.find({user:userCheck._id})
       if(ownerCheck){
-        return sendResponse(res, 400, "Owner Already Exists", );
+        return sendResponse(res, 400, "Owner Already Exists",null,true );
       }
     }
 

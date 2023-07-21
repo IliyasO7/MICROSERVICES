@@ -19,6 +19,7 @@ const schema = new mongoose.Schema(
   }
 );
 
+
 const rentalTenant = mongoose.model('rentalTenant', schema);
 
 export default rentalTenant;

@@ -9,4 +9,9 @@ router.post('/login',
 validate(validation.adminlogin),
 controller.loginAdmin);
 
+//create Super admin
+router
+  .route('/create-super-admin') 
+  .post(validate(validation.adminCreate), controller.createSuperAdmin)
+
 export default router;

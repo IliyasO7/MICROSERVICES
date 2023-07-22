@@ -1,20 +1,11 @@
-import Admin from "../../../shared/models/admin.js";
 import User from "../../../shared/models/user.js";
-import RentalTenant from "../../../shared/models/rentalTental.js";
 import Inventory from "../../../shared/models/inventory.js";
 import Booking from "../../../shared/models/Booking.js";
 import Bank from "../../../shared/models/bank.js";
 import RentalTransactions from "../../../shared/models/rentalTransactions.js";
-import bcrypt from "bcrypt";
-import { generateTokens } from "../../../shared/utils/token.js";
-import { generateOtp, sendResponse } from "../../../shared/utils/helper.js";
+import {sendResponse } from "../../../shared/utils/helper.js";
 import RentalOwner from "../../../shared/models/rentalOwner.js";
-import newCategory from "../../../shared/models/category.js";
-import dayjs from 'dayjs';
-
-
-
-
+import axios from "axios";
 
 export const getOwner = async (req, res) => {
     const mobile = req.params.mobile;

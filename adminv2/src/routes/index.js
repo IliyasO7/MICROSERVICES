@@ -1,4 +1,5 @@
 import { sendResponse } from "../../../shared/utils/helper.js";
+import superadminRouter from "./superadmin.js";
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
 import inventoryRouter from "./inventory.js";
@@ -14,6 +15,7 @@ const router = Router();
 
 
 router.use("/auth", authRouter);
+router.use("/super-admin", checkAuth, superadminRouter);
 router.use("/tenant", checkAuth, tenantRouter);
 router.use("/owner", checkAuth, ownerRouter);
 router.use("/inventory",checkAuth, inventoryRouter);

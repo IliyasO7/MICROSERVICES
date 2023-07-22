@@ -7,6 +7,10 @@ echo "Executing npm in admin"
 cd admin
 npm i
 
+echo "Executing npm in adminv2"
+cd adminv2
+npm i
+
 echo "Executing npm in old"
 cd ../old
 npm i

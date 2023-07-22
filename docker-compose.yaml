@@ -19,6 +19,15 @@ services:
       - ./shared:/app/shared  
     env_file:
       - .env
+
+  adminv2:
+    container_name: adminv2
+    build: ./adminv2
+    volumes:
+      - ./adminv2:/app/src
+      - ./shared:/app/shared  
+    env_file:
+      - .env
  
   auth:
     container_name: auth

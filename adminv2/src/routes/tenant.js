@@ -1,7 +1,7 @@
 import * as controller from "../controllers/tenant.js";
 import Router from "express";
 import validation from "../validation/admin.js";
-import { validate,checkAuthAdmin } from "../../../shared/utils/helper.js";
+import { validate } from "../../../shared/utils/helper.js";
 
 const router = Router();
 

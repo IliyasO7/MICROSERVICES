@@ -143,7 +143,7 @@ exports.createNote = async (req, res, next) => {
 exports.getNotes = async (req, res, next) => {
   try {
     console.log('Get Notes');
-    let admin = await Admin.findOne({ _id: req.userData.adminId }).lean()
+    let admin = await Admin.findOne({ _id: req.userData }).lean()
    
    let orderDetails = await Order.findOne({orderId:req.params.orderId})
    console.log('Order Details', orderDetails);
@@ -167,7 +167,7 @@ exports.getNotes = async (req, res, next) => {
 exports.rescheduleJob = async (req, res, next) => {
   try {
 
-    let admin = await Admin.findOne({ _id: req.userData.adminId }).lean()
+    let admin = await Admin.findOne({ _id: req.userData }).lean()
     console.log('Admin Data',admin);
 
     let OldOrder = await Order.findOne({orderId: req.params.orderId})
@@ -207,7 +207,7 @@ exports.rescheduleJob = async (req, res, next) => {
 exports.getRescheduleJob = async (req, res, next) => {
   try {
 
-    let admin = await Admin.findOne({ _id: req.userData.adminId }).lean();
+    let admin = await Admin.findOne({ _id: req.userData }).lean();
     let orderDetails = await Order.find({orderId: req.params.orderId})
 
     let rescheduleJob =  await Rescheduled.find(

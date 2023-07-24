@@ -159,11 +159,9 @@ export const getTenant = async (req, res) => {
     const mobile = req.params.mobile;
     let user = await User.findOne({mobile:mobile})
     if(user){
-        let tenant = await RentalTenant.findOne({user: user})
-        let booking = await Booking.find({tenant: tenant}) 
-        let transactions = await RentalTransactions.find({from:tenant})
-
-        console.log('Tenant',tenant);
+        let tenant = await RentalTenant.findOne({user: user}).populate('user')
+        let booking = await Booking.find({tenant: user}).populate('inventory')
+        let transactions = await RentalTransactions.find({from:user}).populate('to')
         if(tenant){
             return sendResponse(res, 200, "Tenant Record Found Pls Udpate", {tenant,booking,transactions});
         }else{
@@ -176,15 +174,19 @@ export const getTenant = async (req, res) => {
 
 
 export const createTenant = async (req, res) => {
+    const createdDate = new Date();
     const fname = req.body.fname;
     const email = req.body.email;
     const mobile = req.body.mobile;
     const inventoryId = req.body.inventoryId;
     const tenantStatus= req.body.isTenant;
     const tokenAdvance = req.body.tokenAdvance;
-    const moveInDate = new Date() || req.body.moveInDate;
-    console.log('move in',moveInDate);
-    console.log(' req body move in',req.body.moveInDate);
+    const moveInDate =  req.body.moveInDate;
+    console.log('Move In Date',req.body.moveInDate);
+
+    const moveIn = new Date(moveInDate);
+    console.log('Move In',moveIn);
+ 
   
     const admin = req.user;
     const to = req.body.ownerId;
@@ -193,7 +195,7 @@ export const createTenant = async (req, res) => {
     if(userCheck){
       const tenantCheck = await RentalOwner.find({user:userCheck._id})
       if(tenantCheck){
-        sendResponse(res, 400, "Tenant Already Exists", );
+        return  sendResponse(res, 400, "Tenant Already Exists", );
       }
     }
 
@@ -214,7 +216,7 @@ export const createTenant = async (req, res) => {
         const updatedInventoryData = await Inventory.updateOne(
           { _id: inventoryId },
           { 
-            moveInDate : moveInDate,
+            moveInDate : moveIn,
             tokenAdvance:tokenAdvance
           })
 
@@ -239,20 +241,16 @@ export const createTenant = async (req, res) => {
                 //  'serviceCharge.percentage': req.body.serviceCharge,
                   'tokenAmount.amount':  tokenAdvance,
                   'securityDeposit.amount': inventoryDetails.securityDeposit,
-                  'securityDeposit.paymentDue': dueDate
+                  'securityDeposit.paymentDue': dueDate,
+                  createdAt: createdDate,
                 })
 
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
-              //  console.log('month',paidFromStartMonth);
                 const paidFromStartDate =  1 ;
                 const paidYear =  moveInDate.getFullYear();
-               // console.log(paidYear)
-                //console.log(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`)
                 const paidFrom = new Date(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`);
                 const nextMonth = moveInDate.getMonth() + 2
-               // console.log('next month',nextMonth)
                 const paidUntil = new Date(`${paidYear}-${nextMonth}-${paidFromStartDate}`)
-               // console.log(paidUntil)
   
                 const rentTransaction = await  RentalTransactions.create({
                       from: saveUser._id,     
@@ -313,10 +311,8 @@ export const updateTenant = async (req, res) => {
                     "tokenAmount.amount": tokenAdvance,
                 })
     
-                //  const moveInDate = new Date("2023-07-11T05:55:04.603+00:00")
+
                 console.log('move In date',moveInDate)
-            //   const d = moveInDate.getMonth() +1 ;
-            //   console.log(d)
                 const paidFromStartMonth =  moveInDate.getMonth() + 1;
                 console.log('month',paidFromStartMonth);
                 const paidFromStartDate =  1 ;
@@ -549,11 +545,11 @@ export const createAUpdateTenant = async (req, res) => {
     const mobile = req.params.mobile;
     let user = await User.findOne({mobile:mobile})
     if(user){
-        let owner = await RentalOwner.findOne({user: user}).populate('user')
-        let inventory = await Inventory.find({user:owner})
-        let booking = await Booking.find({owner: owner}) 
-        let transactions = await RentalTransactions.find({to:owner})
-        console.log('Owner',owner);
+        let owner = await RentalOwner.findOne({ user: user}).populate('user')
+        let inventory = await Inventory.find({user:user})
+        let booking = await Booking.find({owner: user})
+        let transactions = await RentalTransactions.find({to:user}).populate('from')
+      
         if(owner){
             return sendResponse(res, 200, "Owner Record Found Pls Udpate", {owner,inventory,booking,transactions});
         }else{
@@ -575,6 +571,17 @@ export const getAdminOwners = async (req, res) => {
       }
 };
 
+export const getAllCounts = async (req, res) => {
+  const admin =req.user;
+      let owner = await RentalOwner.find({ createdBy: admin })
+      let tenant =await RentalTenant.find({ createdBy: admin })
+      let inventory =  await Inventory.find({createdby: admin })
+      let booking = await Booking.find({createdBy:admin})
+      return sendResponse(res, 200, "All Counts Fetched Successfully",
+       {ownerCount: owner.length, tenantCount:tenant.length, inventoryCount: inventory.length, bookingCount: booking.length });
+      
+};
+
 export const getAllOwners = async (req, res) => {
   
       let owner = await RentalOwner.find({})
@@ -589,7 +596,6 @@ export const getAllOwners = async (req, res) => {
   
 
   export const createOwner = async (req, res) => {
-
     const fname = req.body.fname;
     const email = req.body.email;
     const phone = req.body.mobile;
@@ -606,7 +612,7 @@ export const getAllOwners = async (req, res) => {
     if(userCheck){
       const ownerCheck = await RentalOwner.find({user:userCheck._id})
       if(ownerCheck){
-        sendResponse(res, 400, "Owner Already Exists", );
+        return sendResponse(res, 400, "Owner Already Exists",null,true );
       }
     }
 
@@ -775,7 +781,7 @@ if(req.files.cancelledCheque){
 
 
   export const saveInventory = async (req, res) => {
-
+    const createdDate = new Date();
     const userId = req.params.ownerId;
     const propertyName = req.body.propertyName;
     const address= req.body.address;
@@ -809,7 +815,7 @@ if(req.files.cancelledCheque){
             rent:req.body.rent,
             securityDeposit: req.body.securityDeposit,
             createdBy:adminData._id,
-  
+            createdAt: createdDate,
         })
   
     sendResponse(res, 200, "Inventory Saved Successful", {createInventory});

@@ -38,6 +38,12 @@ router.get(
 checkAuthAdmin(),
 controller.getTenant);
 
+//Get Tenant with number
+router.get(
+  "/all-counts", 
+  checkAuthAdmin(),
+  controller.getAllCounts);
+
 
 //Add Tenant
 router.post(

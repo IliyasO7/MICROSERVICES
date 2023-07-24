@@ -1,8 +1,9 @@
 admin/uplaod
+adminv2/uplaod
 auth/uplaod
-customer/uplaod
 vendor/uplaod
-*/uplaod
+customer/uplaod
+.
 # Logs
 logs
 *.log

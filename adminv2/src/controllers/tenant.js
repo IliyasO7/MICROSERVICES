@@ -2,9 +2,12 @@ import User from "../../../shared/models/user.js";
 import RentalTenant from "../../../shared/models/rentalTental.js";
 import Inventory from "../../../shared/models/inventory.js";
 import Booking from "../../../shared/models/Booking.js";
+import Contract from "../../models/contract.js";
 import RentalTransactions from "../../../shared/models/rentalTransactions.js";
 import RentalOwner from "../../../shared/models/rentalOwner.js";
-
+import Property from "../../models/property.js";
+import dayjs from 'dayjs';
+import { sendResponse } from "../../../shared/utils/helper.js";
 
 
 export const getTenant = async (req, res) => {
@@ -27,7 +30,78 @@ export const getTenant = async (req, res) => {
 };
 
 
+export const createTenant = async (req, res) => {
+  const fname = req.body.fname;
+  const email = req.body.email;
+  const mobile = req.body.mobile;
+  const propertyId = req.body.propertyId;
+  const tenantStatus= req.body.isTenant;
+  const tokenAdvance = req.body.tokenAdvance;
+  const moveInDate =  req.body.moveInDate;
+  console.log('move in',moveInDate);
+  console.log('req body move in',req.body.moveInDate);
 
+
+  const dueDates = dayjs(moveInDate).add(1, 'month').toDate()
+  console.log('due',dueDates);
+
+  const admin = req.user;
+  const to = req.body.ownerId;
+
+  const userCheck = await User.findOne({mobile: mobile})
+      if(userCheck){
+        const tenantCheck = await User.findOne({ _id:userCheck._id, 'tenant.isActive':true })
+        if(tenantCheck){
+        return sendResponse(res, 400, "Tenant Already Exists");
+        }
+      }
+
+      const saveUser = await User.create(
+        {
+          fname: fname,
+          email: email,
+          mobile: mobile,
+          'tenant.isActive':true,
+          'tenant.addedBy': admin,
+        });
+
+ 
+    
+      const updatedInventoryData = await Property.updateOne(
+        { _id: propertyId },
+        { 
+          moveInDate : moveInDate,
+          tokenAmount: tokenAdvance
+        })
+
+
+        const totalBookings = await Contract.countDocuments({});
+        let currentBookingNo = totalBookings + 1;
+        const sku = `HJR${currentBookingNo}`
+        const propertyDetails = await Property.findOne({ _id : propertyId })
+        console.log('property Details',propertyDetails);
+
+       // const dueDates = dayjs(moveInDate).add(1, 'month').toDate()
+
+              const Bookings = await Contract.create({
+                tenant: saveUser._id,     
+                contractId: sku,
+                property: propertyId,  
+                proprietor : propertyDetails.proprietor,
+                rentAmount:  propertyDetails.rent,
+                moveInDate:moveInDate,
+                dueDate:dueDates,
+                commissionPercentage: 5, //by default 5
+                'tokenAdvance.amount':  tokenAdvance,
+                'securityDeposit.amount': propertyDetails.depositAmount,
+                createdBy:admin,
+              })
+     return  sendResponse(res, 200, "Tenant And Contract Added successfully", {saveUser,updatedInventoryData,Bookings});
+};
+
+
+
+/*
 export const createTenant = async (req, res) => {
     const fname = req.body.fname;
     const email = req.body.email;
@@ -119,7 +193,7 @@ export const createTenant = async (req, res) => {
                 })  
     sendResponse(res, 200, "Tenant And Booking Added successfully", {saveUser,createUserAsTenant,updatedInventoryData,Bookings,rentTransaction});
 };
-
+*/
 
 export const updateTenant = async (req, res) => {
     const fname = req.body.fname;

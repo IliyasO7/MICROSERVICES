@@ -5,7 +5,7 @@ import adminRouter from "./admin.js";
 import inventoryRouter from "./inventory.js";
 import tenantRouter from "./tenant.js";
 import ownerRouter from "./owner.js";
-import bookingRouter from "./booking.js";
+import contractRouter from "./booking.js";
 import adminServiceRouter from "./services.js"
 import adminCategory from "./category.js"
 import Router from "express";
@@ -15,12 +15,12 @@ const router = Router();
 
 
 router.use("/auth", authRouter);
-router.use("/owner", checkAuth(), ownerRouter);
-router.use("/super-admin", checkAuth, superadminRouter);
-router.use("/tenant", checkAuth, tenantRouter);
+router.use("/owner", checkAuth(), ownerRouter); //will be shifted to user or customer in future
+router.use("/properties",checkAuth(), inventoryRouter);
+router.use("/tenant", checkAuth(), tenantRouter);
+router.use("/contracts",checkAuth(), contractRouter);
 
-router.use("/inventory",checkAuth, inventoryRouter);
-router.use("/booking",checkAuth, bookingRouter);
+router.use("/super-admin", checkAuth, superadminRouter);
 router.use("/category",checkAuth, adminCategory);
 router.use("/service",checkAuth, adminServiceRouter);
 

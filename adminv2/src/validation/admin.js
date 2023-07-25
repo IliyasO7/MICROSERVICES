@@ -14,10 +14,10 @@ const adminCreate = Joi.object({
     fname: Joi.string().required(),
     email: Joi.string().lowercase().email().required(),
     mobile: Joi.string().length(10).required(),
-    inventoryId :  Joi.string().required(),
+    propertyId :  Joi.string().required(),
     isTenant: Joi.boolean().required(),
     tokenAdvance:Joi.number().required(),
-    //moveIdDate:Joi.date().required(),
+    moveInDate:Joi.string(),
   });
 
   const adminlogin = Joi.object({

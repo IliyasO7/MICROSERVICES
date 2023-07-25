@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { getEnums } from '../../shared/utils/helper';
+import { getEnums } from '../../shared/utils/helper.js';
 
 export const ContractPaymentType = {
   TOKEN: 'token',

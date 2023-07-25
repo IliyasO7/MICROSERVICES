@@ -5,6 +5,17 @@ import { validate,checkAuthAdmin } from "../../../shared/utils/helper.js";
 
 const router = Router();
 
+/*
+'/contracts'
+'/contracts/:id'
+'/contracts/:id/payments'
+'/contracts/:id/token-payment'
+'/contracts/:id/security-deposit'
+'/contracts/:id/rent'
+
+*/
+
+
 //logged in admin Booking
 router
   .route('/') 
@@ -12,9 +23,36 @@ router
 
 //booking with id
 router
-    .route('/:bookingId') 
+    .route('/:contractId') 
     .get(controller.getBookingDetails)
 
+router
+    .route('/:contractId/payments') 
+    .get(controller.getPayments)
+
+
+router
+    .route('/:contractId/token-payment') 
+    .post(controller.tokenPayment)
+
+router
+    .route('/:contractId/deposit-payment') 
+    .post(controller.depositPayment)
+
+router
+    .route('/:contractId/rent-payment') 
+    .post(controller.rentPayment)
+
+router
+    .route('/contract-status') 
+    .get(controller.getContaractWithStatus)
+
+router
+    .route('/payment-status') 
+    .get(controller.getPaymentWithStatus)
+
+
+/*    
 //booking with owner Id
 router
     .route('/owner/:ownerId') 
@@ -30,6 +68,6 @@ router
     .route('/all') 
     .get(controller.allBookings)
 
-
+*/
 
 export default router;

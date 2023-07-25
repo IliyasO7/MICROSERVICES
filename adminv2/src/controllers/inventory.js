@@ -1,13 +1,52 @@
-import Inventory from "../../../shared/models/inventory.js";
+//import Inventory from "../../../shared/models/inventory.js";
+import Property from "../../models/property.js";
 import User from "../../../shared/models/user.js";
 import { sendResponse } from "../../../shared/utils/helper.js";
 import dayjs from 'dayjs';
 import axios from "axios";
 
 
+export const saveInventory = async (req, res) => {
+
+  const userId = req.params.ownerId;
+  const propertyName = req.body.propertyName;
+  const address= req.body.address;
+  const floor= req.body.floor;
+  const door= req.body.door;
+  const bhk= req.body.bhk;
+  const carpetArea= req.body.carpetArea;
+  const geolocation= req.body.geolocation;
+  const rent=req.body.rent;
+  const securityDeposit= req.body.securityDeposit;
+  const adminData = req.user;
 
 
 
+  const totalInventory = await Property.countDocuments({});
+  console.log('total Inventory',totalInventory);
+  let currentPropertyNo = totalInventory + 1;
+  const sku = `HJR${currentPropertyNo}`
+  console.log('SKU',sku);
+
+        const createInventory = await Property.create({
+          propertyId: sku,
+          proprietor:userId,
+          name: req.body.propertyName,
+          address: req.body.address,
+          floor: req.body.floor,
+          bhk:req.body.bhk,
+          door:req.body.door,
+          carpetArea: req.body.carpetArea,
+         // geolocation: req.body.geolocation,
+          rentAmount:req.body.rent,
+          depositAmount: req.body.securityDeposit,
+          createdBy:adminData._id,
+      })
+
+  sendResponse(res, 200, "Inventory Saved Successful", { createInventory });
+};
+
+/*
 export const saveInventory = async (req, res) => {
 
     const userId = req.params.ownerId;
@@ -48,7 +87,7 @@ export const saveInventory = async (req, res) => {
   
     sendResponse(res, 200, "Inventory Saved Successful", {createInventory});
   };
-
+*/
 
 
 

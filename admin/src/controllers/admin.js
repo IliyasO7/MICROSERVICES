@@ -185,7 +185,27 @@ export const createTenant = async (req, res) => {
     console.log('Move In Date',req.body.moveInDate);
 
     const moveIn = new Date(moveInDate);
+   // const due = moveIn.setDate(moveIn.getDate() - 3);
+
+    let due = new Date(moveIn);
+    console.log('Today is: ' + due.toLocaleString());
+    due.setDate(due.getDate() - 3);
+    console.log('3 days ago was: ' + due.toLocaleString());
+
+
     console.log('Move In',moveIn);
+    //const d = new Date()
+    const day = due.getDate(); //moveIn.setDate(moveIn.getDate() - 3); // moveInDate.getDate()-3;
+    const year =  moveInDate.getFullYear();
+    const month = moveInDate.getMonth() + 1;
+    console.log('Move In',moveIn);
+    console.log('move in Date get Date',moveInDate.getDate());
+    console.log('day', day);
+    console.log('Date String',`${year}-${month}- ${day}`);
+    const dueDate = new Date(`${year}-${month}-${day}`);
+    console.log('due Date',dueDate);
+    console.log('Move In',moveIn);
+  //  return  sendResponse(res, 400, "Returned", );
  
   
     const admin = req.user;
@@ -220,12 +240,16 @@ export const createTenant = async (req, res) => {
             tokenAdvance:tokenAdvance
           })
 
-          const date =  moveInDate.getDate() - 3;
+     /*     const day =  moveInDate.getDate() - 3;
             const year =  moveInDate.getFullYear();
-            const month = moveInDate.getMonth()+1;
-            const dueDate = new Date(`${year}-${month}-${date}`);
+            const month = moveInDate.getMonth() + 1;
+            console.log('Move In',moveIn);
+            console.log('move in Date get Date',moveInDate.getDate());
+            console.log('day', day);
+            console.log('Date String',`${year}-${month}-${day}`);
+            const dueDate = new Date(`${year}-${month}-${day}`);
             console.log('due Date',dueDate);
-
+*/
   
           const totalBookings = await Booking.countDocuments({});
           let currentBookingNo = totalBookings + 1;
@@ -246,14 +270,14 @@ export const createTenant = async (req, res) => {
                   createdAt: createdDate,
                 })
 
-                const paidFromStartMonth =  moveInDate.getMonth() + 1;
+           /*     const paidFromStartMonth =  moveInDate.getMonth() + 1;
                 const paidFromStartDate =  1 ;
                 const paidYear =  moveInDate.getFullYear();
                 const paidFrom = new Date(`${paidYear}-${paidFromStartMonth}-${paidFromStartDate}`);
                 const nextMonth = moveInDate.getMonth() + 2
-                const paidUntil = new Date(`${paidYear}-${nextMonth}-${paidFromStartDate}`)
+                const paidUntil = new Date(`${paidYear}-${nextMonth}-${paidFromStartDate}`)*/
   
-                const rentTransaction = await  RentalTransactions.create({
+           /*     const rentTransaction = await  RentalTransactions.create({
                       from: saveUser._id,     
                       bookingId: Bookings,
                       transactionFor: 'RENT',
@@ -262,8 +286,8 @@ export const createTenant = async (req, res) => {
                       createdBy:admin,
                       paidFrom: paidFrom,
                       paidUntil:paidUntil,
-                })  
-    sendResponse(res, 200, "Tenant And Booking Added successfully", {saveUser,createUserAsTenant,updatedInventoryData,Bookings,rentTransaction});
+                })  */
+    sendResponse(res, 200, "Tenant And Booking Added successfully", {saveUser,createUserAsTenant,updatedInventoryData,Bookings});
 };
 
 export const updateTenant = async (req, res) => {

@@ -224,6 +224,7 @@ export const createTenant = async (req, res) => {
             const year =  moveInDate.getFullYear();
             const month = moveInDate.getMonth()+1;
             const dueDate = new Date(`${year}-${month}-${date}`);
+            console.log('due Date',dueDate);
 
   
           const totalBookings = await Booking.countDocuments({});

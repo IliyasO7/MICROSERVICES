@@ -38,6 +38,8 @@ export const createTenant = async (req, res) => {
   const tenantStatus= req.body.isTenant;
   const tokenAdvance = req.body.tokenAdvance;
   const moveInDate =  req.body.moveInDate;
+  let moveOutDate =  req.body.moveOutDate;
+
   console.log('move in',moveInDate);
   console.log('req body move in',req.body.moveInDate);
 
@@ -90,6 +92,7 @@ export const createTenant = async (req, res) => {
                 proprietor : propertyDetails.proprietor,
                 rentAmount:  propertyDetails.rent,
                 moveInDate:moveInDate,
+                moveOutDate:moveOutDate,
                 dueDate:dueDates,
                 commissionPercentage: 5, //by default 5
                 'tokenAdvance.amount':  tokenAdvance,

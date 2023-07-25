@@ -33,7 +33,7 @@ const schema = new mongoose.Schema(
     },
 
     moveInDate: { type: Date },
-    moveOutInDate: { type: Date },
+    moveOutDate: { type: Date },
     dueDate: { type: Date },
 
     rentAmount: { type: Number, default: 0 },

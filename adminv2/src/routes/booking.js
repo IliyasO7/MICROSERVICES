@@ -26,30 +26,12 @@ router
     .route('/:contractId') 
     .get(controller.getBookingDetails)
 
-router
-    .route('/:contractId/payments') 
-    .get(controller.getPayments)
-
-
-router
-    .route('/:contractId/token-payment') 
-    .post(controller.tokenPayment)
-
-router
-    .route('/:contractId/deposit-payment') 
-    .post(controller.depositPayment)
-
-router
-    .route('/:contractId/rent-payment') 
-    .post(controller.rentPayment)
 
 router
     .route('/contract-status') 
     .get(controller.getContaractWithStatus)
 
-router
-    .route('/payment-status') 
-    .get(controller.getPaymentWithStatus)
+
 
 
 /*    

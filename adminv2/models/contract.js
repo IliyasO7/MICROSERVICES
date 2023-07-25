@@ -52,7 +52,7 @@ const schema = new mongoose.Schema(
 
     commissionPercentage: {
       type: Number,
-      default: 0,
+      default: 5,
     },
 
     status: {

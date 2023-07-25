@@ -1,11 +1,13 @@
-import User from "../../../shared/models/user.js";
+//import User from "../../../shared/models/user.js";
 import Inventory from "../../../shared/models/inventory.js";
 import Booking from "../../../shared/models/Booking.js";
-import Bank from "../../../shared/models/bank.js";
+//import Bank from "../../../shared/models/bank.js";
 import RentalTransactions from "../../../shared/models/rentalTransactions.js";
 import {sendResponse } from "../../../shared/utils/helper.js";
 import RentalOwner from "../../../shared/models/rentalOwner.js";
 import axios from "axios";
+import User from "../../models/user.js";
+import Bank from "../../models/bank.js";
 
 export const getOwner = async (req, res) => {
     const mobile = req.params.mobile;
@@ -26,7 +28,7 @@ export const getOwner = async (req, res) => {
     }   
 };
 
-
+/*
 export const createOwner = async (req, res) => {
 
     const fname = req.body.fname;
@@ -79,6 +81,54 @@ export const createOwner = async (req, res) => {
   
     sendResponse(res, 200, "Owner Added successful", {owner:createOwner,userBankDetails});
   };
+*/
+
+export const createOwner = async (req, res) => {
+  console.log('hey');
+
+    const fname = req.body.fname;
+    const email = req.body.email;
+    const phone = req.body.mobile;
+    const name = req.body.name;
+    const accountNo = req.body.accountNumber;
+    const ifsc = req.body.ifscCode;
+    const aadharNo = req.body.aadharCardNumber;
+    const panNo = req.body.panCardNumber;
+    const ownerStatus = req.body.isOwner;
+    const admin = req.user;
+    const userCheck = await User.findOne({mobile: phone})
+
+    if(userCheck){
+      const ownerCheck = await User.findOne({ _id: userCheck._id, 'proprietor.isActive': true })
+      console.log('owner check',ownerCheck);
+      if(ownerCheck){
+        return sendResponse(res, 400, "Owner Already Exists", );
+      }
+    }
+        const saveUser = await User.create(
+          {
+            fname: fname,
+            email: email,
+            mobile: phone,
+            isProfileCompleted:true,
+            'proprietor.isActive':true,
+            'proprietor.addedBy':admin,
+             pan:panNo,
+             aadhaar:aadharNo,
+
+          });
+    
+          let userBankDetails = await Bank.create(
+            { 
+              user:saveUser,
+              name:name,
+              accountNumber:accountNo,
+              ifscCode: ifsc,
+              default:true ,
+            }) 
+           
+            sendResponse(res, 200, "Owner Added successful", { owner:saveUser,userBankDetails });
+};
 
 
   export const updateOwner = async (req, res) => {

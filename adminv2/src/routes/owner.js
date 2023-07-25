@@ -7,17 +7,19 @@ const upload = multer({dest: 'uplaod/'})
 
 const router = Router();
 
-//get owner with mobile
-router
-  .route('/get-owner/:mobile')
-  .get(controller.getOwner)
-
 //craete and update owners
 router
   .route('/')
   .get(controller.getAdminOwners)
   .post(validate(validation.saveUserOwner), controller.createOwner)
-  .patch(validate(validation.saveUserOwner), controller.updateOwner)
+ // .patch(validate(validation.saveUserOwner), controller.updateOwner)
+
+//get owner with mobile
+router
+  .route('/get-owner/:mobile')
+  .get(controller.getOwner)
+
+
 
 //Get All Owners
 router

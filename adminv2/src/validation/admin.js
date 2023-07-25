@@ -34,8 +34,7 @@ const adminCreate = Joi.object({
     name: Joi.string().required(),
     accountNumber: Joi.number().required(),
     ifscCode: Joi.string().required(),
-    isOwner: Joi.boolean().required(),
-    
+    isOwner: Joi.boolean().required(), 
   });
 
   const saveInventory = Joi.object({

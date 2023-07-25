@@ -15,9 +15,10 @@ const router = Router();
 
 
 router.use("/auth", authRouter);
+router.use("/owner", checkAuth(), ownerRouter);
 router.use("/super-admin", checkAuth, superadminRouter);
 router.use("/tenant", checkAuth, tenantRouter);
-router.use("/owner", checkAuth, ownerRouter);
+
 router.use("/inventory",checkAuth, inventoryRouter);
 router.use("/booking",checkAuth, bookingRouter);
 router.use("/category",checkAuth, adminCategory);

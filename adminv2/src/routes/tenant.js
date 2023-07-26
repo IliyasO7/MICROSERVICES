@@ -6,21 +6,16 @@ import { validate } from "../../../shared/utils/helper.js";
 const router = Router();
 
 //Get Tenant with number
-router
-  .route('/get-tenant/:mobile')
-  .get(controller.getTenant)
+router.route("/:mobile").get(controller.getTenant);
 
-
-//create,update and get tenant 
+//create,update and get tenant
 router
-  .route('/') 
+  .route("/")
   .get(controller.getAdminTenants)
   .post(validate(validation.saveUserTenant), controller.createTenant)
   .patch(validate(validation.saveUserTenant), controller.updateTenant);
 
 //get all tenants
-router
-  .route('/all-tenants') 
-  .get(controller.getAllTenants)
+router.route("/all-tenants").get(controller.getAllTenants);
 
 export default router;

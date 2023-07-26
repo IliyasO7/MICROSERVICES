@@ -17,6 +17,7 @@ const adminCreate = Joi.object({
     propertyId :  Joi.string().required(),
     isTenant: Joi.boolean().required(),
     tokenAdvance:Joi.number().required(),
+    commision: Joi.number().required(),
     moveInDate:Joi.string(),
     moveOutDate:Joi.string(),
   });

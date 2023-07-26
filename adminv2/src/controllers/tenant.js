@@ -38,7 +38,8 @@ export const createTenant = async (req, res) => {
   const tenantStatus= req.body.isTenant;
   const tokenAdvance = req.body.tokenAdvance;
   const moveInDate =  req.body.moveInDate;
-  let moveOutDate =  req.body.moveOutDate;
+  const moveOutDate =  req.body.moveOutDate;
+  const commision = req.body.commision;
 
   console.log('move in',moveInDate);
   console.log('req body move in',req.body.moveInDate);
@@ -67,15 +68,12 @@ export const createTenant = async (req, res) => {
           'tenant.addedBy': admin,
         });
 
- 
-    
       const updatedInventoryData = await Property.updateOne(
         { _id: propertyId },
         { 
           moveInDate : moveInDate,
           tokenAmount: tokenAdvance
         })
-
 
         const totalBookings = await Contract.countDocuments({});
         let currentBookingNo = totalBookings + 1;
@@ -94,7 +92,7 @@ export const createTenant = async (req, res) => {
                 moveInDate:moveInDate,
                 moveOutDate:moveOutDate,
                 dueDate:dueDates,
-                commissionPercentage: 5, //by default 5
+                commissionPercentage:commision, //by default 5
                 'tokenAdvance.amount':  tokenAdvance,
                 'securityDeposit.amount': propertyDetails.depositAmount,
                 createdBy:admin,

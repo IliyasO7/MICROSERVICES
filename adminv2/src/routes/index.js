@@ -15,9 +15,9 @@ const router = Router();
 
 
 router.use("/auth", authRouter);
-router.use("/owner", checkAuth(), ownerRouter); //will be shifted to user or customer in future
+router.use("/owners", checkAuth(), ownerRouter);
 router.use("/properties",checkAuth(), inventoryRouter);
-router.use("/tenant", checkAuth(), tenantRouter);
+router.use("/tenants", checkAuth(), tenantRouter);
 router.use("/contracts",checkAuth(), contractRouter);
 
 router.use("/super-admin", checkAuth, superadminRouter);

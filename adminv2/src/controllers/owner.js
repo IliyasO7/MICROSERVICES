@@ -114,7 +114,7 @@ export const createOwner = async (req, res) => {
       return sendResponse(res, 400, "Owner Already Exists");
     }
   }
-  const saveUser = await User.create({
+  const ownerData = await User.create({
     fname: fname,
     email: email,
     mobile: phone,
@@ -125,8 +125,8 @@ export const createOwner = async (req, res) => {
     aadhaar: aadharNo,
   });
 
-  let userBankDetails = await Bank.create({
-    user: saveUser,
+  let ownerBankDetails = await Bank.create({
+    user: ownerData._id,
     name: name,
     accountNumber: accountNo,
     ifscCode: ifsc,
@@ -134,11 +134,12 @@ export const createOwner = async (req, res) => {
   });
 
   sendResponse(res, 200, "Owner Added successful", {
-    owner: saveUser,
-    userBankDetails,
+    ownerData,
+    ownerBankDetails,
   });
 };
 
+/*
 export const updateOwner = async (req, res) => {
   const fname = req.body.fname;
   const email = req.body.email;
@@ -180,6 +181,7 @@ export const updateOwner = async (req, res) => {
 
   sendResponse(res, 200, "Owner Details Udpated Successfully");
 };
+*/
 
 export const getAdminOwners = async (req, res) => {
   const admin = req.user;
@@ -190,7 +192,7 @@ export const getAdminOwners = async (req, res) => {
     .populate("user")
     .populate("proprietor.addedBy");
   if (owner) {
-    return sendResponse(res, 200, "Owner List Fetched", { owner });
+    return sendResponse(res, 200, "Owner List Fetched", owner);
   } else {
     return sendResponse(res, 400, "User Does Not Exist As Owner");
   }
@@ -201,7 +203,7 @@ export const getAllOwners = async (req, res) => {
     .populate("user")
     .populate("proprietor.addedBy");
 
-  return sendResponse(res, 200, "Owner List Fetched", { ownerList });
+  return sendResponse(res, 200, "Owner List Fetched", ownerList);
 };
 
 // Update Owner media
@@ -209,7 +211,9 @@ export const updateOwnerMedia = async (req, res, next) => {
   try {
     //   const bunnyStorage = await new BunnyStorage(process.env.BUNNYCDN_API_KEY, process.env.BUNNYCDN_STORAGE_ZONE);
     //   console.log('Req.body',req);
-    let owner = await RentalOwner.findOne({ user: req.params.ownerId }).lean();
+    const owner = await RentalOwner.findOne({
+      user: req.params.ownerId,
+    }).lean();
 
     if (!owner) {
       return sendResponse(res, 400, "Owner Does Not Exist");

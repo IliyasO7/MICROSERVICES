@@ -1,4 +1,4 @@
-import * as controller from "../controllers/booking.js";
+import * as controller from "../controllers/contract.js";
 import Router from "express";
 import validation from "../validation/admin.js";
 import { validate, checkAuthAdmin } from "../../../shared/utils/helper.js";
@@ -16,12 +16,12 @@ const router = Router();
 */
 
 //logged in admin Booking
-router.route("/").get(controller.getAllBookings);
+router.route("/").get(controller.getAllContracts);
 
 //booking with id
-router.route("/:contractId").get(controller.getBookingDetails);
+router.route("/:contractId").get(controller.getContractById);
 
-router.route("/contract-status").get(controller.getContaractWithStatus);
+//router.route("/contract-status").get(controller.getContaractWithStatus);
 
 /*    
 //booking with owner Id

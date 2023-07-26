@@ -5,7 +5,7 @@ import adminRouter from "./admin.js";
 import inventoryRouter from "./inventory.js";
 import tenantRouter from "./tenant.js";
 import ownerRouter from "./owner.js";
-import contractRouter from "./booking.js";
+import contractRouter from "./contract..js";
 import adminServiceRouter from "./services.js";
 import adminCategory from "./category.js";
 import Router from "express";

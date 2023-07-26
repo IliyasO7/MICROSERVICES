@@ -1,7 +1,7 @@
-import * as controller from "../controllers/booking.js"
+import * as controller from "../controllers/booking.js";
 import Router from "express";
 import validation from "../validation/admin.js";
-import { validate,checkAuthAdmin } from "../../../shared/utils/helper.js";
+import { validate, checkAuthAdmin } from "../../../shared/utils/helper.js";
 
 const router = Router();
 
@@ -15,24 +15,13 @@ const router = Router();
 
 */
 
-
 //logged in admin Booking
-router
-  .route('/') 
-  .get(controller.getAllBookings)
+router.route("/").get(controller.getAllBookings);
 
 //booking with id
-router
-    .route('/:contractId') 
-    .get(controller.getBookingDetails)
+router.route("/:contractId").get(controller.getBookingDetails);
 
-
-router
-    .route('/contract-status') 
-    .get(controller.getContaractWithStatus)
-
-
-
+router.route("/contract-status").get(controller.getContaractWithStatus);
 
 /*    
 //booking with owner Id
@@ -49,7 +38,6 @@ router
 router
     .route('/all') 
     .get(controller.allBookings)
-
 */
 
 export default router;

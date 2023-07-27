@@ -144,7 +144,7 @@ export const updatePropertyImages = async (req, res, next) => {
     if (!property) {
       return sendResponse(res, 400, "Property Does Not Exist");
     }
-    const data = {
+    let data = {
       mainImages: [],
       entranceImages: [],
       kitchenImages: [],

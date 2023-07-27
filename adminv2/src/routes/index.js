@@ -5,9 +5,8 @@ import propertyRouter from "./property.js";
 import tenantRouter from "./tenant.js";
 import ownerRouter from "./owner.js";
 import contractRouter from "./contract..js";
-import adminServiceRouter from "./services.js";
-import adminCategory from "./category.js";
-import odsRouter from "./ods/category.js";
+import odsCategoryRouter from "./ods/category.js";
+import odsServiceRouter from "./ods/services.js";
 import Router from "express";
 import { checkAuth } from "../middleware/checkAuth.js";
 
@@ -19,10 +18,9 @@ router.use("/properties", checkAuth(), propertyRouter);
 router.use("/tenants", checkAuth(), tenantRouter);
 router.use("/contracts", checkAuth(), contractRouter);
 router.use("/super-admin", checkAuth(), superadminRouter);
-router.use("/category", checkAuth, adminCategory);
-router.use("/service", checkAuth, adminServiceRouter);
 
-router.use("/ods/categories", checkAuth(), odsRouter);
+router.use("/ods/categories", checkAuth(), odsCategoryRouter);
+router.use("/ods/services", checkAuth(), odsServiceRouter);
 
 //router.use("/", checkAuth, adminRouter);
 

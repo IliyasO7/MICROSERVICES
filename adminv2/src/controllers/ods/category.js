@@ -42,7 +42,7 @@ export const updateCategory = async (req, res) => {
     }
 
     category.name = req.body.name;
-    category.updatedAt = dayjs();
+    //category.updatedAt = dayjs();
     category.save();
 
     return sendResponse(res, 200, "Category Updated Successfully", category);

@@ -1,3 +1,4 @@
+import { request } from "http";
 import Joi from "joi";
 
 const adminCreate = Joi.object({
@@ -64,6 +65,14 @@ const deleteCategory = Joi.object({
   categoryId: Joi.string().required(),
 });
 
+const addService = Joi.object({
+  name: Joi.string().required(),
+  categoryId: Joi.string().required(),
+  servicableCities: Joi.string().required(),
+  paymentModes: Joi.array().required().required(),
+  price: Joi.string().required(),
+});
+
 export default {
   adminCreate,
   adminlogin,
@@ -73,4 +82,5 @@ export default {
   addCategory,
   updateCategory,
   deleteCategory,
+  addService,
 };

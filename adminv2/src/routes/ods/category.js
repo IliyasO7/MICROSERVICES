@@ -5,7 +5,7 @@ import { validate } from "../../../../shared/utils/helper.js";
 
 const router = Router();
 
-//create category
+//category
 router
   .route("/")
   .get(controller.getCategory)

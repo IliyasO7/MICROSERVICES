@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
@@ -9,7 +9,7 @@ const schema = new mongoose.Schema(
     },
     proprietor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
       required: true,
     },
     name: { type: String, default: null, required: true },
@@ -17,8 +17,8 @@ const schema = new mongoose.Schema(
     floor: { type: String, default: null, required: true },
     door: { type: String, default: null },
     bhk: { type: String, default: null, required: true },
-    carpetArea: { type: String, default: null, },
-    coordinates: { type: [Number],  },
+    carpetArea: { type: String, default: null },
+    coordinates: { type: [Number] },
     mainImages: [{ type: String, default: null }],
     entranceImages: [{ type: String, default: null }],
     livingImages: [{ type: String, default: null }],
@@ -31,7 +31,7 @@ const schema = new mongoose.Schema(
     isDeleted: { type: Boolean, default: false, required: true },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'admin',
+      ref: "admin",
       required: true,
     },
   },
@@ -42,6 +42,6 @@ const schema = new mongoose.Schema(
 
 schema.index({ proprietor: 1 });
 
-const Property = mongoose.model('Property', schema);
+const Property = mongoose.model("property", schema);
 
 export default Property;

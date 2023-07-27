@@ -1,10 +1,12 @@
-import User from "../../../shared/models/user.js";
+import User from "../../models/user.js";
+import Property from "../../models/property.js";
+import Admin from "../../models/admin.js";
 import RentalTenant from "../../../shared/models/rentalTental.js";
 import Inventory from "../../../shared/models/inventory.js";
 import Booking from "../../../shared/models/Booking.js";
 import RentalTransactions from "../../../shared/models/rentalTransactions.js";
 import RentalOwner from "../../../shared/models/rentalOwner.js";
-import Property from "../../models/property.js";
+//import Property from "../../models/property.js";
 import Contract from "../../models/contract.js";
 import dayjs from "dayjs";
 import { sendResponse } from "../../../shared/utils/helper.js";
@@ -38,9 +40,7 @@ export const createTenant = async (req, res) => {
   const commision = req.body.commision;
   const admin = req.user;
   const to = req.body.ownerId;
-
   const dueDates = dayjs(moveInDate).add(1, "month").toDate();
-  console.log("due", dueDates);
 
   const userCheck = await User.findOne({ mobile: mobile });
   if (userCheck) {
@@ -187,12 +187,16 @@ export const getAdminTenants = async (req, res) => {
   const tenants = await User.find({
     "tenant.addedBy": userId._id,
     "tenant.isActive": true,
-  });
+  })
+    .populate("tenant.addedBy")
+    .lean();
   return sendResponse(res, 200, "Tenants Fetched Successfully", tenants);
 };
 
 //Get all tenants
 export const getAllTenants = async (req, res) => {
-  let tenants = await User.find({ "tenant.isActive": true });
+  const tenants = await User.find({ "tenant.isActive": true }).populate(
+    "tenant.addedBy"
+  );
   return sendResponse(res, 200, "Tenants Fetched Successfully", tenants);
 };

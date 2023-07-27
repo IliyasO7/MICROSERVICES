@@ -7,6 +7,9 @@ const upload = multer({ dest: "uplaod/" });
 
 const router = Router();
 
+//get All Owners
+router.route("/all").get(controller.getAllOwners);
+
 //create and update owners
 router
   .route("/")
@@ -16,9 +19,6 @@ router
 
 //get owner with mobile
 router.route("/:mobile").get(controller.getOwner);
-
-//get All Owners
-router.route("/all-owners").get(controller.getAdminOwners);
 
 //add Owner with media
 router.post(

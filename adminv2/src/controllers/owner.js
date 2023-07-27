@@ -10,6 +10,8 @@ import User from "../../models/user.js";
 import Bank from "../../models/bank.js";
 import Property from "../../models/property.js";
 import Contract from "../../models/contract.js";
+import Admin from "../../models/admin.js";
+import fs from "fs";
 
 export const getOwner = async (req, res) => {
   const mobile = req.params.mobile;
@@ -20,7 +22,7 @@ export const getOwner = async (req, res) => {
   if (user) {
     const propertyDetails = await Property.find({
       proprietor: user._id,
-    }).populate("proprietor.isActive");
+    });
 
     const contracts = await Contract.find({ proprietor: user._id });
 
@@ -125,7 +127,7 @@ export const createOwner = async (req, res) => {
     aadhaar: aadharNo,
   });
 
-  let ownerBankDetails = await Bank.create({
+  const ownerBankDetails = await Bank.create({
     user: ownerData._id,
     name: name,
     accountNumber: accountNo,
@@ -188,9 +190,7 @@ export const getAdminOwners = async (req, res) => {
   const owner = await User.find({
     "proprietor.addedBy": admin._id,
     "proprietor.isActive": true,
-  })
-    .populate("user")
-    .populate("proprietor.addedBy");
+  }).populate("proprietor.addedBy"); // schema not registered
   if (owner) {
     return sendResponse(res, 200, "Owner List Fetched", owner);
   } else {
@@ -199,9 +199,10 @@ export const getAdminOwners = async (req, res) => {
 };
 
 export const getAllOwners = async (req, res) => {
-  const ownerList = await User.find({ "proprietor.isActive": true })
-    .populate("user")
-    .populate("proprietor.addedBy");
+  console.log("hello");
+  const ownerList = await User.find({ "proprietor.isActive": true }).populate(
+    "proprietor.addedBy"
+  );
 
   return sendResponse(res, 200, "Owner List Fetched", ownerList);
 };
@@ -209,18 +210,16 @@ export const getAllOwners = async (req, res) => {
 // Update Owner media
 export const updateOwnerMedia = async (req, res, next) => {
   try {
-    //   const bunnyStorage = await new BunnyStorage(process.env.BUNNYCDN_API_KEY, process.env.BUNNYCDN_STORAGE_ZONE);
-    //   console.log('Req.body',req);
-    const owner = await RentalOwner.findOne({
-      user: req.params.ownerId,
+    const owner = await User.findOne({
+      _id: req.params.ownerId,
     }).lean();
 
     if (!owner) {
       return sendResponse(res, 400, "Owner Does Not Exist");
     }
     let data = {
-      aadhar: undefined,
-      pan: undefined,
+      aadhaarDocument: undefined,
+      panDocument: undefined,
       cancelledCheque: undefined,
       //serviceAgreementUpload: undefined,
     };
@@ -240,7 +239,7 @@ export const updateOwnerMedia = async (req, res, next) => {
         console.log(body);
       });
       if (OwnerAdhr.status === 201) {
-        data.aadhar = `https://housejoy.b-cdn.net/owner/aadhars/${req.params.ownerId}-${req.files.aadhar[0].originalname}`;
+        data.aadhaarDocument = `https://housejoy.b-cdn.net/owner/aadhars/${req.params.ownerId}-${req.files.aadhar[0].originalname}`;
       }
     }
 
@@ -259,7 +258,7 @@ export const updateOwnerMedia = async (req, res, next) => {
         console.log(body);
       });
       if (OwnerPan.status === 201) {
-        data.pan = `https://housejoy.b-cdn.net/owner/pan/${req.params.ownerId}-${req.files.pan[0].originalname}`;
+        data.panDocument = `https://housejoy.b-cdn.net/owner/pan/${req.params.ownerId}-${req.files.pan[0].originalname}`;
       }
     }
 
@@ -285,7 +284,7 @@ export const updateOwnerMedia = async (req, res, next) => {
       }
     }
     // Update in database
-    await RentalOwner.updateOne(
+    await User.updateOne(
       { _id: owner._id },
       {
         $set: data,

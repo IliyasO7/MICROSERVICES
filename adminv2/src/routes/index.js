@@ -2,7 +2,7 @@ import { sendResponse } from "../../../shared/utils/helper.js";
 import superadminRouter from "./superadmin.js";
 import authRouter from "./auth.js";
 import adminRouter from "./admin.js";
-import inventoryRouter from "./inventory.js";
+import propertyRouter from "./property.js";
 import tenantRouter from "./tenant.js";
 import ownerRouter from "./owner.js";
 import contractRouter from "./contract..js";
@@ -15,7 +15,7 @@ const router = Router();
 
 router.use("/auth", authRouter);
 router.use("/owners", checkAuth(), ownerRouter);
-router.use("/properties", checkAuth(), inventoryRouter);
+router.use("/properties", checkAuth(), propertyRouter);
 router.use("/tenants", checkAuth(), tenantRouter);
 router.use("/contracts", checkAuth(), contractRouter);
 

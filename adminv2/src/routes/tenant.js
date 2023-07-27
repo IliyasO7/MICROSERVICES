@@ -12,10 +12,10 @@ router
   .post(validate(validation.saveUserTenant), controller.createTenant);
 //.patch(validate(validation.saveUserTenant), controller.updateTenant);
 
+//get all tenants
+router.route("/all").get(controller.getAllTenants);
+
 //Get Tenant with number
 router.route("/:mobile").get(controller.getTenant);
-
-//get all tenants
-router.route("/all-tenants").get(controller.getAllTenants);
 
 export default router;

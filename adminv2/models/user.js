@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
@@ -10,7 +10,8 @@ const schema = new mongoose.Schema(
     aadhaar: { type: String },
     panDocument: { type: String },
     aadhaarDocument: { type: String },
-    country: { type: String, default: 'in' },
+    cancelledCheque: { type: String },
+    country: { type: String, default: "in" },
     rating: { type: Number, default: 1, required: true },
     isProfileCompleted: { type: Boolean, default: false },
     isKycVerified: { type: Boolean, default: false },
@@ -19,11 +20,11 @@ const schema = new mongoose.Schema(
     },
     tenant: {
       isActive: { type: Boolean, default: false },
-      addedBy: { type: mongoose.Types.ObjectId, ref: 'admin' },
+      addedBy: { type: mongoose.Types.ObjectId, ref: "admin" },
     },
     proprietor: {
       isActive: { type: Boolean, default: false },
-      addedBy: { type: mongoose.Types.ObjectId, ref: 'admin' },
+      addedBy: { type: mongoose.Types.ObjectId, ref: "admin" },
     },
   },
   {
@@ -31,6 +32,6 @@ const schema = new mongoose.Schema(
   }
 );
 
-const User = mongoose.model('user', schema);
+const User = mongoose.model("user", schema);
 
 export default User;

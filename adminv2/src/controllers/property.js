@@ -1,8 +1,8 @@
-//import Inventory from "../../../shared/models/inventory.js";
 import Property from "../../models/property.js";
 import User from "../../models/user.js";
+import Admin from "../../models/admin.js";
+import Contract from "../../models/contract.js";
 import { sendResponse } from "../../../shared/utils/helper.js";
-import dayjs from "dayjs";
 import axios from "axios";
 import fs from "fs";
 

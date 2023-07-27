@@ -1,4 +1,4 @@
-import Admin from "../../../shared/models/admin.js";
+/*import Admin from "../../../shared/models/admin.js";
 import User from "../../../shared/models/user.js";
 import RentalTenant from "../../../shared/models/rentalTental.js";
 import Inventory from "../../../shared/models/inventory.js";

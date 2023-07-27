@@ -1,4 +1,4 @@
-import * as controller from "../controllers/admin.js";
+/*import * as controller from "../controllers/admin.js";
 
 import Router from "express";
 import validation from "../validation/admin.js";
@@ -166,7 +166,7 @@ router.post(
         }
       ]),
     controller.updateArrayPropertyImages);
-*/
+
 //Get All Inventories of logged in Admin
 router.get(
 "/get-admin-inventories", 
@@ -233,3 +233,4 @@ controller.deleteCategory);
 
 
 export default router;
+*/

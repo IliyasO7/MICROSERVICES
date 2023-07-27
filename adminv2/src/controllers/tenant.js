@@ -1,12 +1,6 @@
 import User from "../../models/user.js";
 import Property from "../../models/property.js";
 import Admin from "../../models/admin.js";
-import RentalTenant from "../../../shared/models/rentalTental.js";
-import Inventory from "../../../shared/models/inventory.js";
-import Booking from "../../../shared/models/Booking.js";
-import RentalTransactions from "../../../shared/models/rentalTransactions.js";
-import RentalOwner from "../../../shared/models/rentalOwner.js";
-//import Property from "../../models/property.js";
 import Contract from "../../models/contract.js";
 import dayjs from "dayjs";
 import { sendResponse } from "../../../shared/utils/helper.js";

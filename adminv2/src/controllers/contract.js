@@ -1,7 +1,4 @@
-import Booking from "../../../shared/models/Booking.js";
 import { sendResponse } from "../../../shared/utils/helper.js";
-import dayjs from "dayjs";
-import axios from "axios";
 import Contract from "../../models/contract.js";
 import ContractPayment, {
   ContractPaymentStatus,

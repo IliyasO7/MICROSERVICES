@@ -13,18 +13,4 @@ router
   .route("/create-super-admin")
   .post(validate(validation.adminCreate), controller.createSuperAdmin);
 
-router.post(
-  "/create-ods-admin",
-  checkAuth(),
-  validate(validation.adminCreate),
-  controller.createOdsAdmin
-);
-
-router.post(
-  "/create-rental-admin",
-  checkAuth(),
-  validate(validation.adminCreate),
-  controller.createRentalAdmin
-);
-
 export default router;

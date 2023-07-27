@@ -2,77 +2,72 @@ import Admin from "../../../shared/models/admin.js";
 import bcrypt from "bcrypt";
 
 export const createOdsAdmin = async (req, res) => {
-    const superAdmin = req.user;
-    const username = req.body.username;
-    const role = req.body.role;
-    const fname = req.body.fname;
-    const lname = req.body.lname;
-    const email = req.body.email;
-    const password = req.body.password;
+  console.log("create ODS ADMIN");
 
-            let encryptedPassword = await bcrypt.hash(password, 10)
-            let adminExists = await Admin.findOne({ email: email });
+  const superAdmin = req.user;
+  const username = req.body.username;
+  const role = req.body.role;
+  const fname = req.body.fname;
+  const lname = req.body.lname;
+  const email = req.body.email;
+  const password = req.body.password;
 
-            if(adminExists){
-                return sendResponse(res, 400, "Admin Already Exists");
-            }
+  const encryptedPassword = await bcrypt.hash(password, 10);
+  const adminExists = await Admin.findOne({ email: email });
 
-            const totalAdmins = await Admin.find({role:'HJ-ODS-ADMIN'});
-            let count = totalAdmins.length;
-            console.log('total Admins',count);
-            let currentAdminNo = count + 1;
-            const sku = `HJ-ODS-ADMIN-${currentAdminNo}`;
+  if (adminExists) {
+    return sendResponse(res, 400, "Admin Already Exists");
+  }
 
-            const saveUser = await Admin.create({ 
-                adminId: sku,
-                username: username,
-                role:role,
-                fname:fname,
-                lname:lname,
-                email:email,
-                password:encryptedPassword,
-                createdBy:superAdmin._id,
+  const totalAdmins = await Admin.find({ role: "HJ-ODS-ADMIN" });
+  const count = totalAdmins.length;
+  const currentAdminNo = count + 1;
+  // let currentAdminNo =  1;
+  const sku = `HJ-ODS-ADMIN-${currentAdminNo}`;
 
-            })
-        if(saveUser) sendResponse(res, 200, "Ods Admin Created Successfully", {saveUser});
-        
+  const data = await Admin.create({
+    adminId: sku,
+    username: username,
+    role: role,
+    fname: fname,
+    lname: lname,
+    email: email,
+    password: encryptedPassword,
+    createdBy: superAdmin._id,
+  });
+  return sendResponse(res, 200, "Ods Admin Created Successfully", data);
 };
 
-
 export const createRentalAdmin = async (req, res) => {
+  const superAdmin = req.user;
+  const username = req.body.username;
+  const role = req.body.role;
+  const fname = req.body.fname;
+  const lname = req.body.lname;
+  const email = req.body.email;
+  const password = req.body.password;
 
-    const superAdmin = req.user;
-    const username = req.body.username;
-    const role = req.body.role;
-    const fname = req.body.fname;
-    const lname = req.body.lname;
-    const email = req.body.email;
-    const password = req.body.password;
+  const encryptedPassword = await bcrypt.hash(password, 10);
+  const adminExists = await Admin.findOne({ email: email });
 
-            let encryptedPassword = await bcrypt.hash(password, 10)
-            let adminExists = await Admin.findOne({ email: email });
+  if (adminExists) {
+    return sendResponse(res, 400, "Admin Already Exists");
+  }
+  const totalAdmins = await Admin.find({ role: "HJ-RENTAL-ADMIN" });
+  const count = totalAdmins.length;
 
-            if(adminExists){
-                return sendResponse(res, 400, "Admin Already Exists");
-            }
-            const totalAdmins = await Admin.find({role:'HJ-RENTAL-ADMIN'});
-            let count = totalAdmins.length;
-            console.log('total Admins',count);
-            let currentAdminNo = count + 1;
-           // let currentAdminNo =  1;
-            const sku = `HJ-RENTAL-ADMIN-${currentAdminNo}`
-           // const sku = `HJ-RENTAL-ADMIN-${currentAdminNo}`
-            const saveUser = await Admin.create({ 
-                adminId: sku,
-                username: username,
-                role:`HJ-RENTAL-ADMIN`,
-                fname:fname,
-                lname:lname,
-                email:email,
-                password:encryptedPassword,
-                createdBy:superAdmin._id,
+  const currentAdminNo = count + 1;
+  const sku = `HJ-RENTAL-ADMIN-${currentAdminNo}`;
 
-            })
-        if(saveUser) sendResponse(res, 200, "Rental Admin Created Successfully", {saveUser});
-        
+  const data = await Admin.create({
+    adminId: sku,
+    username: username,
+    role: `HJ-RENTAL-ADMIN`,
+    fname: fname,
+    lname: lname,
+    email: email,
+    password: encryptedPassword,
+    createdBy: superAdmin._id,
+  });
+  return sendResponse(res, 200, "Rental Admin Created Successfully", data);
 };

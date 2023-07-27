@@ -1,7 +1,6 @@
 import { sendResponse } from "../../../shared/utils/helper.js";
 import superadminRouter from "./superadmin.js";
 import authRouter from "./auth.js";
-import adminRouter from "./admin.js";
 import propertyRouter from "./property.js";
 import tenantRouter from "./tenant.js";
 import ownerRouter from "./owner.js";
@@ -23,7 +22,7 @@ router.use("/super-admin", checkAuth(), superadminRouter);
 router.use("/category", checkAuth, adminCategory);
 router.use("/service", checkAuth, adminServiceRouter);
 
-router.use("/", checkAuth, adminRouter);
+//router.use("/", checkAuth, adminRouter);
 
 router.use((req, res) => {
   sendResponse(res, 404, "Route Not Found", null, { path: req.path });

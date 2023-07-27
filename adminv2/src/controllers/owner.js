@@ -1,10 +1,3 @@
-//import User from "../../../shared/models/user.js";
-import Inventory from "../../../shared/models/inventory.js";
-import Booking from "../../../shared/models/Booking.js";
-//import Bank from "../../../shared/models/bank.js";
-import RentalTransactions from "../../../shared/models/rentalTransactions.js";
-import { sendResponse } from "../../../shared/utils/helper.js";
-import RentalOwner from "../../../shared/models/rentalOwner.js";
 import axios from "axios";
 import User from "../../models/user.js";
 import Bank from "../../models/bank.js";
@@ -12,6 +5,7 @@ import Property from "../../models/property.js";
 import Contract from "../../models/contract.js";
 import Admin from "../../models/admin.js";
 import fs from "fs";
+import { sendResponse } from "../../../shared/utils/helper.js";
 
 export const getOwner = async (req, res) => {
   const mobile = req.params.mobile;

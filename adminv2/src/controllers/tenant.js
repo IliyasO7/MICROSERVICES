@@ -56,7 +56,7 @@ export const createTenant = async (req, res) => {
     contract.dueDate = dueDates;
     contract.commissionPercentage = req.body.commision;
     contract.tokenAdvance.amount = req.body.tokenAdvance;
-    contract.secuirityDeposit.amount = propertyDetails.depositAmount;
+    contract.securityDeposit.amount = propertyDetails.depositAmount;
     contract.createdBy = req.user._id;
 
     propertyDetails.tokenAmount = req.body.tokenAdvance;

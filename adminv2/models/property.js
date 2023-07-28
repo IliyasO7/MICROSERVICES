@@ -25,7 +25,7 @@ const schema = new mongoose.Schema(
     kitchenImages: [{ type: String, default: null }],
     bedroomImages: [{ type: String, default: null }],
     tokenAmount: { type: Number, default: null },
-    depositAmount: { type: Number },
+    securityDepositAmount: { type: Number }, // deposit amount change
     rentAmount: { type: Number, default: null, required: true },
     isOccupied: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false, required: true },

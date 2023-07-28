@@ -106,6 +106,13 @@ export const getTenantProperties = async (req, res) => {
   if (!contract) {
     return sendResponse(res, 200, "Data Not Found");
   }
-  const data = await Property.find({ proprietor: contract.proprietor }).lean();
+  let data = [];
+  for (const i = 0; i < contract.length; i++) {
+    const property = await Property.findOne({
+      proprietor: contract.proprietor[i],
+    }).lean();
+    data.push(property);
+  }
+
   return sendResponse(res, 200, "success", data);
 };

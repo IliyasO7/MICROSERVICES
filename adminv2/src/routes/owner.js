@@ -1,32 +1,29 @@
-import * as controller from "../controllers/owner.js";
-import Router from "express";
-import validation from "../validation/admin.js";
-import { validate, checkAuthAdmin } from "../../../shared/utils/helper.js";
-import multer from "multer";
-const upload = multer({ dest: "uplaod/" });
+import { Router } from 'express';
+import * as controller from '../controllers/owner.js';
+import * as validation from '../validation/admin.js';
+import { validate, checkAuthAdmin } from '../../../shared/utils/helper.js';
+import multer from 'multer';
+const upload = multer({ dest: 'uplaod/' });
 
 const router = Router();
 
-//get All Owners
-router.route("/all").get(controller.getAllOwners);
-
-//create and update owners
 router
-  .route("/")
-  .get(controller.getAdminOwners)
-  .post(validate(validation.saveUserOwner), controller.createOwner);
-//.patch(validate(validation.saveUserOwner), controller.updateOwner);
+  .route('/')
+  .get(controller.getOwners)
+  .post(validate(validation.createOwner), controller.createOwner);
 
-//get owner with mobile
-router.route("/:mobile").get(controller.getOwner);
+router.route('/:id').get(controller.getOwnerById);
 
-//add Owner with media
+router.get('/:id/properties', controller.getOwnerProperties);
+
+router.get('/:id/contracts', controller.getOwnerContracts);
+
 router.post(
-  "/:ownerId/media",
+  '/:id/media',
   upload.fields([
-    { name: "aadhar" },
-    { name: "pan" },
-    { name: "cancelledCheque" },
+    { name: 'aadhar' },
+    { name: 'pan' },
+    { name: 'cancelledCheque' },
   ]),
   controller.updateOwnerMedia
 );

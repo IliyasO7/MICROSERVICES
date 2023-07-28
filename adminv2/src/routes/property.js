@@ -1,38 +1,28 @@
-import * as controller from "../controllers/property.js";
-import Router from "express";
-import validation from "../validation/admin.js";
-import { validate, checkAuthAdmin } from "../../../shared/utils/helper.js";
-import multer from "multer";
-const upload = multer({ dest: "uplaod/" });
+import Router from 'express';
+import multer from 'multer';
+import * as controller from '../controllers/property.js';
+import * as validation from '../validation/property.js';
+import { validate, checkAuthAdmin } from '../../../shared/utils/helper.js';
+
+const upload = multer({ dest: 'uplaod/' });
 
 const router = Router();
 
-//add Property
 router
-  .route("/add/:ownerId")
-  .post(validate(validation.saveInventory), controller.createProperty);
+  .route('/')
+  .get(controller.getProperties)
+  .post(validate(validation.createProperty), controller.createProperty);
 
-//logged in admin inventories
-router.route("/").get(controller.getProperties);
+router.route('/:id').get(controller.getPropertyById);
 
-//all property
-router.route("/all").get(controller.getAllProperties);
-
-//Property wrt owner mobile
-router.route("/owner/:mobile").get(controller.getPropertyWithMobile);
-
-//Propert w.r.t propertyId
-router.route("/:propertyId").get(controller.getPropertyById);
-
-//update proerty images
 router.post(
-  "/:propertyId/media",
+  '/:propertyId/media',
   upload.fields([
-    { name: "mainImage" },
-    { name: "entranceImage" },
-    { name: "livingImage" },
-    { name: "kitchenImage" },
-    { name: "bedroomImage" },
+    { name: 'mainImage' },
+    { name: 'entranceImage' },
+    { name: 'livingImage' },
+    { name: 'kitchenImage' },
+    { name: 'bedroomImage' },
   ]),
   controller.updatePropertyImages
 );

@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
-import { getEnums } from '../../shared/utils/helper.js';
+import mongoose from "mongoose";
+import { getEnums } from "../../shared/utils/helper.js";
 
 export const ContractStatus = {
-  DRAFT: 'draft',
-  ACTIVE: 'active',
-  COMPLETED: 'completed',
-  TERMINATED: 'terminated',
-  SUSPENDED: 'suspended',
-  CANCELLED: 'cancelled',
+  DRAFT: "draft",
+  ACTIVE: "active",
+  COMPLETED: "completed",
+  TERMINATED: "terminated",
+  SUSPENDED: "suspended",
+  CANCELLED: "cancelled",
 };
 
 const schema = new mongoose.Schema(
@@ -18,20 +18,19 @@ const schema = new mongoose.Schema(
     },
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
       required: true,
     },
     proprietor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
       required: true,
     },
     property: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'property',
+      ref: "property",
       required: true,
     },
-
     moveInDate: { type: Date },
     moveOutDate: { type: Date },
     dueDate: { type: Date },
@@ -62,7 +61,7 @@ const schema = new mongoose.Schema(
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'admin',
+      ref: "admin",
       required: true,
     },
   },
@@ -75,6 +74,6 @@ schema.index({ contractId: 1 });
 schema.index({ tenant: 1 });
 schema.index({ proprietor: 1 });
 
-const Contract = mongoose.model('contract', schema);
+const Contract = mongoose.model("contract", schema);
 
 export default Contract;

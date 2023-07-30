@@ -1,16 +1,16 @@
-import axios from 'axios';
-import User from '../../models/user.js';
-import Bank from '../../models/bank.js';
-import Property from '../../models/property.js';
-import Contract from '../../models/contract.js';
-import fs from 'fs';
-import { sendResponse } from '../../../shared/utils/helper.js';
+import axios from "axios";
+import User from "../../models/user.js";
+import Bank from "../../models/bank.js";
+import Property from "../../models/property.js";
+import Contract from "../../models/contract.js";
+import fs from "fs";
+import { sendResponse } from "../../../shared/utils/helper.js";
 
 export const createOwner = async (req, res) => {
-  let user = await User.findOne({ mobile: phone });
+  let user = await User.findOne({ mobile: req.body.mobile });
 
   if (user?.proprietor?.isActive) {
-    return sendResponse(res, 400, 'Owner already exists');
+    return sendResponse(res, 400, "Owner already exists");
   }
 
   if (!user) {
@@ -39,32 +39,32 @@ export const createOwner = async (req, res) => {
   await user.save();
   await bank.save();
 
-  sendResponse(res, 200, 'Owner Added successful', user);
+  sendResponse(res, 200, "Owner Added successful", user);
 };
 
 export const getOwners = async (req, res) => {
   const filter = {
-    'proprietor.isActive': true,
+    "proprietor.isActive": true,
   };
 
-  if (req.query.mine == 'true') {
-    filter['proprietor.addedBy'] = req.user._id;
+  if (req.query.mine == "true") {
+    filter["proprietor.addedBy"] = req.user._id;
   }
 
   if (req.query.mobile) {
-    filter['mobile'] = req.query.mobile;
+    filter["mobile"] = req.query.mobile;
   }
 
   const data = await User.find(filter);
 
-  sendResponse(res, 200, 'success', data);
+  sendResponse(res, 200, "success", data);
 };
 
 export const getOwnerById = async (req, res) => {
   const data = await User.findById(req.params.id).lean();
-  if (!data) return sendResponse(res, 404, 'Owner does not exist');
+  if (!data) return sendResponse(res, 404, "Owner does not exist");
 
-  sendResponse(res, 200, 'success', data);
+  sendResponse(res, 200, "success", data);
 };
 
 export const updateOwnerMedia = async (req, res, next) => {
@@ -74,7 +74,7 @@ export const updateOwnerMedia = async (req, res, next) => {
     }).lean();
 
     if (!owner) {
-      return sendResponse(res, 400, 'Owner Does Not Exist');
+      return sendResponse(res, 400, "Owner Does Not Exist");
     }
     let data = {
       aadhaarDocument: undefined,
@@ -85,11 +85,11 @@ export const updateOwnerMedia = async (req, res, next) => {
 
     if (req.files.aadhar) {
       const options = {
-        method: 'PUT',
+        method: "PUT",
         url: `https://storage.bunnycdn.com/housejoy/owner/aadhars/${req.params.id}-${req.files.aadhar[0].originalname}`,
         headers: {
           AccessKey: process.env.BUNNYCDN_API_KEY,
-          'content-type': 'multipart/form-data',
+          "content-type": "multipart/form-data",
         },
         data: fs.readFileSync(req.files.aadhar[0].path),
       };
@@ -104,11 +104,11 @@ export const updateOwnerMedia = async (req, res, next) => {
 
     if (req.files.pan) {
       const options = {
-        method: 'PUT',
+        method: "PUT",
         url: `https://storage.bunnycdn.com/housejoy/owner/pan/${req.params.id}-${req.files.pan[0].originalname}`,
         headers: {
           AccessKey: process.env.BUNNYCDN_API_KEY,
-          'content-type': 'multipart/form-data',
+          "content-type": "multipart/form-data",
         },
         data: fs.readFileSync(req.files.pan[0].path),
       };
@@ -123,11 +123,11 @@ export const updateOwnerMedia = async (req, res, next) => {
 
     if (req.files.cancelledCheque) {
       const options = {
-        method: 'PUT',
+        method: "PUT",
         url: `https://storage.bunnycdn.com/housejoy/owner/cancelledCheque/${req.params.id}-${req.files.cancelledCheque[0].originalname}`,
         headers: {
           AccessKey: process.env.BUNNYCDN_API_KEY,
-          'content-type': 'multipart/form-data',
+          "content-type": "multipart/form-data",
         },
         data: fs.readFileSync(req.files.cancelledCheque[0].path),
       };
@@ -150,9 +150,7 @@ export const updateOwnerMedia = async (req, res, next) => {
       }
     );
 
-    res.json({
-      result: 'success',
-    });
+    sendResponse(res, 200, "success");
   } catch (err) {
     next(err);
   }
@@ -161,11 +159,11 @@ export const updateOwnerMedia = async (req, res, next) => {
 export const getOwnerProperties = async (req, res) => {
   const data = await Property.find({ proprietor: req.params.id }).lean();
 
-  sendResponse(res, 200, 'success', data);
+  sendResponse(res, 200, "success", data);
 };
 
 export const getOwnerContracts = async (req, res) => {
-  const data = await Contract.find({ proprietor: req.params.id }).kean();
+  const data = await Contract.find({ proprietor: req.params.id }).lean();
 
-  sendResponse(res, 200, 'success', data);
+  sendResponse(res, 200, "success", data);
 };

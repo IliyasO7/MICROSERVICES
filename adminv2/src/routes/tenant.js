@@ -8,14 +8,14 @@ const router = Router();
 //create,update and get tenant
 router
   .route("/")
-  .get(controller.getTenants)
-  .post(validate(validation.saveUserTenant), controller.createTenant);
+  .get(controller.getTenants) //done
+  .post(validate(validation.saveUserTenant), controller.createTenant); //done
 //.patch(validate(validation.saveUserTenant), controller.updateTenant);
 
-router.route("/:id").get(controller.getTenantById);
+router.route("/:id").get(controller.getTenantById); //done
 
-router.get("/:id/contracts", controller.getTenantContracts);
+router.get("/:id/contracts", controller.getTenantContracts); //done
 
-router.get("/:id/properties", controller.getTenantProperties);
+router.get("/:id/properties", controller.getTenantProperties); //pending
 
 export default router;

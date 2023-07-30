@@ -1,4 +1,3 @@
-import { request } from "http";
 import Joi from "joi";
 
 const adminCreate = Joi.object({
@@ -27,15 +26,15 @@ const adminlogin = Joi.object({
   password: Joi.string().required(),
 });
 
-const saveUserOwner = Joi.object({
+const createOwner = Joi.object({
   fname: Joi.string().required(),
   email: Joi.string().lowercase().email().required(),
   mobile: Joi.string().length(10).required(),
-  aadharCardNumber: Joi.number().min(12).required(),
-  panCardNumber: Joi.string().length(10).required(),
-  name: Joi.string().required(),
-  accountNumber: Joi.number().required(),
-  ifscCode: Joi.string().required(),
+  aadhaar: Joi.number().min(12).required(),
+  pan: Joi.string().length(10).required(),
+  bankName: Joi.string().required(),
+  bankAccountNo: Joi.number().required(),
+  bankIfsc: Joi.string().required(),
   isOwner: Joi.boolean().required(),
 });
 
@@ -77,7 +76,7 @@ export default {
   adminCreate,
   adminlogin,
   saveUserTenant,
-  saveUserOwner,
+  createOwner,
   saveInventory,
   addCategory,
   updateCategory,

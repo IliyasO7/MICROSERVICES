@@ -8,18 +8,23 @@ import { sendResponse } from "../../../shared/utils/helper.js";
 export const createTenant = async (req, res) => {
   let user = await User.findOne({ mobile: req.body.mobile });
   let propertyDetails = await Property.findOne({ _id: req.body.propertyId });
-
+  let contract;
   if (!propertyDetails) {
     return sendResponse(res, 400, "Property Does Not Exists");
   }
 
-  let contract = await Contract.findOne({
-    property: req.body.propertyId,
-    tenant: user._id,
-  });
-
-  if (contract) {
-    return sendResponse(res, 400, "Contract Already Exists With This Property");
+  if (user) {
+    contract = await Contract.findOne({
+      property: req.body.propertyId,
+      tenant: user._id,
+    });
+    if (contract) {
+      return sendResponse(
+        res,
+        400,
+        "Contract Already Exists With This Property"
+      );
+    }
   }
 
   if (user?.tenant?.isActive) {
@@ -39,6 +44,7 @@ export const createTenant = async (req, res) => {
     });
     await user.save();
   }
+  console.log("user", user);
 
   const dueDates = dayjs(req.body.moveInDate).add(1, "month").toDate();
   const totalContracts = await Contract.countDocuments({});
@@ -46,27 +52,28 @@ export const createTenant = async (req, res) => {
   const sku = `HJR${currentContractNo}`;
 
   if (!contract) {
-    contract.tenant = user._id;
-    contract.contractId = sku;
-    contract.property = req.body.propertyId;
-    contract.proprietor = propertyDetails.proprietor;
-    contract.rentAmount = propertyDetails.rent;
-    contract.moveInDate = req.body.moveInDate;
-    contract.moveOutDate = req.body.moveOutDate;
-    contract.dueDate = dueDates;
-    contract.commissionPercentage = req.body.commision;
-    contract.tokenAdvance.amount = req.body.tokenAdvance;
-    contract.securityDeposit.amount = propertyDetails.depositAmount;
-    contract.createdBy = req.user._id;
+    const contractData = await Contract.create({
+      tenant: user._id,
+      contractId: sku,
+      property: req.body.propertyId,
+      proprietor: propertyDetails.proprietor,
+      rentAmount: propertyDetails.rent,
+      moveInDate: req.body.moveInDate,
+      moveOutDate: req.body.moveOutDate,
+      dueDate: dueDates,
+      commissionPercentage: req.body.commision,
+      "tokenAdvance.amount": req.body.tokenAdvance,
+      "securityDeposit.amount": propertyDetails.depositAmount,
+      createdBy: req.user._id,
+    });
 
     propertyDetails.tokenAmount = req.body.tokenAdvance;
     await propertyDetails.save();
-    await contract.save();
 
     return sendResponse(res, 200, "Tenant And Contract Added successfully", {
       user,
       propertyDetails,
-      contract,
+      contractData,
     });
   }
 };
@@ -102,6 +109,7 @@ export const getTenantContracts = async (req, res) => {
 };
 
 export const getTenantProperties = async (req, res) => {
+  console.log("here in tenant");
   const contract = await Contract.find({ tenant: req.params.id }).lean();
   if (!contract) {
     return sendResponse(res, 200, "Data Not Found");
@@ -109,7 +117,7 @@ export const getTenantProperties = async (req, res) => {
   let data = [];
   for (const i = 0; i < contract.length; i++) {
     const property = await Property.findOne({
-      proprietor: contract.proprietor[i],
+      proprietor: contract[i].proprietor,
     }).lean();
     data.push(property);
   }

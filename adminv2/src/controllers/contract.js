@@ -16,10 +16,12 @@ export const getAllContracts = async (req, res) => {
 
 //GET Booking Details wrt id
 export const getContractById = async (req, res) => {
-  const filter = { _id: req.user._id };
+  console.log("inside contracts");
+  const filter = { _id: req.params.contractId };
   if (req.query.status) {
-    filter["status"] = req.query.status;
+    filter["mine"] = req.user._id;
   }
+
   const contract = await Contract.findOne(filter)
     .populate("property")
     .populate("proprietor")

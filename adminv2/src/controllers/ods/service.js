@@ -2,6 +2,7 @@ import { sendResponse } from "../../../../shared/utils/helper.js";
 import Service from "../../../models/ods/service.js";
 
 export const createService = async (req, res) => {
+  console.log("req body", req.body);
   const data = new Service({
     ...req.body,
   });

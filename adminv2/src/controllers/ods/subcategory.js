@@ -1,8 +1,9 @@
-import Category from "../../../models/ods/category.js";
+import Category from "../../../../shared/models/category.js";
+import ServiceSubcategory from "../../../models/ods/subcategory.js";
 import { sendResponse } from "../../../../shared/utils/helper.js";
 
-export const createCategory = async (req, res) => {
-  const data = new Category({
+export const createSubCategory = async (req, res) => {
+  const data = new ServiceSubcategory({
     ...req.body,
   });
 
@@ -11,7 +12,7 @@ export const createCategory = async (req, res) => {
   sendResponse(res, 200, "success", data);
 };
 
-export const getCategory = async (req, res) => {
+export const getSubCategory = async (req, res) => {
   const filter = {};
 
   if (req.query.name) {
@@ -22,20 +23,20 @@ export const getCategory = async (req, res) => {
     filter["isEnabled"] = req.query.isEnabled;
   }
 
-  const data = await Category.find(filter).lean();
+  const data = await ServiceSubcategory.find(filter).lean();
 
   sendResponse(res, 200, "success", data);
 };
 
-export const getCategoryById = async (req, res) => {
-  const data = await Category.findById(req.params.id).lean();
+export const getSubCategoryById = async (req, res) => {
+  const data = await ServiceSubcategory.findById(req.params.id).lean();
   if (!data) return sendResponse(res, 404, "category not found");
 
   sendResponse(res, 200, "success", data);
 };
 
-export const updateCategory = async (req, res) => {
-  const data = await Category.findById(req.params.id);
+export const updateSubCategory = async (req, res) => {
+  const data = await ServiceSubcategory.findById(req.params.id);
   if (!data) return sendResponse(res, 404, "category not found");
 
   Object.assign(data, req.body);
@@ -45,8 +46,8 @@ export const updateCategory = async (req, res) => {
   sendResponse(res, 200, "success", data);
 };
 
-export const deleteCategory = async (req, res) => {
-  const data = await Category.findById(req.params.id);
+export const deleteSubCategory = async (req, res) => {
+  const data = await ServiceSubcategory.findById(req.params.id);
   if (!data) return sendResponse(res, 404, "category not found");
 
   await data.deleteOne();

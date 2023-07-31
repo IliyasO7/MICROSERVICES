@@ -21,10 +21,7 @@ router.use("/tenants", checkAuth(), tenantRouter);
 router.use("/contracts", checkAuth(), contractRouter);
 router.use("/super-admin", checkAuth(), superadminRouter);
 
-router.use("/ods/categories", checkAuth(), odsCategoryRouter);
-router.use("/ods/services", checkAuth(), odsServiceRouter);
-
-//router.use("/", checkAuth, adminRouter);
+router.use("/super-admin", checkAuth(), superadminRouter);
 
 router.use((req, res) => {
   sendResponse(res, 404, "Route Not Found", null, { path: req.path });

@@ -4,10 +4,13 @@ import User from '../models/user.js';
 import Admin from '../models/admin.js';
 import Vendor from '../models/vendor.js';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 export const getEnums = (obj) => {
   return Object.values(obj);
 };
+
+export const ObjectId = mongoose.Schema.Types.ObjectId;
 
 export const sendResponse = (
   res,

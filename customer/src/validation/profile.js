@@ -13,19 +13,21 @@ export const updateProfile = joi.object({
 });
 
 export const createAddress = joi.object({
+  mobile: joi.string(),
   address: joi.string().required(),
+  landmark: joi.string().allow(''),
   city: joi.string().lowercase().required(),
   state: joi.string().lowercase().required(),
   pincode: joi.string().length(6).required(),
-  country: joi.string().min(2).lowercase().required(),
 });
 
 export const updateAddress = joi.object({
+  mobile: joi.string(),
   address: joi.string(),
+  landmark: joi.string().allow(''),
   city: joi.string().lowercase(),
   state: joi.string().lowercase(),
   pincode: joi.string().length(6),
-  country: joi.string().min(2).lowercase(),
 });
 
 export const createBankAccount = joi.object({

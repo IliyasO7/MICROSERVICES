@@ -1,11 +1,10 @@
 import bcrypt from 'bcrypt';
-import { generateOtp,sendResponse } from '../../../shared/utils/helper.js';
+import { generateOtp, sendResponse } from '../../../shared/utils/helper.js';
 import redis from '../../../shared/utils/redis.js';
-import User from '../../../shared/models/user.js';
+import User from '../../models/user.js';
 import { generateTokens } from '../../../shared/utils/token.js';
 
 export const sendOtp = async (req, res) => {
-  console.log('hello');
   const otp = '0000' || generateOtp();
 
   await redis.setEx(
@@ -39,13 +38,15 @@ export const verifyOtp = async (req, res) => {
   let user = await User.findOne({ mobile: req.body.mobile });
 
   if (!user) {
-    console.log('creating user...');
     user = await User.create({ mobile: req.body.mobile });
   }
 
   await redis.del(key);
 
-  const { accessToken } = generateTokens({ userId: user._id });
+  const tokens = generateTokens({ userId: user._id });
 
-  sendResponse(res, 200, 'Otp Verified', { user: user.toJSON(), accessToken });
+  sendResponse(res, 200, 'Otp Verified', {
+    accessToken: tokens.accessToken,
+    isProfileCompleted: user.isProfileCompleted,
+  });
 };

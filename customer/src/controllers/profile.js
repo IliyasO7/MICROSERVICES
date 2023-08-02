@@ -1,17 +1,14 @@
 import Address from '../../../shared/models/address.js';
 import Bank from '../../../shared/models/bank.js';
-import User from '../../../shared/models/user.js';
+import User from '../../models/user.js';
 import { sendResponse } from '../../../shared/utils/helper.js';
 
 export const getProfile = async (req, res) => {
-  const user = await User.findById(req.userId).lean();
-  if (!user) return sendResponse(res, 401, 'user not found');
-
-  sendResponse(res, 200, 'success', user);
+  sendResponse(res, 200, 'success', req.user);
 };
 
 export const createProfile = async (req, res) => {
-  const user = await User.findById(req.userId);
+  const user = await User.findById(req.user._id);
   if (!user) return sendResponse(res, 401, 'user not found');
 
   Object.assign(user, req.body);
@@ -20,11 +17,11 @@ export const createProfile = async (req, res) => {
 
   await user.save();
 
-  sendResponse(res, 201, 'success');
+  sendResponse(res, 200, 'success');
 };
 
 export const updateProfile = async (req, res) => {
-  const user = await User.findById(req.userId);
+  const user = await User.findById(req.user._id);
   if (!user) return sendResponse(res, 401, 'user not found');
 
   Object.assign(user, req.body);
@@ -36,23 +33,14 @@ export const updateProfile = async (req, res) => {
 
 // address
 export const getAddresses = async (req, res) => {
-  const data = await Address.find({ user: req.userId }).lean();
+  const data = await Address.find({ user: req.user._id }).lean();
   sendResponse(res, 200, 'success', data);
 };
 
 export const createAddress = async (req, res) => {
   const address = await Address.create({
-    user: req.userId,
-    isDefault:true,
-    ...req.body,
-  });
-  sendResponse(res, 201, 'success', address);
-};
-
-export const addAddress = async (req, res) => {
-  const address = await Address.create({
-    user: req.userId,
-    isDefault:false,
+    user: req.user._id,
+    mobile: req.user.mobile,
     ...req.body,
   });
   sendResponse(res, 201, 'success', address);
@@ -61,7 +49,7 @@ export const addAddress = async (req, res) => {
 export const getAddressById = async (req, res) => {
   const address = await Address.findOne({
     _id: req.params.id,
-    user: req.userId,
+    user: req.user._id,
   }).lean();
   if (!address) return sendResponse(res, 404, 'address not found');
 
@@ -71,7 +59,7 @@ export const getAddressById = async (req, res) => {
 export const updateAddress = async (req, res) => {
   const address = await Address.findOne({
     _id: req.params.id,
-    user: req.userId,
+    user: req.user._id,
   });
   if (!address) return sendResponse(res, 404, 'address not found');
 
@@ -83,36 +71,36 @@ export const updateAddress = async (req, res) => {
 };
 
 export const deleteAddress = async (req, res) => {
-  await Address.deleteOne({ _id: req.params.id, user: req.userId });
+  await Address.deleteOne({ _id: req.params.id, user: req.user._id });
   sendResponse(res, 200, 'success');
 };
 
 export const setDefaultAddress = async (req, res) => {
   const address = await Address.findOne({
     _id: req.params.id,
-    user: req.userId,
+    user: req.user._id,
   });
   if (!address) return sendResponse(res, 404, 'address not found');
 
-  await Address.updateMany(
-    { _id: { $ne: address._id }, user: req.userId },
-    { isDefault: req.body.default }
-  );
+  await Address.updateMany({ user: req.user._id }, { isDefault: false });
+
+  address.isDefault = true;
+
+  await address.save();
 
   sendResponse(res, 200, 'success');
 };
 
 // bankAccount
 export const getBankAccounts = async (req, res) => {
-  const data = await Bank.find({ user: req.userId }).lean();
+  const data = await Bank.find({ user: req.user._id }).lean();
   sendResponse(res, 200, 'success', data);
 };
 
 export const createBankAccount = async (req, res) => {
   const bankAccount = await Bank.create({
-    user: req.userId,
+    user: req.user._id,
     ...req.body,
-    isDefault:true
   });
   sendResponse(res, 201, 'success', bankAccount);
 };
@@ -120,7 +108,7 @@ export const createBankAccount = async (req, res) => {
 export const getBankAccountById = async (req, res) => {
   const bankAccount = await Bank.findOne({
     _id: req.params.id,
-    user: req.userId,
+    user: req.user._id,
   }).lean();
   if (!bankAccount) return sendResponse(res, 404, 'bank account not found');
 
@@ -130,7 +118,7 @@ export const getBankAccountById = async (req, res) => {
 export const updateBankAccount = async (req, res) => {
   const bankAccount = await Bank.findOne({
     _id: req.params.id,
-    user: req.userId,
+    user: req.user._id,
   });
   if (!bankAccount) return sendResponse(res, 404, 'bank account not found');
 
@@ -142,21 +130,22 @@ export const updateBankAccount = async (req, res) => {
 };
 
 export const deleteBankAccount = async (req, res) => {
-  await Bank.deleteOne({ _id: req.params.id, user: req.userId });
+  await Bank.deleteOne({ _id: req.params.id, user: req.user._id });
   sendResponse(res, 200, 'success');
 };
 
 export const setDefaultBankAccount = async (req, res) => {
-  const bankAccount = await bankAccount.findOne({
+  const bankAccount = await Bank.findOne({
     _id: req.params.id,
-    user: req.userId,
+    user: req.user._id,
   });
   if (!bankAccount) return sendResponse(res, 404, 'bank account not found');
 
-  await Bank.updateMany(
-    { _id: { $ne: bankAccount._id }, user: req.userId },
-    { isDefault: false }
-  );
+  await Bank.updateMany({ user: req.user._id }, { isDefault: false });
+
+  bankAccount.isDefault = true;
+
+  await bankAccount.save();
 
   sendResponse(res, 200, 'success');
 };

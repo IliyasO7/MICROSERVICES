@@ -16,15 +16,13 @@ router
   .get(controller.getAddresses)
   .post(validate(validation.createAddress), controller.createAddress);
 
-  router
-  .route('/new-address')
-  .post(validate(validation.createAddress), controller.addAddress);
-
 router
   .route('/addresses/:id')
   .get(controller.getAddressById)
   .patch(validate(validation.updateAddress), controller.updateAddress)
   .delete(controller.deleteAddress);
+
+router.post('/addresses/:id/set-default', controller.setDefaultAddress);
 
 router
   .route('/bank-accounts')
@@ -36,5 +34,7 @@ router
   .get(controller.getBankAccountById)
   .patch(validate(validation.updateBankAccount), controller.updateBankAccount)
   .delete(controller.deleteBankAccount);
+
+router.post('/bank-accounts/:id/set-default', controller.setDefaultBankAccount);
 
 export default router;

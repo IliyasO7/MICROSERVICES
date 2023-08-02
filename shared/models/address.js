@@ -3,11 +3,13 @@ import mongoose from 'mongoose';
 const schema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
-    address: { type: String, default: null, required: true },
-    city: { type: String, default: null, required: true },
-    state: { type: String, default: null, required: true },
-    pincode: { type: String, default: null, required: true },
-    country: { type: String, default: null, required: true },
+    mobile: { type: String },
+    address: { type: String, default: null },
+    landmark: { type: String, default: '' },
+    city: { type: String, default: null },
+    state: { type: String, default: null },
+    pincode: { type: String, default: null },
+    country: { type: String, default: 'in' },
     isDefault: { type: Boolean, default: false },
   },
   {

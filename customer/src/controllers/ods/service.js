@@ -1,4 +1,4 @@
-import Service from "../../../models/ods/service";
+import Service from "../../../models/ods/service.js";
 
 export const getServices = async (req, res) => {
   const filter = {};

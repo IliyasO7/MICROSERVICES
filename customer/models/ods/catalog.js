@@ -9,6 +9,6 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const ServiceCategory = mongoose.model('serviceCategory', schema);
+const ServiceCatalog = mongoose.model('serviceCatalog', schema);
 
-export default ServiceCategory;
+export default ServiceCatalog;

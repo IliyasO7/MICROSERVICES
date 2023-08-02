@@ -3,6 +3,7 @@ import authRoutes from "./auth.js";
 import profileRoutes from "./profile.js";
 import ownerRoutes from "./owner.js";
 import tenantRoutes from "./tenant.js";
+import serviceRoutes from "./service.js";
 
 import Router from "express";
 import { checkAuth } from "../middleware/checkAuth.js";
@@ -14,6 +15,7 @@ router.use("/auth", authRoutes);
 router.use("/profile", checkAuth(), profileRoutes);
 router.use("/owner", checkAuth(), ownerRoutes);
 router.use("/tenant", checkAuth(), tenantRoutes);
+router.use("/service", checkAuth());
 
 router.use((req, res) => {
   sendResponse(res, 404, "Route Not Found", null, { path: req.path });

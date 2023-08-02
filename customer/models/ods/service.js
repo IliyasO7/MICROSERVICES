@@ -9,7 +9,7 @@ const schema = new mongoose.Schema(
     videos: [String],
     category: { type: String, enum: getEnums(ServiceCategory) },
     hsn: { type: String },
-    gstPercentage: { type: Number },
+    taxPercentage: { type: Number },
     isEnabled: { type: Boolean, default: true },
   },
   { timestamps: true }

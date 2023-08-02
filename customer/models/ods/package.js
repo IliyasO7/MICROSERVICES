@@ -20,7 +20,6 @@ const schema = new mongoose.Schema(
     },
     images: [String],
     videos: [String],
-    category: { type: String },
     service: { type: ObjectId, ref: 'service' },
     price: { type: Number },
     time: { type: Number },

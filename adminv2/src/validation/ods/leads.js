@@ -25,7 +25,7 @@ export const createLeads = joi.object({
     receiptNo: joi.string(),
     document: joi.string(),
   }),
-  serviceAreas: joi.array().items(joi.string()),
+  serviceAreas: joi.array().items(joi.number()),
 });
 
 export const updateLeads = joi.object({

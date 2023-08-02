@@ -1,8 +1,8 @@
-import joi from 'joi';
+import joi from "joi";
 
 const descriptionList = joi.array().items(
   joi.object({
-    title: joi.string().allow(''),
+    title: joi.string().allow(""),
     description: joi.string().required(),
     image: joi.string(),
   })
@@ -34,7 +34,7 @@ export const createService = joi.object({
     excluded: descriptionList,
   }),
   category: joi.string().required(),
-  subcategory: joi.string().required(),
+  catalog: joi.string().required(),
   price: joi.number().required(),
   time: joi.number().required(),
   maxQuantity: joi.number().allow(null),

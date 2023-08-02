@@ -11,15 +11,11 @@ export const createCategory = async (req, res) => {
   sendResponse(res, 200, 'success', data);
 };
 
-export const getCategory = async (req, res) => {
+export const getCategories = async (req, res) => {
   const filter = {};
 
   if (req.query.name) {
     filter['name'] = new RegExp(req.query.name, 'i');
-  }
-
-  if (req.query.catalog) {
-    (filter['catalog'] = req), query.catalog;
   }
 
   if (req.query.isEnabled) {

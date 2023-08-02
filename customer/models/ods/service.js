@@ -1,37 +1,19 @@
 import mongoose from 'mongoose';
-import { ObjectId } from '../../../shared/utils/helper.js';
-
-const List = new mongoose.Schema(
-  {
-    title: { type: String },
-    description: { type: String },
-    image: { type: String },
-  },
-  { _id: false }
-);
+import { getEnums } from '../../../shared/utils/helper.js';
+import { ServiceCategory } from '../../../shared/utils/constants.js';
 
 const schema = new mongoose.Schema(
   {
     name: { type: String },
-    description: {
-      short: String,
-      included: [List],
-      excluded: [List],
-    },
-    images: [String],
+    image: { type: String },
     videos: [String],
-    catalog: { type: ObjectId, ref: 'serviceCatalog' },
-    category: { type: ObjectId, ref: 'serviceCategory' },
-    price: { type: Number },
-    time: { type: Number },
-    maxQuantity: { type: Number, default: null },
+    category: { type: String, enum: getEnums(ServiceCategory) },
+    hsn: { type: String },
+    gstPercentage: { type: Number },
+    isEnabled: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
-
-schema.add({
-  subServices: [schema],
-});
 
 const Service = mongoose.model('service', schema);
 

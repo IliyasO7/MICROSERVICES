@@ -28,8 +28,8 @@ const schema = new mongoose.Schema(
       receiptNo: { type: String },
       document: { type: String },
     },
-    serviceAreas: [Number],
-    serviceCategories: [{ type: ObjectId, ref: 'serviceCategory' }],
+    services: [{ type: ObjectId, ref: 'service' }],
+    serviceAreas: [String],
   },
   { timestamps: true }
 );

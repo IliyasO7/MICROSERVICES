@@ -1,5 +1,5 @@
-import { sendResponse } from '../../../../shared/utils/helper.js';
 import Service from '../../../models/ods/service.js';
+import { sendResponse } from '../../../../shared/utils/helper.js';
 
 export const createService = async (req, res) => {
   const data = new Service({
@@ -18,12 +18,12 @@ export const getServices = async (req, res) => {
     filter['name'] = new RegExp(req.query.name, 'i');
   }
 
-  if (req.query.catalog) {
-    filter['catalog'] = req.query.catalog;
-  }
-
   if (req.query.category) {
     filter['category'] = req.query.category;
+  }
+
+  if (req.query.isEnabled) {
+    filter['isEnabled'] = req.query.isEnabled;
   }
 
   const data = await Service.find(filter).lean();
@@ -32,10 +32,7 @@ export const getServices = async (req, res) => {
 };
 
 export const getServiceById = async (req, res) => {
-  const data = await Service.findById(req.params.id)
-    .lean()
-    .populate('catalog')
-    .populate('category');
+  const data = await Service.findById(req.params.id).lean();
   if (!data) return sendResponse(res, 404, 'service not found');
 
   sendResponse(res, 200, 'success', data);

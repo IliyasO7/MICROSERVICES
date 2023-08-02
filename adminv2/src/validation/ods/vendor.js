@@ -4,7 +4,7 @@ export const createVendor = joi.object({
   businessName: joi.string().required(),
   businessType: joi.string().required(),
   address: joi.string().required(),
-  gstNo: joi.string(),
+  gstNo: joi.string().length(15),
   gstDocument: joi.string(),
   agreementDocument: joi.string(),
   authorizedPerson: joi.object({
@@ -12,7 +12,7 @@ export const createVendor = joi.object({
     mobile: joi.string(),
     address: joi.string(),
     password: joi.string(),
-    aadhaarNo: joi.string(),
+    aadhaarNo: joi.string().length(12),
     aadhaarDocument: joi.string(),
   }),
   bank: joi.object({
@@ -25,8 +25,8 @@ export const createVendor = joi.object({
     receiptNo: joi.string(),
     document: joi.string(),
   }),
-  serviceAreas: joi.array().items(joi.number()),
-  serviceCatagories: joi.array().items(joi.string()),
+  services: joi.array().items(joi.string()),
+  serviceAreas: joi.array().items(joi.string()),
 });
 
 export const updateVendor = joi.object({
@@ -54,5 +54,6 @@ export const updateVendor = joi.object({
     receiptNo: joi.string(),
     document: joi.string(),
   }),
-  serviceAreas: joi.array().items(joi.number()),
+  services: joi.array().items(joi.string()),
+  serviceAreas: joi.array().items(joi.string()),
 });

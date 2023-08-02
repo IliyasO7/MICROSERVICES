@@ -1,26 +1,19 @@
-import { Router } from "express";
-import * as controller from "../../controllers/ods/category.js";
-import * as validation from "../../validation/ods/category.js";
-import { validate } from "../../../../shared/utils/helper.js";
+import { Router } from 'express';
+import * as controller from '../../controllers/ods/category.js';
+import * as validation from '../../validation/ods/category.js';
+import { validate } from '../../../../shared/utils/helper.js';
 
 const router = Router();
 
 router
-  .route("/")
+  .route('/')
   .get(controller.getCategory)
   .post(validate(validation.createCategory), controller.createCategory);
 
 router
-  .route("/:id")
+  .route('/:id')
   .get(controller.getCategoryById)
   .patch(validate(validation.updateCategory), controller.updateCategory)
   .delete(controller.deleteCategory);
-
-/*
-router
-  .route('/')
-  .get(controller.getServices)
-  .post(validate(validation.createService), controller.createService);
-*/
 
 export default router;

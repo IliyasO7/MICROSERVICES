@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import { ObjectId } from '../../../shared/utils/helper.js';
 
 const schema = new mongoose.Schema(
   {
     vendorId: { type: String },
     businessName: { type: String },
-    businessType: { type: String, enum: ["b2b", "b2c"] },
+    businessType: { type: String, enum: ['b2b', 'b2c'] },
     address: { type: String },
     gstNo: { type: String },
     gstDocument: { type: String },
@@ -27,11 +28,12 @@ const schema = new mongoose.Schema(
       receiptNo: { type: String },
       document: { type: String },
     },
-    serviceAreas: [String],
+    serviceAreas: [Number],
+    serviceCategories: [{ type: ObjectId, ref: 'serviceCategory' }],
   },
   { timestamps: true }
 );
 
-const Vendor = mongoose.model("vendor", schema);
+const Vendor = mongoose.model('vendor', schema);
 
 export default Vendor;

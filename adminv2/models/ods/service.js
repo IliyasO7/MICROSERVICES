@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { ObjectId } from "../../../shared/utils/helper.js";
+import mongoose from 'mongoose';
+import { ObjectId } from '../../../shared/utils/helper.js';
 
 const List = new mongoose.Schema(
   {
@@ -20,8 +20,8 @@ const schema = new mongoose.Schema(
     },
     images: [String],
     videos: [String],
-    category: { type: ObjectId, ref: "serviceCategory" },
-    subcategory: { type: ObjectId, ref: "serviceSubcategory" },
+    catalog: { type: ObjectId, ref: 'serviceCatalog' },
+    category: { type: ObjectId, ref: 'serviceCategory' },
     price: { type: Number },
     time: { type: Number },
     maxQuantity: { type: Number, default: null },
@@ -33,6 +33,6 @@ schema.add({
   subServices: [schema],
 });
 
-const Service = mongoose.model("service", schema);
+const Service = mongoose.model('service', schema);
 
 export default Service;

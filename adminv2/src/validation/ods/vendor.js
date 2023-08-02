@@ -1,4 +1,4 @@
-import joi from "joi";
+import joi from 'joi';
 
 export const createVendor = joi.object({
   businessName: joi.string().required(),
@@ -25,13 +25,14 @@ export const createVendor = joi.object({
     receiptNo: joi.string(),
     document: joi.string(),
   }),
-  serviceAreas: joi.array().items(joi.string()),
+  serviceAreas: joi.array().items(joi.number()),
+  serviceCatagories: joi.array().items(joi.string()),
 });
 
 export const updateVendor = joi.object({
-  businessName: joi.string().required(),
-  businessType: joi.string().required(),
-  address: joi.string().required(),
+  businessName: joi.string(),
+  businessType: joi.string(),
+  address: joi.string(),
   gstNo: joi.string(),
   gstDocument: joi.string(),
   agreementDocument: joi.string(),
@@ -53,5 +54,5 @@ export const updateVendor = joi.object({
     receiptNo: joi.string(),
     document: joi.string(),
   }),
-  serviceAreas: joi.array().items(joi.string()),
+  serviceAreas: joi.array().items(joi.number()),
 });

@@ -1,17 +1,14 @@
-import { Router } from "express";
-import serviceRoutes from "./service.js";
-import categoryRoutes from "./category.js";
-import subCategoryRoutes from "./subcategory.js";
-import vendorRoutes from "./vendor.js";
+import { Router } from 'express';
+import serviceRoutes from './service.js';
+import catalogRoutes from './catalog.js';
+import categoryRoutes from './category.js';
+import vendorRoutes from './vendor.js';
 
 const router = Router();
 
-router.use("/services", serviceRoutes);
-router.use("/category", categoryRoutes);
-//router.use("/sub-category", subCategoryRoutes);
-router.use("/sub-category", subCategoryRoutes);
-router.use("/vendors", vendorRoutes);
-
-//router.use("");
+router.use('/services', serviceRoutes);
+router.use('/catalogs', catalogRoutes);
+router.use('/categories', categoryRoutes);
+router.use('/vendors', vendorRoutes);
 
 export default router;

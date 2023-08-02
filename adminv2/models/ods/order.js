@@ -1,12 +1,9 @@
 import mongoose from 'mongoose';
-import { ObjectId } from '../../../shared/utils/helper.js';
+import { ObjectId } from '../../../shared/utils/helper';
 
 const schema = new mongoose.Schema(
   {
-    user: {
-      type: ObjectId,
-      ref: 'User',
-    },
+    user: { type: ObjectId, ref: 'User' },
     services: [
       {
         serviceId: { type: ObjectId, ref: 'service' },
@@ -16,12 +13,11 @@ const schema = new mongoose.Schema(
         amount: { type: Number, default: 0 },
       },
     ],
-    totalAmount: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true },
+    status: { type: String },
   },
   { timestamps: true }
 );
 
-const Cart = mongoose.model('cart', schema);
+const Order = mongoose.model('order', schema);
 
-export default Cart;
+export default Order;

@@ -3,38 +3,30 @@ import bcrypt from "bcrypt";
 import { generateTokens } from "../../../shared/utils/token.js";
 import { sendResponse } from "../../../shared/utils/helper.js";
 
+//register super Admin
 export const register = async (req, res) => {
-  const username = req.body.username;
-  const role = req.body.role;
-  const fname = req.body.fname;
-  const lname = req.body.lname;
-  const email = req.body.email;
-  const password = req.body.password;
-
-  const encryptedPassword = await bcrypt.hash(password, 10);
-  const adminExists = await Admin.findOne({ email: email });
+  const encryptedPassword = await bcrypt.hash(req.body.password, 10);
+  const adminExists = await Admin.findOne({ email: req.body.email });
 
   if (adminExists) {
     return sendResponse(res, 400, "Admin Already Exists");
   }
 
-  const totalAdmins = await Admin.find({ role: "HJ-SUPER-ADMIN" });
-  const count = totalAdmins.length;
-  const currentAdminNo = count + 1;
-  // let currentAdminNo =  1;
-  const sku = `HJ-SUPER-ADMIN-${currentAdminNo}`;
+  const totalAdmins = await Admin.find({ role: req.body.role });
+  let count = totalAdmins.length;
+  count = count + 1;
+  const sku = `HJ-${req.body.role}-${count}`;
 
   const data = await Admin.create({
     adminId: sku,
-    username: username,
-    role: `HJ-SUPER-ADMIN`,
-    fname: fname,
-    lname: lname,
-    email: email,
+    username: req.body.username,
+    role: req.body.role,
+    fname: req.body.fname,
+    lname: req.body.lname,
+    email: req.body.email,
     password: encryptedPassword,
   });
-  if (saveUser)
-    sendResponse(res, 200, "Super Admin Created Successfully", data);
+  return sendResponse(res, 200, "Admin Registered Successfully", data);
 };
 
 export const login = async (req, res) => {

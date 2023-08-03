@@ -13,7 +13,6 @@ export const getOverview = async (req, res) => {
   };
 
   const admin = req.user._id;
-  console.log("user is:", admin);
 
   const userTenantCount = await User.countDocuments({
     "tenant.addedBy": req.user._id,

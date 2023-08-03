@@ -16,6 +16,4 @@ router.route("/:id").get(controller.getTenantById); //done
 
 router.get("/:id/contracts", controller.getTenantContracts); //done
 
-router.get("/:id/properties", controller.getTenantProperties); //pending
-
 export default router;

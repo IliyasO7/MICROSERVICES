@@ -5,6 +5,8 @@ import Property from "../../models/property.js";
 import Contract from "../../models/contract.js";
 import fs from "fs";
 import { sendResponse } from "../../../shared/utils/helper.js";
+import multer from "multer";
+import { S3Client } from "@aws-sdk/client-s3";
 
 export const createOwner = async (req, res) => {
   let user = await User.findOne({ mobile: req.body.mobile });
@@ -164,6 +166,31 @@ export const getOwnerProperties = async (req, res) => {
 
 export const getOwnerContracts = async (req, res) => {
   const data = await Contract.find({ proprietor: req.params.id }).lean();
+
+  sendResponse(res, 200, "success", data);
+};
+
+export const uploadingToS3 = async (req, res) => {
+  const s3 = new S3Client({
+    credentials: {
+      accessKeyId: process.env.ACCESSKEY, // store it in .env file to keep it safe
+      secretAccessKey: process.env.SECRETKEY,
+    },
+    region: "ap-south-1", // this is the region that you select in AWS account
+  });
+
+  const s3Storage = multerS3({
+    s3: s3, //s3 instance
+    bucket: process.env.BUCKETNAME, //change it as per your project requirement
+    acl: "public-read", //storage access type
+    metadata: (req, file, cb) => {
+      cb(null, { fieldname: file.fieldname });
+    },
+    key: (req, file, cb) => {
+      const fileName = Date.now() + "_" + file.originalname;
+      cb(null, fileName);
+    },
+  });
 
   sendResponse(res, 200, "success", data);
 };

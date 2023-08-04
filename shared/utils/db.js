@@ -1,5 +1,3 @@
-// import "../models/index";
-
 import mongoose from 'mongoose';
 
 mongoose.set('strictQuery', true);
@@ -20,16 +18,6 @@ mongoose.set('debug', (collectionName, methodName, methodArgs) => {
 mongoose.connection.on('error', console.log);
 
 export async function connectMongoDB() {
-  console.log(process.env.MONGODB_URL);
-  await mongoose.connect(process.env.MONGODB_URL, {
-    dbName: 'housejoy-prod',
-  });
-
-  console.log('MongoDB is connected');
-}
-
-export async function connectMongoDBDev() {
-  console.log(process.env.MONGODB_URL);
   await mongoose.connect(process.env.MONGODB_URL, {
     dbName: 'dev',
   });

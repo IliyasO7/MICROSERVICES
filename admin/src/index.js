@@ -1,11 +1,11 @@
-import 'express-async-errors'
+import "express-async-errors";
 import "../../shared/models/index.js";
 import "./utils/config.js";
 import boot from "./utils/boot.js";
 import express from "express";
 import { sendResponse } from "../../shared/utils/helper.js";
 import routes from "./routes/index.js";
-
+import fileUpload from "express-fileupload";
 const app = express();
 
 app.set("reverse proxy", 1);
@@ -21,6 +21,7 @@ app.use(
     extended: true,
   })
 );
+app.use(fileUpload({}));
 
 app.use(routes);
 app.get("/", (req, res) => {
@@ -28,7 +29,7 @@ app.get("/", (req, res) => {
 });
 app.use((err, req, res, next) => {
   console.error(err);
-  sendResponse(res, 500, "internal server error",null,err);
+  sendResponse(res, 500, "internal server error", null, err);
 });
 
 boot().then(() => {

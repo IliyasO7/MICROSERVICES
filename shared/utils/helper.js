@@ -1,8 +1,8 @@
 import cryptoRandomString from "crypto-random-string";
 import client from "axios";
-import User from "../models/user.js";
-import Admin from "../models/admin.js";
-import Vendor from "../models/vendor.js";
+import User from "../../shared/models/user.js";
+import Admin from "../../shared/models/admin.js";
+import Vendor from "../../shared/models/ods/vendor.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 

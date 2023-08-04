@@ -1,19 +1,19 @@
-import { sendResponse } from '../../../../shared/utils/helper.js';
-import Contract from '../../../models/contract.js';
-import ContractPayment from '../../../models/contractPayment.js';
+import { sendResponse } from "../../../../shared/utils/helper.js";
+import Contract from "../../../../shared/models/rental/contract.js";
+import ContractPayment from "../../../../shared/models/rental/contractPayment.js";
 
 export const getContracts = async (req, res) => {
   const filter = { proprietor: req.user._id };
 
   if (req.query.status) {
-    filter['status'] = req.query.status;
+    filter["status"] = req.query.status;
   }
   const data = await Contract.find(filter)
-    .populate('property')
-    .populate('tenant')
+    .populate("property")
+    .populate("tenant")
     .lean();
 
-  return sendResponse(res, 200, 'Contracts Fetched Successfully', data);
+  return sendResponse(res, 200, "Contracts Fetched Successfully", data);
 };
 
 export const getContractById = async (req, res) => {
@@ -22,11 +22,11 @@ export const getContractById = async (req, res) => {
     _id: req.params.id,
     tenant: userId,
   })
-    .populate('property')
-    .populate('tenant')
+    .populate("property")
+    .populate("tenant")
     .lean();
 
-  return sendResponse(res, 200, 'Contracts Fetched Successfully', data);
+  return sendResponse(res, 200, "Contracts Fetched Successfully", data);
 };
 
 export const getPayments = async (req, res) => {
@@ -34,5 +34,5 @@ export const getPayments = async (req, res) => {
     contract: req.params.id,
   }).lean();
 
-  return sendResponse(res, 200, 'Contracts Payments Successfully', data);
+  return sendResponse(res, 200, "Contracts Payments Successfully", data);
 };

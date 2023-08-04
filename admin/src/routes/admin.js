@@ -1,12 +1,10 @@
-import * as controller from "../controllers/admin.js";
+/*import * as controller from "../controllers/admin.js";
 
 import Router from "express";
 import validation from "../validation/admin.js";
 import { validate,checkAuthAdmin } from "../../../shared/utils/helper.js";
-//import { isLoggedIn } from "../utils/auth.js";
 import fs from "fs";
 import multer from "multer"
-//const multer = require('multer')
 const upload = multer({dest: 'uplaod/'})
 const router = Router();
 
@@ -37,12 +35,6 @@ router.get(
 "/get-tenant/:mobile", 
 checkAuthAdmin(),
 controller.getTenant);
-
-//Get Tenant with number
-router.get(
-  "/all-counts", 
-  checkAuthAdmin(),
-  controller.getAllCounts);
 
 
 //Add Tenant
@@ -174,14 +166,14 @@ router.post(
         }
       ]),
     controller.updateArrayPropertyImages);
-*/
+
 //Get All Inventories of logged in Admin
 router.get(
 "/get-admin-inventories", 
 checkAuthAdmin(),
 controller.getInventoryDetails);
 
-//Get All Inventories of logged in Admin
+//Get All Inventories 
 router.get(
 "/get-admin-inventories/:inventoryId", 
 checkAuthAdmin(),
@@ -241,3 +233,4 @@ controller.deleteCategory);
 
 
 export default router;
+*/

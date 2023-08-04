@@ -7,7 +7,7 @@ services:
       - '5000:80'
     build: ./nginx
     depends_on:
-      - auth
+      - customer
       - admin
 
   admin:
@@ -19,37 +19,9 @@ services:
     env_file:
       - .env
 
-  adminv2:
-    container_name: adminv2
-    build: ./adminv2
-    volumes:
-      - ./adminv2:/app/src
-      - ./shared:/app/shared
-    env_file:
-      - .env
-
-  auth:
-    container_name: auth
-    build: ./auth
-    volumes:
-      - ./auth:/app/src
-      - ./shared:/app/shared
-    env_file:
-      - .env
-
   redis:
     container_name: redis
     image: redis
-
-  old:
-    container_name: old
-    build: ./old
-    volumes:
-      - ./old:/app/src
-      - ./shared:/app/shared
-
-    env_file:
-      - .env
 
   customer:
     container_name: customer

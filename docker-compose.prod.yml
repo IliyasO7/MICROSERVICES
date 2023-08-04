@@ -3,12 +3,13 @@ version: '3.8'
 services:
   nginx:
     ports:
-      - '5001:80'
+      - '5000:80'
     build: ./nginx
     depends_on:
       - admin
       - customer
       - vendor
+      - old
 
   redis:
     image: redis
@@ -47,4 +48,15 @@ services:
       - .env
     volumes:
       - ./shared:/shared
+      - /app/node_modules
+
+  old:
+    build:
+      context: ./old
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
       - /app/node_modules

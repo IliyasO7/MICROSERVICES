@@ -4,12 +4,13 @@ services:
   nginx:
     container_name: nginx
     ports:
-      - '5001:80'
+      - '5000:80'
     build: ./nginx
     depends_on:
       - customer
       - admin
       - vendor
+      - old
 
   redis:
     image: redis
@@ -51,4 +52,16 @@ services:
     volumes:
       - ./vendor:/app
       - ./shared:/shared
+      - /app/node_modules
+
+  old:
+    build:
+      context: ./old
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ./old:/app
       - /app/node_modules

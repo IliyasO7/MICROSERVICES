@@ -4,7 +4,7 @@ import Address from "./address.js";
 import Payment from "./payment.js";
 import Cart from "./ods/cart.js";
 import Categories from "./ods/category.js";
-import Leads from "./ods/leads.js";
+import Leads from "./leads.js";
 import Order from "./ods/order.js";
 import ServicePackage from "./ods/package.js";
 import Service from "./ods/service.js";

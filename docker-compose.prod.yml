@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  nginx:
+    ports:
+      - '5001:80'
+    build: ./nginx
+    depends_on:
+      - admin
+      - customer
+      - vendor
+
+  redis:
+    image: redis
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ./shared:/shared
+      - /app/node_modules
+
+  customer:
+    build:
+      context: ./customer
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ./shared:/shared
+      - /app/node_modules
+
+  vendor:
+    build:
+      context: ./vendor
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ./shared:/shared
+      - /app/node_modules

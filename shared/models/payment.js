@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ObjectId } from '../utils/helper.js';
 
 export const PaymentStatus = {
   PENDING: 'pending',
@@ -9,16 +10,19 @@ const schema = new mongoose.Schema(
   {
     orderId: { type: String, default: null },
     paymentId: { type: String, default: null },
-    mode: { type: String },
+    user: { type: ObjectId, ref: 'user' },
+    method: { type: String },
     amount: { type: Number },
     feeAmount: { type: Number },
     taxAmount: { type: Number },
-    settledAmount: { type: Number }, // fee - tax amount
+    settledAmount: { type: Number },
+    paidAt: { type: Number },
+    settledAt: { type: Number },
     status: {
       type: String,
       default: PaymentStatus.PENDING,
       enum: Object.values(PaymentStatus),
-    }, //returns an array of Strings
+    },
   },
   {
     timestamp: true,

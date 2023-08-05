@@ -7,16 +7,17 @@ const schema = new mongoose.Schema(
       type: ObjectId,
       ref: 'User',
     },
-    services: [
+    service: {
+      type: ObjectId,
+      ref: 'service',
+    },
+    items: [
       {
-        serviceId: { type: ObjectId, ref: 'service' },
-        subServiceId: { type: ObjectId },
+        packageId: { type: ObjectId, ref: 'servicePackage' },
+        subPackageId: { type: ObjectId },
         quantity: { type: Number, default: 0 },
-        rate: { type: Number, default: 0 },
-        amount: { type: Number, default: 0 },
       },
     ],
-    totalAmount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

@@ -1,12 +1,12 @@
-import { Router } from "express";
-import * as controller from "../controllers/leads.js";
+import { Router } from 'express';
+import * as controller from '../controllers/lead.js';
 
 const router = Router();
 
-router.route("/").get(controller.getAllLeads);
+router.route('/').get(controller.getLeads);
 
 router
-  .route("/:id")
+  .route('/:id')
   .get(controller.getLeadById)
   .patch(controller.updateLead)
   .delete(controller.deleteLead);

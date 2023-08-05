@@ -2,7 +2,6 @@ version: '3.9'
 
 services:
   nginx:
-    container_name: nginx
     ports:
       - '5000:80'
     build: ./nginx

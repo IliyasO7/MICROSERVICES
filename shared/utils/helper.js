@@ -51,6 +51,26 @@ export const generateOrderId = () => {
   return prefix + randomId.toUpperCase();
 };
 
+export const parseMobileNumber = (phoneNumber) => {
+  const cleanedNumber = phoneNumber.replace(/[^\d]/g, '').replace(/^\+/, '');
+  const digitsToRemove = 2;
+  const parsedNumber =
+    cleanedNumber.length === 12
+      ? cleanedNumber.substring(digitsToRemove)
+      : cleanedNumber;
+
+  return parsedNumber;
+};
+
+export const verifyAPIKey = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== process.env.API_KEY) {
+    return sendResponse(res, 401, 'Unauthorized');
+  }
+
+  next();
+};
+
 export const validate = (schema, options = {}) => {
   return (req, res, next) => {
     const { value, error } = schema.validate(

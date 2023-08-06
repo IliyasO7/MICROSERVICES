@@ -1,32 +1,26 @@
 import Lead, { LeadPlatform, LeadType } from '../../../shared/models/lead.js';
-import { sendResponse } from '../../../shared/utils/helper.js';
+import {
+  parseMobileNumber,
+  sendResponse,
+} from '../../../shared/utils/helper.js';
 import Service from '../../../shared/models/ods/service.js';
 
-export const createZapierOdsLead = async (req, res) => {
-  if (
-    !req.body.full_name ||
-    !req.body.phone_number ||
-    !req.body.email ||
-    !req.body.city
-  ) {
-    return sendResponse(res, 400, 'Parameters Required');
-  }
-
+export const createZapierLead = async (req, res) => {
   const service = await Service.findOne({
-    name: req.body.types_of_service_,
+    name: req.body.serviceName,
   }).lean();
 
+  console.log(req.body);
+
   const data = new Lead({
-    type: LeadType.ODS,
-    platform: LeadPlatform.FACEBOOK,
+    type: req.body.type,
+    platform: req.body.platform,
     customerInfo: {
-      name: req.body.full_name,
-      mobile: req.body.phone_number,
-      city: req.body.city,
+      name: req.body.name,
+      email: req.body.email,
+      mobile: parseMobileNumber(req.body.mobile),
     },
     service: service?._id || '64ca3577c1c1e0703b2bab4d',
-    inspectionDate:
-      req.body['when_would_you_prefer_the_inspection_to_take_place?'],
   });
 
   await data.save();

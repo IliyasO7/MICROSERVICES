@@ -1,10 +1,10 @@
 import axios from 'axios';
-import User from '../../../shared/models/user.js';
-import Bank from '../../../shared/models/rental/bank.js';
-import Property from '../../../shared/models/rental/property.js';
-import Contract from '../../../shared/models/rental/contract.js';
+import User from '../../../../shared/models/user.js';
+import Bank from '../../../../shared/models/rental/bank.js';
+import Property from '../../../../shared/models/rental/property.js';
+import Contract from '../../../../shared/models/rental/contract.js';
 import fs from 'fs';
-import { sendResponse } from '../../../shared/utils/helper.js';
+import { sendResponse } from '../../../../shared/utils/helper.js';
 
 export const createOwner = async (req, res) => {
   let user = await User.findOne({ mobile: req.body.mobile });

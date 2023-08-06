@@ -1,10 +1,9 @@
-import { sendResponse } from "../../../shared/utils/helper.js";
-import User from "../../../shared/models/user.js";
-import Contract from "../../../shared/models/rental/contract.js";
-import Property from "../../../shared/models/rental/property.js";
+import { sendResponse } from '../../../../shared/utils/helper.js';
+import User from '../../../../shared/models/user.js';
+import Contract from '../../../../shared/models/rental/contract.js';
+import Property from '../../../../shared/models/rental/property.js';
 
 export const getOverview = async (req, res) => {
-  console.log("over view");
   const data = {
     ownerCount: 0,
     tenantCount: 0,
@@ -15,13 +14,13 @@ export const getOverview = async (req, res) => {
   const admin = req.user._id;
 
   const userTenantCount = await User.countDocuments({
-    "tenant.addedBy": req.user._id,
-    "tenant.isActive": true,
+    'tenant.addedBy': req.user._id,
+    'tenant.isActive': true,
   });
 
   const userOwnerCount = await User.countDocuments({
-    "proprietor.addedBy": req.user._id,
-    "proprietor.isActive": true,
+    'proprietor.addedBy': req.user._id,
+    'proprietor.isActive': true,
   });
 
   const properties = await Property.countDocuments({ createdBy: admin });
@@ -33,5 +32,5 @@ export const getOverview = async (req, res) => {
     (data.contractCount = contracts),
     (data.propertyCount = properties);
 
-  sendResponse(res, 200, "success", data);
+  sendResponse(res, 200, 'success', data);
 };

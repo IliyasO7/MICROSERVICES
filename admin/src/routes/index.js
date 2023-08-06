@@ -1,29 +1,22 @@
-import { sendResponse } from '../../../shared/utils/helper.js';
-import superadminRouter from './superadmin.js';
-import authRouter from './auth.js';
-import dashBoardRouter from './dashboard.js';
-import propertyRouter from './property.js';
-import tenantRouter from './tenant.js';
-import ownerRouter from './owner.js';
-import contractRouter from './contract..js';
-import ods from './ods/index.js';
-import webhookRoutes from './webhook.js';
-import leadRoutes from './lead.js';
 import Router from 'express';
 import { checkAuth } from '../middleware/checkAuth.js';
+import { sendResponse } from '../../../shared/utils/helper.js';
+
+import authRoutes from './auth.js';
+import odsRoutes from './ods/index.js';
+import rentalRoutes from './rental/index.js';
+import webhookRoutes from './webhook.js';
+import leadRoutes from './lead.js';
+import customerRoutes from './customer.js';
 
 const router = Router();
 
-router.use('/ods', ods);
-router.use('/webhook', webhookRoutes);
-router.use('/leads', leadRoutes);
-router.use('/auth', authRouter);
-router.use('/dashboard', checkAuth(), dashBoardRouter);
-router.use('/owners', checkAuth(), ownerRouter);
-router.use('/properties', checkAuth(), propertyRouter);
-router.use('/tenants', checkAuth(), tenantRouter);
-router.use('/contracts', checkAuth(), contractRouter);
-router.use('/super-admin', checkAuth(), superadminRouter);
+router.use('/auth', authRoutes);
+router.use('/ods', checkAuth(), odsRoutes);
+router.use('/rental', checkAuth(), rentalRoutes);
+router.use('/customers', checkAuth(), customerRoutes);
+router.use('/leads', checkAuth(), leadRoutes);
+router.use('/webhook', checkAuth(), webhookRoutes);
 
 router.use((req, res) => {
   sendResponse(res, 404, 'Route Not Found', null, { path: req.path });

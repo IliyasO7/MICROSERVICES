@@ -1,32 +1,32 @@
-import { sendResponse } from "../../../shared/utils/helper.js";
-import Contract from "../../../shared/models/rental/contract.js";
+import { sendResponse } from '../../../../shared/utils/helper.js';
+import Contract from '../../../../shared/models/rental/contract.js';
 import ContractPayment, {
   ContractPaymentStatus,
-} from "../../../shared/models/rental/contractPayment.js";
+} from '../../../../shared/models/rental/contractPayment.js';
 
 //Get All Bookings created by admin
 export const getAllContracts = async (req, res) => {
   const userId = req.user;
   const contracts = await Contract.find({ createdBy: userId })
-    .populate("property")
-    .populate("proprietor")
-    .populate("tenant");
-  return sendResponse(res, 200, "Bookings Fetched Successfully", contracts);
+    .populate('property')
+    .populate('proprietor')
+    .populate('tenant');
+  return sendResponse(res, 200, 'Bookings Fetched Successfully', contracts);
 };
 
 //GET Booking Details wrt id
 export const getContractById = async (req, res) => {
-  console.log("inside contracts");
+  console.log('inside contracts');
   const filter = { _id: req.params.contractId };
   if (req.query.status) {
-    filter["mine"] = req.user._id;
+    filter['mine'] = req.user._id;
   }
 
   const contract = await Contract.findOne(filter)
-    .populate("property")
-    .populate("proprietor")
-    .populate("tenant");
-  return sendResponse(res, 200, "Contracts Fetched Successfully", {
+    .populate('property')
+    .populate('proprietor')
+    .populate('tenant');
+  return sendResponse(res, 200, 'Contracts Fetched Successfully', {
     contract,
   });
 };

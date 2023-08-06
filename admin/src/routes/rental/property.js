@@ -1,7 +1,7 @@
 import Router from 'express';
-import * as controller from '../controllers/property.js';
-import * as validation from '../validation/property.js';
-import { validate, checkAuthAdmin } from '../../../shared/utils/helper.js';
+import * as controller from '../../controllers/rental/property.js';
+import * as validation from '../../validation/property.js';
+import { validate, checkAuthAdmin } from '../../../../shared/utils/helper.js';
 
 const router = Router();
 

@@ -1,8 +1,9 @@
-import stream from 'stream';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import cryptoRandomString from 'crypto-random-string';
+import stream from "stream";
+//import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, S3Client } from "aws-sdk";
+import { Upload } from "@aws-sdk/lib-storage";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import cryptoRandomString from "crypto-random-string";
 
 const s3 = new S3Client({
   region: process.env.AWS_BUCKET_REGION,
@@ -15,7 +16,7 @@ const s3 = new S3Client({
 export const baseS3Url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/`;
 
 export const formatS3Url = (key) => {
-  if (!key) return '';
+  if (!key) return "";
   if (Array.isArray(key)) {
     return key.map(formatS3Url);
   }
@@ -23,13 +24,13 @@ export const formatS3Url = (key) => {
 };
 
 export const getS3KeyFromUrl = (url) => {
-  if (!url) return '';
-  return url.replace(`${baseS3Url}`, '');
+  if (!url) return "";
+  return url.replace(`${baseS3Url}`, "");
 };
 
 export const uploadFile = async (buffer, contentType) => {
   const key = cryptoRandomString({
-    type: 'hex',
+    type: "hex",
     length: 25,
   });
 
@@ -37,7 +38,7 @@ export const uploadFile = async (buffer, contentType) => {
     new PutObjectCommand({
       Body: buffer,
       Bucket: process.env.AWS_BUCKET_NAME,
-      ACL: 'public-read',
+      ACL: "public-read",
       Key: key,
       ContentType: contentType,
     })
@@ -54,7 +55,7 @@ export const uploadStream = async (doc, contentType) => {
   doc.pipe(pass);
 
   const randomId = cryptoRandomString({
-    type: 'hex',
+    type: "hex",
     length: 25,
   });
   const key = `${randomId}`;
@@ -65,7 +66,7 @@ export const uploadStream = async (doc, contentType) => {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: key,
       Body: pass,
-      ACL: 'public-read',
+      ACL: "public-read",
       ContentType: contentType,
     },
   });
@@ -78,16 +79,16 @@ export const uploadStream = async (doc, contentType) => {
   };
 };
 
-export const createPreSignedUrl = async (contentType, prefix = '') => {
+export const createPreSignedUrl = async (contentType, prefix = "") => {
   const key =
     prefix +
     cryptoRandomString({
-      type: 'hex',
+      type: "hex",
       length: 25,
     });
   const command = new PutObjectCommand({
     Key: key,
-    ACL: 'public-read',
+    ACL: "public-read",
     Bucket: process.env.AWS_BUCKET_NAME,
     ContentType: contentType,
   });

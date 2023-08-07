@@ -1,4 +1,4 @@
-import joi from 'joi';
+import joi from "joi";
 
 export const createVendor = joi.object({
   businessName: joi.string().required(),
@@ -56,4 +56,8 @@ export const updateVendor = joi.object({
   }),
   services: joi.array().items(joi.string()),
   serviceAreas: joi.array().items(joi.string()),
+});
+
+export const vendorID = joi.object({
+  vendorId: joi.string().required(),
 });

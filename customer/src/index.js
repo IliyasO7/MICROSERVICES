@@ -12,6 +12,7 @@ app.options('/*', (_, res) => {
 });
 
 app.use(express.json());
+
 app.use(
   express.urlencoded({
     extended: true,

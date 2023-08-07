@@ -4,7 +4,8 @@ import { ServiceCategory } from '../../../../shared/utils/constants.js';
 
 export const createService = joi.object({
   name: joi.string(),
-  image: joi.string().allow(''),
+  icon: joi.string().allow(''),
+  images: joi.array().items(joi.string()),
   videos: joi.array().items(joi.string()),
   category: joi
     .string()
@@ -16,7 +17,8 @@ export const createService = joi.object({
 
 export const updateService = joi.object({
   name: joi.string(),
-  image: joi.string().allow(''),
+  icon: joi.string().allow(''),
+  images: joi.array().items(joi.string()),
   videos: joi.array().items(joi.string()),
   category: joi.string().valid(...getEnums(ServiceCategory)),
   hsn: joi.string(),

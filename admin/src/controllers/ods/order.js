@@ -100,5 +100,5 @@ export const assignVendor = async (req, res) => {
   data.vendor = req.body.vendorId;
   await data.save();
 
-  sendResponse(res, 200, "success", data);
+  sendResponse(res, 200, "successful", data);
 };

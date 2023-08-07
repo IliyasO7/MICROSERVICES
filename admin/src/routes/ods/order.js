@@ -1,19 +1,21 @@
-import { Router } from "express";
-import * as controller from "../../controllers/ods/order.js";
-import * as validation from "../../validation/ods/vendor.js";
-import { validate } from "../../../../shared/utils/helper.js";
+import { Router } from 'express';
+import * as controller from '../../controllers/ods/order.js';
+import * as validation from '../../validation/ods/vendor.js';
+import { validate } from '../../../../shared/utils/helper.js';
 
 const router = Router();
 
-router.route("/").get(controller.getOrders);
+router.route('/').get(controller.getOrders);
 router
-  .route("/:id")
+  .route('/:id')
   .get(controller.getOrderById)
   .patch(controller.updateOrder)
   .delete(controller.deleteOrder);
 
-router
-  .route("assignVendor/:id")
-  .post(validate(validation.vendorID), controller);
+router.post(
+  '/:id/assign',
+  validate(validation.assignVendor),
+  controller.assignVendor
+);
 
 export default router;

@@ -1,6 +1,5 @@
 import stream from "stream";
-//import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { PutObjectCommand, S3Client } from "aws-sdk";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import cryptoRandomString from "crypto-random-string";

@@ -1,5 +1,7 @@
 import { Router } from "express";
 import * as controller from "../../controllers/ods/order.js";
+import * as validation from "../../validation/ods/vendor.js";
+import { validate } from "../../../../shared/utils/helper.js";
 
 const router = Router();
 
@@ -10,11 +12,8 @@ router
   .patch(controller.updateOrder)
   .delete(controller.deleteOrder);
 
-/*
 router
-  .route("/:id")
-  .get(controller.getOrderById)
-  //  .patch(validate(validation.updateOrder), controller.updateOrder)
-  .delete(controller.deleteOrder);
-*/
+  .route("assignVendor/:id")
+  .post(validate(validation.vendorID), controller);
+
 export default router;

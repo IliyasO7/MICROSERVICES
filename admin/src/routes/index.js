@@ -8,6 +8,7 @@ import rentalRoutes from './rental/index.js';
 import webhookRoutes from './webhook.js';
 import leadRoutes from './lead.js';
 import customerRoutes from './customer.js';
+import s3Routes from './s3.js';
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router.use('/rental', checkAuth(), rentalRoutes);
 router.use('/customers', checkAuth(), customerRoutes);
 router.use('/leads', checkAuth(), leadRoutes);
 router.use('/webhook', checkAuth(), webhookRoutes);
+router.use('/s3', s3Routes);
 
 router.use((req, res) => {
   sendResponse(res, 404, 'Route Not Found', null, { path: req.path });

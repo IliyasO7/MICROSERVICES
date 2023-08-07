@@ -1,21 +1,19 @@
 import { Router } from 'express';
 import * as controller from '../../controllers/rental/owner.js';
-import * as validation from '../../validation/owner.js';
-import { validate, checkAuthAdmin } from '../../../../shared/utils/helper.js';
+import * as validation from '../../validation/rental/owner.js';
+import { validate } from '../../../../shared/utils/helper.js';
 
 const router = Router();
 
 router
   .route('/')
-  .get(controller.getOwners) //done
-  .post(validate(validation.createOwner), controller.createOwner); //done
+  .get(controller.getOwners)
+  .post(validate(validation.createOwner), controller.createOwner);
 
-router.route('/:id').get(controller.getOwnerById); //done
+router.route('/:id').get(controller.getOwnerById);
 
-router.get('/:id/properties', controller.getOwnerProperties); //done
+router.get('/:id/properties', controller.getOwnerProperties);
 
-router.get('/:id/contracts', controller.getOwnerContracts); //done
-
-router.post('/:id/media', controller.updateOwnerMedia); //done
+router.get('/:id/contracts', controller.getOwnerContracts);
 
 export default router;

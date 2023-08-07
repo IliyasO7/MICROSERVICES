@@ -1,4 +1,4 @@
-import Lead, { LeadPlatform, LeadType } from '../../../shared/models/lead.js';
+import Lead from '../../../shared/models/lead.js';
 import {
   parseMobileNumber,
   sendResponse,
@@ -9,8 +9,6 @@ export const createZapierLead = async (req, res) => {
   const service = await Service.findOne({
     name: req.body.serviceName,
   }).lean();
-
-  console.log(req.body);
 
   const data = new Lead({
     type: req.body.type,

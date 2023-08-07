@@ -1,42 +1,38 @@
-import s3 from "../.././../shared/services/s3.js";
+import { repeatFunction, sendResponse } from '../../../shared/utils/helper.js';
+import {
+  baseS3Url,
+  createPreSignedUrl,
+} from '../.././../shared/services/s3.js';
 
-export const getS3PresignedUrl = async (req, res) => {
-  let data;
-  const { fileName = "" } = req.query;
-  const expirationInSeconds = 120;
-  if (!fileName) {
-    return sendResponse(res, 200, "success", data);
+const generate = async ({ path, count }) => {
+  const items = [];
+
+  for (let i = 0; i < count; i++) {
+    items.push(createPreSignedUrl(path));
   }
 
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: fileName,
-    ContentType: "image/*",
-    Expires: expirationInSeconds,
-  };
+  return Promise.all(items);
+};
 
-  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
+export const getBaseUrl = async (req, res) => {
+  sendResponse(res, 200, 'success', {
+    baseURL: baseS3Url,
+  });
+};
 
-  if (!preSignedUrl) {
-    data = {
-      err: "Something Went Wrong",
-      headers: {
-        "access-control-allow-origin": "*",
-      },
-      body: "error occured",
-    };
-    return sendResponse(res, 500, "Failed", data);
-  }
+export const createSignedUrl = async (req, res) => {
+  const payload = await Promise.all(
+    req.body.files.map(async (item) => ({
+      path: item.path,
+      count: item.count,
+      files: await repeatFunction({
+        fn: createPreSignedUrl,
+        args: [item.path],
+        count: item.count,
+        parallel: true,
+      }),
+    }))
+  );
 
-  data = {
-    statusCode: 200,
-    headers: {
-      "access-control-allow-origin": "*",
-    },
-    body: JSON.stringify({
-      signedUrl: preSignedUrl,
-    }),
-  };
-
-  return sendResponse(res, 200, "Success", data);
+  sendResponse(res, 200, 'success', payload);
 };

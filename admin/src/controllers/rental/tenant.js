@@ -44,7 +44,6 @@ export const createTenant = async (req, res) => {
     });
     await user.save();
   }
-  console.log('user', user);
 
   const dueDates = dayjs(req.body.moveInDate).add(1, 'month').toDate();
   const totalContracts = await Contract.countDocuments({});
@@ -109,7 +108,6 @@ export const getTenantContracts = async (req, res) => {
 };
 
 export const getTenantProperties = async (req, res) => {
-  console.log('here in tenant');
   const contract = await Contract.find({ tenant: req.params.id }).lean();
   if (!contract) {
     return sendResponse(res, 200, 'Data Not Found');

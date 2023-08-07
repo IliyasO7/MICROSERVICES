@@ -1,9 +1,9 @@
+import { Router } from 'express';
 import * as controller from '../../controllers/rental/contract.js';
-import Router from 'express';
 
 const router = Router();
 
-router.route('/').get(controller.getAllContracts);
+router.route('/').get(controller.getContracts);
 
 router.route('/:contractId').get(controller.getContractById);
 

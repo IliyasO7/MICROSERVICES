@@ -1,7 +1,7 @@
 import Router from 'express';
 import * as controller from '../../controllers/rental/property.js';
-import * as validation from '../../validation/property.js';
-import { validate, checkAuthAdmin } from '../../../../shared/utils/helper.js';
+import * as validation from '../../validation/rental/property.js';
+import { validate } from '../../../../shared/utils/helper.js';
 
 const router = Router();
 
@@ -11,7 +11,5 @@ router
   .post(validate(validation.createProperty), controller.createProperty);
 
 router.route('/:id').get(controller.getPropertyById);
-
-router.post('/:propertyId/media', controller.updatePropertyImages);
 
 export default router;

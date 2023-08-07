@@ -5,7 +5,8 @@ import { ServiceCategory } from '../../../shared/utils/constants.js';
 const schema = new mongoose.Schema(
   {
     name: { type: String },
-    image: { type: String },
+    icon: { type: String },
+    images: [String],
     videos: [String],
     category: { type: String, enum: getEnums(ServiceCategory) },
     hsn: { type: String },

@@ -234,3 +234,15 @@ export const checkVendorAuth = () => (req, res, next) => {
     next();
   });
 };
+
+export const repeatFunction = async ({ fn, args, count, parallel = true }) => {
+  const results = [];
+
+  for (let i = 0; i < count; i++) {
+    const result = parallel ? fn(...args) : await fn(...args);
+
+    results.push(result);
+  }
+
+  return parallel ? await Promise.all(results) : results;
+};

@@ -3,6 +3,7 @@ import { getEnums } from '../utils/helper.js';
 
 export const CounterName = {
   PROPERTY: 'property',
+  CONTRACT: 'contract',
   VENDOR: 'vendor',
 };
 

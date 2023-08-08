@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 
+dayjs.extend(customParseFormat);
+
 const validators = {
   fileKey: (folder) => {
     return joi

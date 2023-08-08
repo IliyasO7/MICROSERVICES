@@ -13,7 +13,7 @@ router
 router
   .route('/:id')
   .get(controller.getPropertyById)
-  .patch(controller.updateProperty)
+  .patch(validate(validation.updateProperty), controller.updateProperty)
   .delete(controller.deleteProperty);
 
 export default router;

@@ -251,15 +251,15 @@ export const repeatFunction = async ({ fn, args, count, parallel = true }) => {
 export const getNextSequence = async (counterName, count = 1) => {
   const data = await Counter.findByIdAndUpdate(
     counterName,
-    { $inc: { value: count }, $setOnInsert: { value: 1 } },
-    { new: true, upsert: true }
+    { $inc: { value: count } },
+    { new: true, upsert: true, setDefaultsOnInsert: true }
   ).lean();
 
   return data.value;
 };
 
 export const getSequenceId = async (prefix, counterName) => {
-  const sequence = getNextSequence(counterName);
+  const sequence = await getNextSequence(counterName);
 
   return `${prefix}${sequence}`;
 };

@@ -23,6 +23,7 @@ export const Gst = {
 const schema = new mongoose.Schema(
   {
     companyName: { type: String, default: CompanyName.ODS },
+    invoiceNo: { type: String },
     gst: { type: String, default: Gst.GSTNO },
     cgst: { type: Number, default: 2.5 },
     sgst: { type: Number, default: 2.5 },
@@ -32,6 +33,7 @@ const schema = new mongoose.Schema(
     rate: { type: Number, default: 0 },
     totalAmount: { type: Number, default: 0 },
     invoiceDate: { type: Date },
+    dueDate: { type: Date },
     billedTo: { type: ObjectId, ref: "user" },
     state: { type: String, default: States.KA },
   },

@@ -1,3 +1,4 @@
+import Bank from '../../../shared/models/bank.js';
 import User from '../../../shared/models/user.js';
 import { sendResponse } from '../../../shared/utils/helper.js';
 
@@ -14,6 +15,17 @@ export const createUser = async (req, res) => {
     ...req.body,
   });
 
+  if (req.body.bank) {
+    await Bank.create({
+      user: user._id,
+      name: req.body.bank.name,
+      accountNo: req.body.bank.accountNo,
+      ifscCode: req.body.bank.ifscCode,
+      document: req.body.bank.document,
+      isDefault: true,
+    });
+  }
+
   if (req.body.isOwner) {
     user.owner = {
       isRegistered: true,
@@ -21,6 +33,8 @@ export const createUser = async (req, res) => {
       addedBy: req.user._id,
     };
   }
+
+  user.addedBy = req.user._id;
 
   await user.save();
 

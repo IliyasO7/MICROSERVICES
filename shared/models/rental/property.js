@@ -1,38 +1,45 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import { ObjectId } from '../../utils/helper.js';
 
 const schema = new mongoose.Schema(
   {
-    propertyId: {
-      type: String,
-      required: true,
-      unique: true,
+    propertyId: { type: String, unique: true },
+    owner: { type: ObjectId, ref: 'user' },
+    name: { type: String },
+
+    address: {
+      floor: String,
+      door: String,
+      line1: String,
+      line2: String,
     },
-    proprietor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
-    },
-    name: { type: String, default: null, required: true },
-    address: { type: String, default: null, required: true },
-    floor: { type: String, default: null, required: true },
+
+    mainImages: [String],
+    entranceImages: [String],
+    livingImages: [String],
+    kitchenImages: [String],
+    bedroomImages: [String],
+
+    tokenAmount: { type: Number, default: 0 },
+    rentAmount: { type: Number, default: 0 },
+    securityDepositAmount: { type: Number, default: 0 },
+
+    address: { type: String, default: null },
+    floor: { type: String, default: null },
     door: { type: String, default: null },
-    bhk: { type: String, default: null, required: true },
+    bhk: { type: String, default: null },
     carpetArea: { type: String, default: null },
     coordinates: { type: [Number] },
-    mainImages: [{ type: String, default: null }],
-    entranceImages: [{ type: String, default: null }],
-    livingImages: [{ type: String, default: null }],
-    kitchenImages: [{ type: String, default: null }],
-    bedroomImages: [{ type: String, default: null }],
-    tokenAmount: { type: Number, default: null },
-    securityDepositAmount: { type: Number }, // deposit amount change
-    rentAmount: { type: Number, default: null, required: true },
+
     isOccupied: { type: Boolean, default: false },
-    isDeleted: { type: Boolean, default: false, required: true },
+    isDeleted: { type: Boolean, default: false },
+    location: {
+      type: { type: String, default: 'Point' },
+      coordinates: [Number],
+    },
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "admin",
-      required: true,
+      type: ObjectId,
+      ref: 'admin',
     },
   },
   {
@@ -40,8 +47,9 @@ const schema = new mongoose.Schema(
   }
 );
 
-schema.index({ proprietor: 1 });
+schema.index({ propertyId: 1 });
+schema.index({ owner: 1 });
 
-const Property = mongoose.model("property", schema);
+const Property = mongoose.model('property', schema);
 
 export default Property;

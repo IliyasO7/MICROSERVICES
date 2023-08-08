@@ -1,4 +1,5 @@
 import joi from 'joi';
+import validators from '../../../shared/utils/validators.js';
 
 export const createUser = joi.object({
   fname: joi.string().required(),
@@ -6,7 +7,15 @@ export const createUser = joi.object({
   email: joi.string().allow(''),
   mobile: joi.string().length(10).required(),
   aadhaar: joi.string().length(12).allow(''),
+  aadhaarDocument: joi.string().allow(''),
   pan: joi.string().length(10).allow(''),
+  panDocument: joi.string().allow(''),
+  bank: joi.object({
+    name: joi.string().required(),
+    accountNo: joi.string().required(),
+    ifscCode: joi.string().required(),
+    document: validators.fileKey('users/passbooks').allow(''),
+  }),
   isOwner: joi.boolean(),
 });
 
@@ -15,7 +24,9 @@ export const updateUser = joi.object({
   lname: joi.string(),
   email: joi.string().email(),
   aadhaar: joi.string().length(12).allow(''),
+  aadhaarDocument: joi.string().allow(''),
   pan: joi.string().length(10).allow(''),
+  panDocument: joi.string().allow(''),
   owner: joi.object({
     isRegistered: joi.boolean().required(),
     isActive: joi.boolean().required(),

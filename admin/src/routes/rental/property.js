@@ -10,6 +10,10 @@ router
   .get(controller.getProperties)
   .post(validate(validation.createProperty), controller.createProperty);
 
-router.route('/:id').get(controller.getPropertyById);
+router
+  .route('/:id')
+  .get(controller.getPropertyById)
+  .patch(controller.updateProperty)
+  .delete(controller.deleteProperty);
 
 export default router;

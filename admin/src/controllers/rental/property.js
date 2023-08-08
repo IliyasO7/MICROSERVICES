@@ -1,39 +1,21 @@
+import { CounterName } from '../../../../shared/models/counter.js';
 import Property from '../../../../shared/models/rental/property.js';
-import { sendResponse } from '../../../../shared/utils/helper.js';
-import axios from 'axios';
-import fs from 'fs';
+import {
+  getSequenceId,
+  sendResponse,
+} from '../../../../shared/utils/helper.js';
 
 export const createProperty = async (req, res) => {
-  const ownerId = req.body.ownerId;
-  const name = req.body.name;
-  const address = req.body.address;
-  const floor = req.body.floor;
-  const door = req.body.door;
-  const bhk = req.body.bhk;
-  const carpetArea = req.body.carpetArea;
-  const coordinates = req.body.coordinates;
-  const rentAmount = req.body.rentAmount;
-  const securityDepositAmount = req.body.depositAmount;
+  const propertyId = await getSequenceId('HJP', CounterName.PROPERTY);
 
-  const property = await Property.countDocuments({});
-  const sku = `HJR${property + 1}`;
-
-  const data = await Property.create({
-    propertyId: sku,
-    proprietor: ownerId,
-    name,
-    address,
-    floor,
-    door,
-    bhk,
-    carpetArea,
-    coordinates,
-    rentAmount,
-    securityDepositAmount,
+  const data = new Property({
+    propertyId,
+    owner: ownerId,
+    ...req.body,
     createdBy: req.user._id,
   });
 
-  return sendResponse(res, 200, 'Property Saved Successfully', data);
+  sendResponse(res, 200, 'Property Saved Successfully', data);
 };
 
 export const getProperties = async (req, res) => {
@@ -43,18 +25,42 @@ export const getProperties = async (req, res) => {
     filter['createdBy'] = req.user._id;
   }
 
-  const data = await Property.find(filter).populate('proprietor');
-  return sendResponse(res, 200, 'Properties Fetched Successfully', data);
+  const data = await Property.find(filter).populate('owner');
+  sendResponse(res, 200, 'Properties Fetched Successfully', data);
 };
 
 export const getPropertyById = async (req, res) => {
   const data = await Property.findOne({
     _id: req.params.id,
   })
-    .populate('proprietor')
+    .populate('owner')
     .lean();
 
   if (!data) return sendResponse(res, 404, 'Property does not exist');
 
   sendResponse(res, 200, 'Property Data Fetched Successfully', data);
+};
+
+export const updateProperty = async (req, res) => {
+  const data = await Property.findOne({
+    _id: req.params.id,
+  }).lean();
+
+  if (!data) return sendResponse(res, 404, 'Property does not exist');
+
+  Object.assign(data, req.body);
+
+  sendResponse(res, 200, 'Property Data Fetched Successfully', data);
+};
+
+export const deleteProperty = async (req, res) => {
+  const data = await Property.findOne({
+    _id: req.params.id,
+  });
+
+  if (!data) return sendResponse(res, 404, 'Property does not exist');
+
+  await data.deleteOne();
+
+  sendResponse(res, 200, 'success');
 };

@@ -5,6 +5,7 @@ import Admin from '../../shared/models/admin.js';
 import Vendor from '../../shared/models/ods/vendor.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import Counter from '../models/counter.js';
 
 export const getEnums = (obj) => {
   return Object.values(obj);
@@ -245,4 +246,20 @@ export const repeatFunction = async ({ fn, args, count, parallel = true }) => {
   }
 
   return parallel ? await Promise.all(results) : results;
+};
+
+export const getNextSequence = async (counterName, count = 1) => {
+  const data = await Counter.findByIdAndUpdate(
+    counterName,
+    { $inc: { value: count }, $setOnInsert: { value: 1 } },
+    { new: true, upsert: true }
+  ).lean();
+
+  return data.value;
+};
+
+export const getSequenceId = async (prefix, counterName) => {
+  const sequence = getNextSequence(counterName);
+
+  return `${prefix}${sequence}`;
 };

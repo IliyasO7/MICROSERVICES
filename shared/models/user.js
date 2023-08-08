@@ -25,6 +25,7 @@ const schema = new mongoose.Schema(
       isActive: { type: Boolean, default: false },
       addedBy: { type: mongoose.Types.ObjectId, ref: 'admin' },
     },
+    addedBy: { type: mongoose.Types.ObjectId, ref: 'admin' },
   },
   {
     timestamp: true,

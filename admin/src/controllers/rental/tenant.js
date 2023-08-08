@@ -1,6 +1,5 @@
 import User from '../../../../shared/models/rental/property.js';
 import Property from '../../../../shared/models/rental/property.js';
-import Admin from '../../../../shared/models/admin.js';
 import Contract from '../../../../shared/models/rental/contract.js';
 import dayjs from 'dayjs';
 import { sendResponse } from '../../../../shared/utils/helper.js';

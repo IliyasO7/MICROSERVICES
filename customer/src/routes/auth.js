@@ -13,4 +13,6 @@ router.post(
   controller.verifyOtp
 );
 
+router.post('/register', validate(validation.register), controller.register);
+
 export default router;

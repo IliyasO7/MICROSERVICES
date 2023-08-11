@@ -6,6 +6,10 @@ export const createOrder = joi.object({
   date: joi.string().required(),
   time: joi.string().required(),
   tipAmount: joi.number().default(0),
+  instructions: {
+    avoidCall: joi.boolean(),
+    message: joi.string().allow(''),
+  },
 });
 
 export const confirmOrder = joi.object({

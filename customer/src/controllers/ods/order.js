@@ -2,8 +2,14 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import Cart from '../../../../shared/models/ods/cart.js';
 import Order, { OrderStatus } from '../../../../shared/models/ods/order.js';
+import Invoice, {
+  InvoiceTaxType,
+  InvoiceType,
+} from '../../../../shared/models/invoice.js';
 import {
   generateOrderId,
+  getSequenceId,
+  populateInvoice,
   roundValue,
   sendResponse,
 } from '../../../../shared/utils/helper.js';
@@ -14,6 +20,8 @@ import {
   verifyPayment,
 } from '../../../../shared/services/razorpay.js';
 import Payment from '../../../../shared/models/payment.js';
+import { CompanyDetail } from '../../../../shared/utils/constants.js';
+import { CounterName } from '../../../../shared/models/counter.js';
 
 dayjs.extend(customParseFormat);
 
@@ -112,6 +120,7 @@ export const createOrder = async (req, res) => {
 
   const paymentSummary = {
     itemAmount: 0,
+    taxPercentage: 0,
     taxAmount: 0,
     tipAmount: req.body.tipAmount,
     totalAmount: req.body.tipAmount,
@@ -127,6 +136,7 @@ export const createOrder = async (req, res) => {
     const totalAmount = roundValue(amount + taxAmount);
 
     paymentSummary.itemAmount += amount;
+    paymentSummary.taxPercentage += cart.service.taxPercentage;
     paymentSummary.taxAmount += taxAmount;
     paymentSummary.totalAmount += totalAmount;
 
@@ -172,7 +182,10 @@ export const createOrder = async (req, res) => {
 };
 
 export const confirmOrder = async (req, res) => {
-  const order = await Order.findOne({ _id: req.params.id, user: req.user._id });
+  const order = await Order.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  }).populate('address');
   if (!order) return sendResponse(res, 404, 'order not found');
 
   if (order.status !== OrderStatus.PENDING) {
@@ -188,9 +201,45 @@ export const confirmOrder = async (req, res) => {
 
   if (errorMessage) return sendResponse(res, 400, errorMessage);
 
+  const invoice = new Invoice({
+    _id: await getSequenceId('HJINV-000', CounterName.INVOICE),
+    type: InvoiceType.ODS,
+    billFrom: {
+      name: CompanyDetail.ODS.name,
+      email: CompanyDetail.ODS.email,
+      pan: CompanyDetail.ODS.pan,
+      address: CompanyDetail.ODS.address,
+      state: 'Karnataka',
+    },
+    billTo: {
+      name: `${req.user.fname} ${req.user.lname}`,
+      mobile: req.user.mobile,
+      email: req.user.email,
+      address: `${order.address.line1}, ${order.address.line2}, ${order.address.city}, ${order.address.state} - ${order.address.pincode}`,
+      state: 'Karnataka',
+    },
+    items: order.items.map((item) => ({
+      description: `${item.packageName}, ${item.subPackageName ?? ''}`,
+      quantity: item.quantity,
+      rate: item.rate,
+      amount: item.amount,
+    })),
+    tax1Percentage: 0,
+    tax2Percentage: 0,
+    tax1Amount: 0,
+    tax2Amount: 0,
+    taxPercentage: order.paymentSummary.taxPercentage,
+    taxAmount: order.paymentSummary.taxAmount,
+    totalAmount: order.paymentSummary.totalAmount,
+  });
+
+  populateInvoice(invoice, invoice.billFrom.state === invoice.billTo.state);
+
+  order.invoice = invoice._id;
   order.placedAt = new Date();
   order.status = OrderStatus.PLACED;
 
+  await invoice.save();
   await order.save();
 
   sendResponse(res, 200, 'success', {
@@ -198,8 +247,8 @@ export const confirmOrder = async (req, res) => {
     orderId: order.orderId,
     amount: order.paymentSummary.totalAmount,
     paymentMethod: payment.method,
-    invoiceId: '',
-    invoiceUrl: '',
+    invoiceId: invoice._id,
+    invoiceUrl: `${process.env.BASE_URL}/invoice/${invoice._id}`,
   });
 };
 

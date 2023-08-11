@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Invoice</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;" />
+    <style type="text/css">
+      @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+      body {
+        margin: 0;
+        padding: 0;
+        background: #e1e1e1;
+      }
+      div,
+      p,
+      a,
+      li,
+      td {
+        -webkit-text-size-adjust: none;
+      }
+      .ReadMsgBody {
+        width: 100%;
+        background-color: #ffffff;
+      }
+      .ExternalClass {
+        width: 100%;
+        background-color: #ffffff;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        background-color: #e1e1e1;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      html {
+        width: 100%;
+      }
+      p {
+        padding: 0 !important;
+        margin-top: 0 !important;
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
+        margin-left: 0 !important;
+      }
+      .visibleMobile {
+        display: none;
+      }
+      .hiddenMobile {
+        display: block;
+      }
+
+      @media only screen and (max-width: 600px) {
+        body {
+          width: auto !important;
+        }
+        table[class='fullTable'] {
+          width: 96% !important;
+          clear: both;
+        }
+        table[class='fullPadding'] {
+          width: 85% !important;
+          clear: both;
+        }
+        table[class='col'] {
+          width: 45% !important;
+        }
+        .erase {
+          display: none;
+        }
+      }
+
+      @media only screen and (max-width: 420px) {
+        table[class='fullTable'] {
+          width: 100% !important;
+          clear: both;
+        }
+        table[class='fullPadding'] {
+          width: 85% !important;
+          clear: both;
+        }
+        table[class='col'] {
+          width: 100% !important;
+          clear: both;
+        }
+        table[class='col'] td {
+          text-align: left !important;
+        }
+        .erase {
+          display: none;
+          font-size: 0;
+          max-height: 0;
+          line-height: 0;
+          padding: 0;
+        }
+        .visibleMobile {
+          display: block !important;
+        }
+        .hiddenMobile {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <table
+      width="100%"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      align="center"
+      class="fullTable"
+      bgcolor="#e1e1e1"
+    >
+      <tr>
+        <td height="20"></td>
+      </tr>
+      <tr>
+        <td>
+          <table
+            width="700"
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            align="center"
+            class="fullTable"
+            bgcolor="#ffffff"
+            style="border-radius: 10px 10px 0 0"
+          >
+            <!-- <tr class="hiddenMobile">
+          <td height="40"></td>
+        </tr>
+        <tr class="visibleMobile">
+          <td height="30"></td>
+        </tr> -->
+
+            <tr>
+              <td>
+                <table
+                  width="580"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  align="center"
+                  class="fullPadding"
+                >
+                  <tbody>
+                    <tr>
+                      <td>
+                        <table
+                          width="220"
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          align="left"
+                          class="col"
+                        >
+                          <tbody>
+                            <tr class="hiddenMobile">
+                              <td height="40"></td>
+                            </tr>
+                            <tr class="visibleMobile">
+                              <td height="20"></td>
+                            </tr>
+                            <tr>
+                              <td
+                                style="
+                                  font-size: 12px;
+                                  color: #5b5b5b;
+                                  font-family: 'Open Sans', sans-serif;
+                                  line-height: 18px;
+                                  vertical-align: top;
+                                  text-align: left;
+                                "
+                              >
+                                {{ invoice.billFrom.name }}
+                                <p>{{ invoice.billFrom.address }}</p>
+                                <p>GSTIN: {{ invoice.billFrom.gstNo }}</p>
+                                <p>Pan: {{ invoice.billFrom.pan }}</p>
+                                <p>Email: {{ invoice.billFrom.email }}</p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <table
+                          width="280"
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          align="right"
+                          class="col"
+                        >
+                          <tbody>
+                            <tr class="visibleMobile">
+                              <td height="20"></td>
+                            </tr>
+                            <tr>
+                              <td height="5"></td>
+                            </tr>
+                            <tr>
+                              <td
+                                style="
+                                  font-size: 21px;
+                                  color: #ff0000;
+                                  letter-spacing: -1px;
+                                  font-family: 'Open Sans', sans-serif;
+                                  line-height: 1;
+                                  vertical-align: top;
+                                  text-align: right;
+                                "
+                              >
+                                <img
+                                  src="https://housejoygroup.com/_nuxt/img/logo.0d5fdd9.svg"
+                                  width="164"
+                                  height="164"
+                                  alt="logo"
+                                  border="0"
+                                />
+                              </td>
+                            </tr>
+                            <tr></tr>
+                            <tr class="hiddenMobile">
+                              <td height="50"></td>
+                            </tr>
+                            <tr class="visibleMobile">
+                              <td height="20"></td>
+                            </tr>
+                            <tr>
+                              <td
+                                style="
+                                  font-size: 12px;
+                                  color: #5b5b5b;
+                                  font-family: 'Open Sans', sans-serif;
+                                  line-height: 18px;
+                                  vertical-align: top;
+                                  text-align: right;
+                                "
+                              >
+                                <meduim
+                                  ><b>Invoice</b>:{{ invoice._id }} </meduim
+                                ><br />
+                                <meduim
+                                  ><b>Invoice Date</b>: {{ invoice.createdAt
+                                  }}</meduim
+                                ><br />
+
+                                <meduim
+                                  ><b>Place of supply</b> {{
+                                  invoice.billFrom.state }}</meduim
+                                ><br />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <!-- /Header -->
+    <!-- Information -->
+    <table
+      width="100%"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      align="center"
+      class="fullTable"
+      bgcolor="#e1e1e1"
+    >
+      <tbody>
+        <tr>
+          <td>
+            <table
+              width="700"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              align="center"
+              class="fullTable"
+              bgcolor="#ffffff"
+            >
+              <tbody>
+                <tr>
+                  <!-- <tr class="hiddenMobile">
+                <td height="60"></td>
+              </tr>
+              <tr class="visibleMobile">
+                <td height="40"></td>
+              </tr> -->
+                </tr>
+
+                <tr>
+                  <td>
+                    <table
+                      width="580"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                      align="center"
+                      class="fullPadding"
+                    >
+                      <tbody>
+                        <tr>
+                          <td>
+                            <table
+                              width="220"
+                              border="0"
+                              cellpadding="0"
+                              cellspacing="0"
+                              align="left"
+                              class="col"
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    style="
+                                      font-size: 11px;
+                                      font-family: 'Open Sans', sans-serif;
+                                      color: #5b5b5b;
+                                      line-height: 1;
+                                      vertical-align: top;
+                                    "
+                                  >
+                                    <strong>BILLING INFORMATION</strong>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td width="100%" height="10"></td>
+                                </tr>
+                                <tr>
+                                  <td
+                                    style="
+                                      font-size: 12px;
+                                      font-family: 'Open Sans', sans-serif;
+                                      color: #5b5b5b;
+                                      line-height: 20px;
+                                      vertical-align: top;
+                                    "
+                                  >
+                                    {{ invoice.billTo.name }}<br />
+                                    {{ invoice.billTo.address }} <br />
+                                    {{ invoice.billTo.mobile }} <br />
+                                    {{ invoice.billTo.email }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- /Information -->
+
+    <!-- Order Details -->
+    <table
+      width="100%"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      align="center"
+      class="fullTable"
+      bgcolor="#e1e1e1"
+    >
+      <tbody>
+        <tr>
+          <td>
+            <table
+              width="700"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              align="center"
+              class="fullTable"
+              bgcolor="#ffffff"
+            >
+              <tbody>
+                <tr></tr>
+                <tr class="hiddenMobile">
+                  <td height="60"></td>
+                </tr>
+                <tr class="visibleMobile">
+                  <td height="40"></td>
+                </tr>
+                <tr>
+                  <td>
+                    <table
+                      width="580"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                      align="center"
+                      class="fullPadding"
+                    >
+                      <tbody>
+                        <tr>
+                          <th
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              font-weight: normal;
+                              line-height: 1;
+                              vertical-align: top;
+                              padding: 0 10px 7px 0;
+                            "
+                            align="left"
+                          >
+                            #
+                          </th>
+                          <th
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              font-weight: normal;
+                              line-height: 1;
+                              vertical-align: top;
+                              padding: 0 10px 7px 0;
+                            "
+                            width="45%"
+                            align="left"
+                          >
+                            Item & Description
+                          </th>
+                          <th
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              font-weight: normal;
+                              line-height: 1;
+                              vertical-align: top;
+                              padding: 0 0 7px;
+                            "
+                            align="left"
+                          >
+                            Qty
+                          </th>
+                          <th
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              font-weight: normal;
+                              line-height: 1;
+                              vertical-align: top;
+                              padding: 0 0 7px;
+                            "
+                            align="center"
+                          >
+                            Rate
+                          </th>
+
+                          <th
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              font-weight: normal;
+                              line-height: 1;
+                              vertical-align: top;
+                              padding: 0 0 7px;
+                            "
+                            align="center"
+                          >
+                            Amount
+                          </th>
+                        </tr>
+
+                        {% for item in invoice.items %}
+                        <tr>
+                          <td
+                            height="1"
+                            colspan="8"
+                            style="border-bottom: 1px solid #e4e4e4"
+                          ></td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #ff0000;
+                              line-height: 18px;
+                              vertical-align: top;
+                              padding: 10px 0;
+                            "
+                            class="article"
+                          >
+                            2
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #ff0000;
+                              line-height: 18px;
+                              vertical-align: top;
+                              padding: 10px 0;
+                            "
+                          >
+                            Rental - Project Managment Service
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              line-height: 18px;
+                              vertical-align: top;
+                              padding: 10px 0;
+                            "
+                            align="center"
+                          >
+                            1
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              line-height: 18px;
+                              vertical-align: top;
+                              padding: 10px 0;
+                            "
+                            align="right"
+                          >
+                            11000
+                          </td>
+
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              line-height: 18px;
+                              vertical-align: top;
+                              padding: 10px 0;
+                            "
+                            align="center"
+                          >
+                            11000
+                          </td>
+                        </tr>
+                        {% endfor %}
+                        <!-- <tr>
+                          <td
+                            height="1"
+                            colspan="8"
+                            style="border-bottom: 1px solid #e4e4e4"
+                          ></td> -->
+                        <!-- </tr> -->
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              line-height: 18px;
+                              vertical-align: top;
+                            "
+                            colspan="8"
+                          >
+                            Total in words
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #1e2b33;
+                              line-height: 18px;
+                              vertical-align: top;
+                            "
+                            colspan="8"
+                          >
+                            <b
+                              ><i
+                                >Indian rupees Eighty Thousand Sixty Hundered
+                                Twenty Five Only
+                              </i></b
+                            >
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- /Order Details -->
+    <!-- Total -->
+    <table
+      width="100%"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      align="center"
+      class="fullTable"
+      bgcolor="#e1e1e1"
+    >
+      <tbody>
+        <tr>
+          <td>
+            <table
+              width="700"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              align="center"
+              class="fullTable"
+              bgcolor="#ffffff"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <!-- Table Total -->
+                    <table
+                      width="580"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                      align="center"
+                      class="fullPadding"
+                    >
+                      <tbody>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            Subtotal
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                              white-space: nowrap;
+                            "
+                            width="80"
+                          >
+                            10000
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            CGST(9%)
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            900
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            SGST(9%)
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            900
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            IGST(0%)
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            0
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            Discount
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            0
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #000;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            <strong>Total</strong>
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #000;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            <strong>18000</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #000;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            <strong>Balance Due</strong>
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #000;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            <strong>18000</strong>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- /Table Total -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- /Total -->
+
+    <table
+      width="100%"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      align="center"
+      class="fullTable"
+      bgcolor="#e1e1e1"
+    >
+      <tr>
+        <td>
+          <table
+            width="700"
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            align="center"
+            class="fullTable"
+            bgcolor="#ffffff"
+            style="border-radius: 0 0 10px 10px"
+          >
+            <tr>
+              <td>
+                <table
+                  width="580"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  align="center"
+                  class="fullPadding"
+                >
+                  <tbody>
+                    <tr>
+                      <td
+                        style="
+                          font-size: 12px;
+                          color: #5b5b5b;
+                          font-family: 'Open Sans', sans-serif;
+                          line-height: 18px;
+                          vertical-align: top;
+                          text-align: left;
+                        "
+                      >
+                        Thanks for your business.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr class="spacer">
+              <td height="20"></td>
+            </tr>
+            <tr>
+              <td>
+                <table
+                  width="580"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  align="center"
+                  class="fullPadding"
+                >
+                  <tbody>
+                    <tr>
+                      <td
+                        style="
+                          font-size: 12px;
+                          color: #5b5b5b;
+                          font-family: 'Open Sans', sans-serif;
+                          line-height: 18px;
+                          vertical-align: top;
+                          text-align: left;
+                        "
+                      >
+                        <strong>Terms & Conditions</strong><br />
+                        <small>Invoice due on receipt.</small>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr class="spacer">
+              <td height="20"></td>
+            </tr>
+            <td>
+              <table
+                width="580"
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                align="center"
+                class="fullPadding"
+              >
+                <tbody>
+                  <tr>
+                    <td
+                      style="
+                        font-size: 12px;
+                        color: #5b5b5b;
+                        font-family: 'Open Sans', sans-serif;
+                        line-height: 18px;
+                        vertical-align: top;
+                        text-align: left;
+                      "
+                    >
+                      Bank details are as follows<br />
+                      Housejoy rental pvt ltd<br />
+                      Account no : 98878465124646<br />
+                      Branch name : HRS layout, sec 1<br />
+                      IFSC Code : Bank ifsc code<br />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+
+            <tr class="spacer">
+              <td height="50"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td height="20"></td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -34,8 +34,8 @@ export const verifyPayment = async ({
     ]);
 
     if (!data) return ['payment does not exist', null];
-    if (data.status !== PaymentStatus.PENDING)
-      return ['payment already processed', null];
+    // if (data.status !== PaymentStatus.PENDING)
+    //   return ['payment already processed', null];
     if (payment.status !== 'captured') return ['payment is not captured', null];
 
     Object.assign(data, {

@@ -5,6 +5,7 @@ export const CounterName = {
   PROPERTY: 'property',
   CONTRACT: 'contract',
   VENDOR: 'vendor',
+  INVOICE: 'invoice',
 };
 
 const schema = new mongoose.Schema(

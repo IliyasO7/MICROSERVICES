@@ -17,9 +17,13 @@ const schema = new mongoose.Schema(
     vendor: { type: ObjectId, ref: 'vendor' },
     service: { type: ObjectId, ref: 'service' },
     cart: { type: ObjectId, ref: 'cart' },
-    invoice: { type: ObjectId, ref: 'invoice' },
+    invoice: { type: String, ref: 'invoice' },
     address: { type: Object },
     scheduledDate: { type: Date },
+    instructions: {
+      avoidCall: { type: Boolean, default: false },
+      message: { type: String },
+    },
     items: [
       {
         packageId: { type: ObjectId, ref: 'servicePackage' },
@@ -35,6 +39,7 @@ const schema = new mongoose.Schema(
     ],
     paymentSummary: {
       itemAmount: { type: Number },
+      taxPercentage: { type: Number },
       taxAmount: { type: Number },
       tipAmount: { type: Number },
       totalAmount: { type: Number },

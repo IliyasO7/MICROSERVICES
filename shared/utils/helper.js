@@ -6,6 +6,7 @@ import Vendor from '../../shared/models/ods/vendor.js';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Counter from '../models/counter.js';
+import { InvoiceTaxType } from '../models/invoice.js';
 
 export const getEnums = (obj) => {
   return Object.values(obj);
@@ -262,4 +263,36 @@ export const getSequenceId = async (prefix, counterName) => {
   const sequence = await getNextSequence(counterName);
 
   return `${prefix}${sequence}`;
+};
+
+export const populateInvoice = (invoice, isSameState) => {
+  invoice.taxType = isSameState
+    ? InvoiceTaxType.CGST_SGST
+    : InvoiceTaxType.IGST;
+
+  if (invoice.taxType === InvoiceTaxType.CGST_SGST) {
+    invoice.tax1Percentage = invoice.taxPercentage / 2;
+    invoice.tax2Percentage = invoice.tax1Percentage;
+
+    invoice.tax1Amount = roundValue(
+      invoice.taxAmount * (invoice.tax1Percentage / 100),
+      2,
+      'up'
+    );
+
+    invoice.tax2Amount = roundValue(
+      invoice.taxAmount * (invoice.tax2Percentage / 100),
+      2,
+      'up'
+    );
+  } else {
+    invoice.tax1Percentage = invoice.taxPercentage;
+    invoice.tax1Amount = roundValue(
+      invoice.taxAmount * (invoice.tax1Percentage / 100),
+      2,
+      'up'
+    );
+  }
+
+  return invoice;
 };

@@ -1,6 +1,6 @@
-import { sendResponse } from "../../../../shared/utils/helper.js";
-import Cart from "../../../../shared/models/ods/cart.js";
-import ServicePackage from "../../../../shared/models/ods/package.js";
+import { sendResponse } from '../../../../shared/utils/helper.js';
+import Cart from '../../../../shared/models/ods/cart.js';
+import ServicePackage from '../../../../shared/models/ods/package.js';
 
 const getRate = (packageData, subPackageId = null) => {
   const subPackage = packageData.subPackages?.find((item) =>
@@ -13,8 +13,8 @@ const getRate = (packageData, subPackageId = null) => {
 
 export const getCart = async (req, res) => {
   const data = await Cart.find({ user: req.user._id, isActive: true })
-    .populate("service")
-    .populate("items.packageId")
+    .populate('service')
+    .populate('items.packageId')
     .lean();
 
   const payload = [];
@@ -40,17 +40,19 @@ export const getCart = async (req, res) => {
       };
     });
 
+    if (!cart.service) continue;
+
     payload.push({
       cartId: cart._id,
       serviceId: cart.service._id,
       serviceName: cart.service.name,
-      serviceImage: cart.service?.image ?? "",
+      serviceImage: cart.service.image ?? '',
       items: items.filter(Boolean),
       totalAmount,
     });
   }
 
-  sendResponse(res, 200, "success", payload);
+  sendResponse(res, 200, 'success', payload);
 };
 
 export const getCartById = async (req, res) => {
@@ -59,11 +61,11 @@ export const getCartById = async (req, res) => {
     user: req.user._id,
     isActive: true,
   })
-    .populate("service")
-    .populate("items.packageId")
+    .populate('service')
+    .populate('items.packageId')
     .lean();
 
-  if (!cart) return sendResponse(res, 404, "cart not found");
+  if (!cart) return sendResponse(res, 404, 'cart not found');
 
   let totalAmount = 0;
 
@@ -89,17 +91,17 @@ export const getCartById = async (req, res) => {
     cartId: cart._id,
     serviceId: cart.service._id,
     serviceName: cart.service.name,
-    serviceImage: cart.service?.image ?? "",
+    serviceImage: cart.service?.image ?? '',
     items: items.filter(Boolean),
     totalAmount,
   };
 
-  sendResponse(res, 200, "success", payload);
+  sendResponse(res, 200, 'success', payload);
 };
 
 export const addItem = async (req, res) => {
   const packageData = await ServicePackage.findById(req.body.packageId);
-  if (!packageData) return sendResponse(res, 404, "package not found");
+  if (!packageData) return sendResponse(res, 404, 'package not found');
 
   let cart = await Cart.findOne({
     user: req.user._id,
@@ -127,16 +129,16 @@ export const addItem = async (req, res) => {
 
   await cart.save();
 
-  sendResponse(res, 200, "success", { cartId: cart._id });
+  sendResponse(res, 200, 'success', { cartId: cart._id });
 };
 
 export const removeItem = async (req, res) => {
   const cart = await Cart.findOne({
     user: req.user._id,
-    "items.packageId": req.body.packageId,
+    'items.packageId': req.body.packageId,
     isActive: true,
   });
-  if (!cart) return sendResponse(res, 404, "item does not exist");
+  if (!cart) return sendResponse(res, 404, 'item does not exist');
 
   const item = cart.items.find((item) =>
     item.packageId.equals(req.body.packageId)
@@ -154,17 +156,17 @@ export const removeItem = async (req, res) => {
     await cart.deleteOne();
   }
 
-  sendResponse(res, 200, "success");
+  sendResponse(res, 200, 'success');
 };
 
 export const clearCart = async (req, res) => {
   const filter = { user: req.user._id };
 
   if (req.body.cartId) {
-    filter["_id"] = req.body.cartId;
+    filter['_id'] = req.body.cartId;
   }
 
   await Cart.deleteMany(filter);
 
-  sendResponse(res, 200, "success");
+  sendResponse(res, 200, 'success');
 };

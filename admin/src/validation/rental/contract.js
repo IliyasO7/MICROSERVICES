@@ -6,11 +6,13 @@ export const createContract = joi.object({
   tenantId: validators.objectId().required(),
   moveInDate: validators.date().required(),
   moveOutDate: validators.date(),
+  tokenAmount: joi.number().required(),
   commissionPercentage: joi.number().required(),
 });
 
 export const updateContract = joi.object({
   moveInDate: validators.date().required(),
   moveOutDate: validators.date(),
+  tokenAmount: joi.number(),
   commissionPercentage: joi.number(),
 });

@@ -484,8 +484,8 @@
                             Amount
                           </th>
                         </tr>
+                        {% for index, item in items %}
 
-                        {% for item in invoice.items %}
                         <tr>
                           <td
                             height="1"
@@ -505,7 +505,7 @@
                             "
                             class="article"
                           >
-                            2
+                            {{ index }}
                           </td>
                           <td
                             style="
@@ -517,7 +517,7 @@
                               padding: 10px 0;
                             "
                           >
-                            Rental - Project Managment Service
+                            {{ item.description }}
                           </td>
                           <td
                             style="
@@ -530,7 +530,7 @@
                             "
                             align="center"
                           >
-                            1
+                            {{ item.quantity }}
                           </td>
                           <td
                             style="
@@ -543,7 +543,7 @@
                             "
                             align="right"
                           >
-                            11000
+                            {{ item.rate }}
                           </td>
 
                           <td
@@ -557,7 +557,7 @@
                             "
                             align="center"
                           >
-                            11000
+                            {{ item.amount }}
                           </td>
                         </tr>
                         {% endfor %}
@@ -593,12 +593,7 @@
                             "
                             colspan="8"
                           >
-                            <b
-                              ><i
-                                >Indian rupees Eighty Thousand Sixty Hundered
-                                Twenty Five Only
-                              </i></b
-                            >
+                            <b><i>{{ amountInWords }} Rupees Only </i></b>
                           </td>
                         </tr>
                       </tbody>
@@ -672,7 +667,34 @@
                             "
                             width="80"
                           >
-                            10000
+                            {{ invoice.totalAmount - invoice.taxAmount }}
+                          </td>
+                        </tr>
+                        {% if invoice.taxType == 'cgst/sgst' %}
+                        <tr>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            CGST ({{ invoice.tax1Percentage }} %)
+                          </td>
+                          <td
+                            style="
+                              font-size: 12px;
+                              font-family: 'Open Sans', sans-serif;
+                              color: #646a6e;
+                              line-height: 22px;
+                              vertical-align: top;
+                              text-align: right;
+                            "
+                          >
+                            {{ invoice.tax1Amount }}
                           </td>
                         </tr>
                         <tr>
@@ -686,7 +708,7 @@
                               text-align: right;
                             "
                           >
-                            CGST(9%)
+                            SGST({{ invoice.tax2Percentage }}%)
                           </td>
                           <td
                             style="
@@ -698,9 +720,10 @@
                               text-align: right;
                             "
                           >
-                            900
+                            {{ invoice.tax2Amount }}
                           </td>
                         </tr>
+                        {% endif %} {% if invoice.taxType == 'igst' %}
                         <tr>
                           <td
                             style="
@@ -712,7 +735,7 @@
                               text-align: right;
                             "
                           >
-                            SGST(9%)
+                            IGST ({{ invoice.tax1Percentage }}%)
                           </td>
                           <td
                             style="
@@ -724,35 +747,10 @@
                               text-align: right;
                             "
                           >
-                            900
+                            {{ invoice.tax1Amount }}
                           </td>
                         </tr>
-                        <tr>
-                          <td
-                            style="
-                              font-size: 12px;
-                              font-family: 'Open Sans', sans-serif;
-                              color: #646a6e;
-                              line-height: 22px;
-                              vertical-align: top;
-                              text-align: right;
-                            "
-                          >
-                            IGST(0%)
-                          </td>
-                          <td
-                            style="
-                              font-size: 12px;
-                              font-family: 'Open Sans', sans-serif;
-                              color: #646a6e;
-                              line-height: 22px;
-                              vertical-align: top;
-                              text-align: right;
-                            "
-                          >
-                            0
-                          </td>
-                        </tr>
+                        {% endif %}
 
                         <tr>
                           <td
@@ -803,10 +801,10 @@
                               text-align: right;
                             "
                           >
-                            <strong>18000</strong>
+                            <strong>{{ invoice.totalAmount }}</strong>
                           </td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                           <td
                             style="
                               font-size: 12px;
@@ -831,7 +829,7 @@
                           >
                             <strong>18000</strong>
                           </td>
-                        </tr>
+                        </tr> -->
                       </tbody>
                     </table>
                     <!-- /Table Total -->

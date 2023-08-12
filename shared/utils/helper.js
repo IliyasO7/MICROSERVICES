@@ -266,32 +266,31 @@ export const getSequenceId = async (prefix, counterName) => {
 };
 
 export const populateInvoice = (invoice, isSameState) => {
+  const sgst = 0.5;
+  const cgst = 0.5;
+
   invoice.taxType = isSameState
     ? InvoiceTaxType.CGST_SGST
     : InvoiceTaxType.IGST;
 
   if (invoice.taxType === InvoiceTaxType.CGST_SGST) {
-    invoice.tax1Percentage = invoice.taxPercentage / 2;
-    invoice.tax2Percentage = invoice.tax1Percentage;
+    invoice.tax1Percentage = invoice.taxPercentage * cgst;
+    invoice.tax2Percentage = invoice.taxPercentage * sgst;
 
     invoice.tax1Amount = roundValue(
-      invoice.taxAmount * (invoice.tax1Percentage / 100),
+      invoice.itemAmount * (invoice.tax1Percentage / 100),
       2,
       'up'
     );
 
     invoice.tax2Amount = roundValue(
-      invoice.taxAmount * (invoice.tax2Percentage / 100),
+      invoice.itemAmount * (invoice.tax2Percentage / 100),
       2,
       'up'
     );
   } else {
     invoice.tax1Percentage = invoice.taxPercentage;
-    invoice.tax1Amount = roundValue(
-      invoice.taxAmount * (invoice.tax1Percentage / 100),
-      2,
-      'up'
-    );
+    invoice.tax1Amount = invoice.taxAmount;
   }
 
   return invoice;

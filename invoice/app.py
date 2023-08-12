@@ -1,6 +1,7 @@
 from flask import Flask, render_template, make_response
 from pymongo import MongoClient
 import pdfkit
+from helpers import amount_to_words
 
 app = Flask(__name__)
 
@@ -16,9 +17,9 @@ def generate_invoice_pdf(invoice_id):
     invoice = invoices_collection.find_one({"_id": invoice_id})
     if not invoice:
         return "Invoice not found", 404
-
+    
     # Render the HTML template with invoice data
-    rendered_html = render_template("invoice_template.html", invoice=invoice)
+    rendered_html = render_template("invoice_template.html", invoice=invoice, items=enumerate(invoice['items'], 1), amountInWords=amount_to_words(invoice['totalAmount']))
 
     # Generate PDF from the rendered HTML
     pdf_stream = pdfkit.from_string(rendered_html, False)
@@ -32,3 +33,7 @@ def generate_invoice_pdf(invoice_id):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=5005, debug=True)
+
+
+
+

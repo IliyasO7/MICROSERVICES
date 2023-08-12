@@ -230,8 +230,18 @@ export const confirmOrder = async (req, res) => {
     tax2Amount: 0,
     taxPercentage: order.paymentSummary.taxPercentage,
     taxAmount: order.paymentSummary.taxAmount,
+    itemAmount: order.paymentSummary.itemAmount,
     totalAmount: order.paymentSummary.totalAmount,
   });
+
+  if (order.paymentSummary.tipAmount) {
+    invoice.items.push({
+      description: 'Tip',
+      quantity: 1,
+      rate: order.paymentSummary.tipAmount,
+      amount: order.paymentSummary.tipAmount,
+    });
+  }
 
   populateInvoice(invoice, invoice.billFrom.state === invoice.billTo.state);
 

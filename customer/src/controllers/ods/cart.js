@@ -1,15 +1,7 @@
 import { sendResponse } from '../../../../shared/utils/helper.js';
 import Cart from '../../../../shared/models/ods/cart.js';
 import ServicePackage from '../../../../shared/models/ods/package.js';
-
-const getRate = (packageData, subPackageId = null) => {
-  const subPackage = packageData.subPackages?.find((item) =>
-    item._id.equals(subPackageId)
-  );
-  if (!subPackageId) return packageData.price;
-
-  return subPackage.prices;
-};
+import Service from '../../../../shared/models/ods/service.js';
 
 export const getCart = async (req, res) => {
   const data = await Cart.find({ user: req.user._id, isActive: true })
@@ -25,15 +17,21 @@ export const getCart = async (req, res) => {
     const items = cart.items.map((item) => {
       if (!item.packageId) return null;
 
-      const rate = getRate(item.packageId, item.subPackageId);
+      const subPackage = item.packageId.subPackages.find((element) =>
+        element._id.equals(item.subPackageId)
+      );
+      const rate = subPackage?.price || item.packageId.price;
       const amount = item.quantity * rate;
 
       totalAmount += amount;
+
+      console.log(subPackage);
 
       return {
         packageId: item.packageId._id,
         packageName: item.packageId.name,
         subPackageId: item.subPackageId ?? null,
+        subPackageName: subPackage ? subPackage.name : null,
         quantity: item.quantity,
         rate,
         amount,
@@ -46,7 +44,7 @@ export const getCart = async (req, res) => {
       cartId: cart._id,
       serviceId: cart.service._id,
       serviceName: cart.service.name,
-      serviceImage: cart.service.image ?? '',
+      serviceIcon: cart.service.icon ?? '',
       items: items.filter(Boolean),
       totalAmount,
     });
@@ -72,7 +70,10 @@ export const getCartById = async (req, res) => {
   const items = cart.items.map((item) => {
     if (!item.packageId) return null;
 
-    const rate = getRate(item.packageId, item.subPackageId);
+    const subPackage = item.packageId.subPackages.find((element) =>
+      element._id.equals(item.subPackageId)
+    );
+    const rate = subPackage?.price || item.packageId.price;
     const amount = item.quantity * rate;
 
     totalAmount += amount;
@@ -81,6 +82,7 @@ export const getCartById = async (req, res) => {
       packageId: item.packageId._id,
       packageName: item.packageId.name,
       subPackageId: item.subPackageId ?? null,
+      subPackageName: subPackage ? subPackage.name : null,
       quantity: item.quantity,
       rate,
       amount,
@@ -91,10 +93,67 @@ export const getCartById = async (req, res) => {
     cartId: cart._id,
     serviceId: cart.service._id,
     serviceName: cart.service.name,
-    serviceImage: cart.service?.image ?? '',
+    serviceIcon: cart.service?.icon ?? '',
     items: items.filter(Boolean),
     totalAmount,
   };
+
+  sendResponse(res, 200, 'success', payload);
+};
+
+export const getCartServiceById = async (req, res) => {
+  const serviceId = req.params.id;
+  const service = await Service.findById(serviceId).lean();
+  if (!service) return sendResponse(res, 400, 'service does not exist');
+
+  const payload = {
+    cartId: '',
+    serviceId: service._id,
+    serviceName: service.name,
+    serviceIcon: service?.icon ?? '',
+    items: [],
+    totalAmount: 0,
+  };
+
+  const cart = await Cart.findOne({
+    service: service._id,
+    user: req.user._id,
+    isActive: true,
+  })
+    .populate('items.packageId')
+    .lean();
+
+  if (cart) {
+    let totalAmount = 0;
+
+    const items = cart.items.map((item) => {
+      if (!item.packageId) return null;
+
+      const subPackage = item.packageId.subPackages.find((element) =>
+        element._id.equals(item.subPackageId)
+      );
+      const rate = subPackage?.price || item.packageId.price;
+      const amount = item.quantity * rate;
+
+      totalAmount += amount;
+
+      return {
+        packageId: item.packageId._id,
+        packageName: item.packageId.name,
+        subPackageId: item.subPackageId ?? null,
+        subPackageName: subPackage ? subPackage.name : null,
+        quantity: item.quantity,
+        rate,
+        amount,
+      };
+    });
+
+    Object.assign(payload, {
+      cartId: cart._id,
+      items: items.filter(Boolean),
+      totalAmount,
+    });
+  }
 
   sendResponse(res, 200, 'success', payload);
 };
@@ -164,6 +223,8 @@ export const clearCart = async (req, res) => {
 
   if (req.body.cartId) {
     filter['_id'] = req.body.cartId;
+  } else if (req.body.serviceId) {
+    filter['service'] = req.body.serviceId;
   }
 
   await Cart.deleteMany(filter);

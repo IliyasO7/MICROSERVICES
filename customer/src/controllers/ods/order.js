@@ -130,7 +130,7 @@ export const createOrder = async (req, res) => {
     const subPackage = item.packageId.subPackages.find((element) =>
       element._id.equals(item.subPackageId)
     );
-    const rate = getRate(item.packageId, item.subPackageId);
+    const rate = subPackage?.price || item.packageId.price;
     const amount = roundValue(item.quantity * rate);
     const taxAmount = roundValue(amount * (cart.service.taxPercentage / 100));
     const totalAmount = roundValue(amount + taxAmount);
@@ -192,14 +192,14 @@ export const confirmOrder = async (req, res) => {
     return sendResponse(res, 400, 'order is not in pending status');
   }
 
-  const [errorMessage, payment] = await verifyPayment({
-    userId: req.user._id,
-    orderId: req.body.orderId,
-    paymentId: req.body.paymentId,
-    paymentSignature: req.body.paymentSignature,
-  });
+  // const [errorMessage, payment] = await verifyPayment({
+  //   userId: req.user._id,
+  //   orderId: req.body.orderId,
+  //   paymentId: req.body.paymentId,
+  //   paymentSignature: req.body.paymentSignature,
+  // });
 
-  if (errorMessage) return sendResponse(res, 400, errorMessage);
+  // if (errorMessage) return sendResponse(res, 400, errorMessage);
 
   const invoice = new Invoice({
     _id: await getSequenceId('HJINV-000', CounterName.INVOICE),
@@ -251,12 +251,13 @@ export const confirmOrder = async (req, res) => {
 
   await invoice.save();
   await order.save();
+  Cart.updateOne({ _id: req.body.cartId }, { isActive: false }).exec();
 
   sendResponse(res, 200, 'success', {
     id: order._id,
     orderId: order.orderId,
     amount: order.paymentSummary.totalAmount,
-    paymentMethod: payment.method,
+    paymentMethod: 'none', // payment.method,
     invoiceId: invoice._id,
     invoiceUrl: `${process.env.BASE_URL}/invoice/${invoice._id}`,
   });
@@ -297,5 +298,15 @@ export const getOrderById = async (req, res) => {
 
   if (!data) return sendResponse(res, 404, 'order not found');
 
-  sendResponse(res, 200, 'success', data);
+  sendResponse(
+    res,
+    200,
+    'success',
+    Object.assign(data, {
+      invoice: {
+        id: data.invoice,
+        url: `${process.env.BASE_URL}/invoice/${data.invoice}`,
+      },
+    })
+  );
 };

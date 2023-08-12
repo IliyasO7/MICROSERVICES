@@ -13,7 +13,7 @@ export const createOrder = joi.object({
 });
 
 export const confirmOrder = joi.object({
-  orderId: joi.string().required(),
-  paymentId: joi.string().required(),
-  paymentSignature: joi.string().required(),
+  orderId: joi.string(),
+  paymentId: joi.string(),
+  paymentSignature: joi.string(),
 });

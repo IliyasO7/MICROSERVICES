@@ -12,4 +12,5 @@ export const removeItem = joi.object({
 
 export const clearCart = joi.object({
   cartId: joi.string().allow(''),
+  serviceId: joi.string().allow(''),
 });

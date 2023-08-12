@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/', controller.getCart);
 router.get('/:id', controller.getCartById);
-
+router.get('/service/:id', controller.getCartServiceById);
 router.post('/add-item', validate(validation.addItem), controller.addItem);
 
 router.post(

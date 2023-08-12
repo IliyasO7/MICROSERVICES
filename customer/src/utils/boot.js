@@ -1,3 +1,4 @@
+import '../../../shared/models/index.js';
 import { connectMongoDB } from '../../../shared/utils/db.js';
 import { connectRedis } from '../../../shared/utils/redis.js';
 

@@ -9,6 +9,7 @@ services:
       - customer
       - admin
       - vendor
+      - invoice
       - old
 
   redis:
@@ -52,6 +53,15 @@ services:
       - ./vendor:/app
       - ./shared:/shared
       - /app/node_modules
+
+  invoice:
+    build:
+      context: ./invoice
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env
+    volumes:
+      - ./invoice:/app
 
   old:
     build:

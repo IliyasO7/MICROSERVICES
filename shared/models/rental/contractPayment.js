@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
-import { getEnums } from "../../../shared/utils/helper.js";
+import mongoose from 'mongoose';
+import { getEnums } from '../../../shared/utils/helper.js';
 
 export const ContractPaymentType = {
-  TOKEN: "token",
-  DEPOSIT: "deposit",
-  RENT: "rent",
+  TOKEN: 'token',
+  DEPOSIT: 'deposit',
+  RENT: 'rent',
 };
 
 export const ContractPaymentStatus = {
-  PENDING: "pending",
-  PAID: "paid",
-  FAILED: "failed",
+  PENDING: 'pending',
+  PAID: 'paid',
+  FAILED: 'failed',
 };
 
 const schema = new mongoose.Schema(
@@ -21,7 +21,7 @@ const schema = new mongoose.Schema(
     },
     contract: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "contract",
+      ref: 'contract',
     },
     amount: {
       type: Number,
@@ -38,6 +38,6 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const ContractPayment = mongoose.model("contractPayment", schema);
+const ContractPayment = mongoose.model('contractPayment', schema);
 
 export default ContractPayment;

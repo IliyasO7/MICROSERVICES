@@ -1,0 +1,4 @@
+flask
+pymongo
+pdfkit
+load_dotenv

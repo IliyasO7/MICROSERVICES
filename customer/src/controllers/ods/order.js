@@ -59,7 +59,7 @@ export const getOrderSummary = async (req, res) => {
     const subPackage = item.packageId.subPackages.find((element) =>
       element._id.equals(item.subPackageId)
     );
-    const rate = getRate(item.packageId, item.subPackageId);
+    const rate = subPackage?.price || item.packageId.price;
     const amount = roundValue(item.quantity * rate);
     const taxAmount = roundValue(amount * (cart.service.taxPercentage / 100));
     const totalAmount = roundValue(amount + taxAmount);

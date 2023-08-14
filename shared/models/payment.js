@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import { ObjectId } from '../utils/helper.js';
 
+export const PaymentProvider = {
+  RAZORPAY: 'razorpay',
+  PAYU: 'payu',
+};
+
 export const PaymentStatus = {
   PENDING: 'pending',
   PAID: 'paid',
@@ -8,6 +13,7 @@ export const PaymentStatus = {
 
 const schema = new mongoose.Schema(
   {
+    provider: { type: String, enum: Object.values(PaymentProvider) }.enum,
     orderId: { type: String, default: null },
     paymentId: { type: String, default: null },
     user: { type: ObjectId, ref: 'user' },

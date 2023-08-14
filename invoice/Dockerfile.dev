@@ -1,15 +1,14 @@
-FROM python:3.8-slim
+FROM ubuntu:latest
 
 WORKDIR /app
 
 COPY requirements.txt requirements.txt
+RUN apt-get update
+RUN apt-get install -y python3 python3-pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt-get update && apt-get install -y apt-transport-https
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wkhtmltopdf \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y --no-install-recommends \
+    wkhtmltopdf 
 
 COPY . .
 
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]

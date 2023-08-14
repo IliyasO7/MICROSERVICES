@@ -17,4 +17,9 @@ router
   .patch(validate(validation.updateUser), controller.updateUser)
   .delete(controller.deleteUser);
 
+router
+  .route('/:id/addresses')
+  .get(controller.getUserAddresses)
+  .post(validate(validation.createUserAddress), controller.createUserAddress);
+
 export default router;

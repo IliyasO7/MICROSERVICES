@@ -39,6 +39,8 @@ export const getAddresses = async (req, res) => {
 
 export const createAddress = async (req, res) => {
   const address = await Address.create({
+    fname: req.user.fname,
+    lname: req.user.lname,
     user: req.user._id,
     mobile: req.user.mobile,
     ...req.body,

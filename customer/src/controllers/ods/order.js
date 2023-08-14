@@ -15,10 +15,10 @@ import {
 } from '../../../../shared/utils/helper.js';
 import Address from '../../../../shared/models/address.js';
 import {
-  createPaymentOrder,
   razorpay,
   verifyPayment,
 } from '../../../../shared/services/razorpay.js';
+import { createPaymentOrder } from '../../../../shared/services/payu.js';
 import Payment from '../../../../shared/models/payment.js';
 import { CompanyDetail } from '../../../../shared/utils/constants.js';
 import { CounterName } from '../../../../shared/models/counter.js';
@@ -165,7 +165,10 @@ export const createOrder = async (req, res) => {
   });
 
   const payment = await createPaymentOrder({
-    userId: req.user._id,
+    name: req.user.fname,
+    email: req.user.email,
+    mobile: req.user.mobile,
+    product: 'ODS',
     amount: order.paymentSummary.totalAmount,
   });
 
@@ -173,11 +176,16 @@ export const createOrder = async (req, res) => {
 
   await order.save();
 
+  // sendResponse(res, 200, 'success', {
+  //   id: order._id,
+  //   orderId: payment.orderId,
+  //   amount: payment.amount,
+  //   key: process.env.RAZORPAY_KEY,
+  // });
+
   sendResponse(res, 200, 'success', {
     id: order._id,
-    orderId: payment.orderId,
-    amount: payment.amount,
-    key: process.env.RAZORPAY_KEY,
+    paymentUrl: payment.url,
   });
 };
 

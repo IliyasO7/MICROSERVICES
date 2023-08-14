@@ -5,28 +5,18 @@ import { validate } from '../../../../shared/utils/helper.js';
 
 const router = Router();
 
+router.post(
+  '/getHash',
+  validate(validation.payUPayload),
+  controller.payUMoneyPayment
+);
 
 router.post(
-    '/getHash',
-    validate(validation.payUPayload),
-    controller.payUMoneyPayment
-  );
+  '/verifyHash',
+  validate(validation.payUResponse),
+  controller.payUResponse
+);
 
-
-router.post(
-    '/verifyHash',
-    validate(validation.payUPayload),
-    controller.payUResponse
-  );
+router.get('/payment', controller.createPayment);
 
 export default router;
-
-
-
-
-
-
-
-
-
-

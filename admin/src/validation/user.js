@@ -17,6 +17,7 @@ export const createUser = joi.object({
     document: validators.fileKey('users/passbooks').allow(''),
   }),
   isOwner: joi.boolean(),
+  isTenant: joi.boolean(),
 });
 
 export const updateUser = joi.object({
@@ -35,4 +36,16 @@ export const updateUser = joi.object({
     isRegistered: joi.boolean().required(),
     isActive: joi.boolean().required(),
   }),
+});
+
+export const createUserAddress = joi.object({
+  fname: joi.string(),
+  lname: joi.string(),
+  mobile: joi.string().length(10),
+  line1: joi.string().required(),
+  line2: joi.string().allow(''),
+  landmark: joi.string().allow(''),
+  city: joi.string().lowercase().required(),
+  state: joi.string().lowercase().required(),
+  pincode: joi.string().length(6).required(),
 });

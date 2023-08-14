@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema(
   {
@@ -9,14 +9,14 @@ const schema = new mongoose.Schema(
     lname: { type: String, required: true },
     email: { type: String, unique: true, lowercase: true, required: true },
     password: { type: String, required: true },
-    status: { type: String, default: "ACTIVE", enum: ["ACTIVE", "INACTIVE"] },
+    status: { type: String, default: 'ACTIVE', enum: ['ACTIVE', 'INACTIVE'] },
     createdBy: { type: String, default: null },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 
-const Admin = mongoose.model("admin", schema);
+const Admin = mongoose.model('admin', schema);
 
 export default Admin;

@@ -28,7 +28,7 @@ const schema = new mongoose.Schema(
     addedBy: { type: mongoose.Types.ObjectId, ref: 'admin' },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 

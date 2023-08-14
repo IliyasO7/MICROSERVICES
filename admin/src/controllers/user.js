@@ -1,3 +1,4 @@
+import Address from '../../../shared/models/address.js';
 import Bank from '../../../shared/models/bank.js';
 import User from '../../../shared/models/user.js';
 import { sendResponse } from '../../../shared/utils/helper.js';
@@ -27,6 +28,14 @@ export const createUser = async (req, res) => {
   }
 
   if (req.body.isOwner) {
+    user.owner = {
+      isRegistered: true,
+      isActive: true,
+      addedBy: req.user._id,
+    };
+  }
+
+  if (req.body.isTenant) {
     user.owner = {
       isRegistered: true,
       isActive: true,
@@ -88,9 +97,29 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   const data = await User.findById(req.params.id);
-  if (!data) return sendResponse(res, 404, 'customer does not exist');
+  if (!data) return sendResponse(res, 404, 'user does not exist');
 
   await data.deleteOne();
 
   sendResponse(res, 200, 'success');
+};
+
+export const createUserAddress = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) return sendResponse(res, 404, 'user does not exist');
+
+  const address = await Address.create({
+    fname: user.fname,
+    lname: user.lname,
+    user: user._id,
+    mobile: user.mobile,
+    ...req.body,
+  });
+  sendResponse(res, 200, 'success', address);
+};
+
+export const getUserAddresses = async (req, res) => {
+  const data = await Address.find({ user: req.params.id }).lean();
+
+  sendResponse(res, 200, 'success', data);
 };

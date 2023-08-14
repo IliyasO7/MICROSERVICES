@@ -4,6 +4,7 @@ import authRoutes from './auth.js';
 import profileRoutes from './profile.js';
 import rentalRoutes from './rental/index.js';
 import odsRoutes from './ods/index.js';
+import paymentRoutes from './payment.js';
 
 import { checkAuth } from '../middleware/checkAuth.js';
 
@@ -13,6 +14,7 @@ router.use('/auth', authRoutes);
 router.use('/profile', checkAuth(), profileRoutes);
 router.use('/rental', checkAuth(), rentalRoutes);
 router.use('/ods', odsRoutes);
+router.use('/payments', paymentRoutes);
 
 router.use((req, res) => {
   sendResponse(res, 404, 'Route Not Found', null, { path: req.path });

@@ -13,8 +13,8 @@ export const updateProfile = joi.object({
 });
 
 export const createAddress = joi.object({
-  fname: joi.string().required(),
-  lname: joi.string().required(),
+  fname: joi.string(),
+  lname: joi.string(),
   mobile: joi.string().length(10),
   line1: joi.string().required(),
   line2: joi.string().allow(''),

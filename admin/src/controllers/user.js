@@ -91,6 +91,10 @@ export const updateUser = async (req, res) => {
     data.owner.isRegistered = false;
   }
 
+  if (req.body.isTenant) {
+    data.tenant.isRegistered = true;
+  }
+
   await data.save();
   sendResponse(res, 200, 'success', data);
 };

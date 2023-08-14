@@ -20,6 +20,8 @@ export const getContracts = async (req, res) => {
     .populate('owner')
     .lean();
 
+  console.log(data[0]);
+
   const payload = data.map((item) => ({
     _id: item._id,
     contractId: item.contractId,

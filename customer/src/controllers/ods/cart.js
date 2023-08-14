@@ -175,6 +175,14 @@ export const addItem = async (req, res) => {
     element.packageId.equals(packageData._id)
   );
 
+  if (req.body.subPackageId) {
+    const subPackage = packageData.subPackages.find((e) =>
+      e._id.equals(req.body.subPackageId)
+    );
+    if (!subPackage)
+      return sendResponse(res, 400, 'sub package does not exist');
+  }
+
   if (item) {
     item.quantity += 1;
     item.subPackageId = req.body.subPackageId || null;
@@ -219,7 +227,7 @@ export const removeItem = async (req, res) => {
 };
 
 export const clearCart = async (req, res) => {
-  const filter = { user: req.user._id };
+  const filter = { user: req.user._id, isActive: true };
 
   if (req.body.cartId) {
     filter['_id'] = req.body.cartId;

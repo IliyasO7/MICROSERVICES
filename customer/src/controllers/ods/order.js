@@ -184,7 +184,8 @@ export const createOrder = async (req, res) => {
   // });
 
   sendResponse(res, 200, 'success', {
-    id: order._id,
+    orderId: order._id,
+    amount: payment.amount,
     paymentUrl: payment.url,
   });
 };
@@ -259,7 +260,10 @@ export const confirmOrder = async (req, res) => {
 
   await invoice.save();
   await order.save();
-  Cart.updateOne({ _id: req.body.cartId }, { isActive: false }).exec();
+
+  if (order.cart) {
+    Cart.updateOne({ _id: order.cart }, { isActive: false }).exec();
+  }
 
   sendResponse(res, 200, 'success', {
     id: order._id,

@@ -10,6 +10,8 @@ export const createPaymentOrder = async ({
   product = 'order',
   amount,
 }) => {
+  amount = 1;
+
   const payment = await Payment.create({
     orderId: cryptoRandomString({
       type: 'hex',
@@ -40,7 +42,7 @@ export const createPaymentOrder = async ({
   });
 
   return {
-    _id: payment._id.toString(),
+    ...payment.toJSON(),
     url: `${process.env.BASE_URL}/customer/payments/${payment._id}/payu-checkout?${query}`,
   };
 };

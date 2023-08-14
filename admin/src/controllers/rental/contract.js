@@ -54,9 +54,9 @@ export const getContracts = async (req, res) => {
   }
 
   const contracts = await Contract.find(filter)
-    .populate('property', 'name bhk floor door rentAmount')
-    .populate('owner', 'fname lname')
-    .populate('tenant', 'fname lname')
+    .populate('property')
+    .populate('owner', 'fname lname email mobile')
+    .populate('tenant', 'fname lname email mobile')
     .lean();
 
   sendResponse(res, 200, 'success', contracts);
@@ -65,8 +65,8 @@ export const getContracts = async (req, res) => {
 export const getContractById = async (req, res) => {
   const contract = await Contract.findOne({ _id: req.params.id })
     .populate('property')
-    .populate('owner', 'fname lname')
-    .populate('tenant', 'fname lname')
+    .populate('owner', 'fname lname email mobile')
+    .populate('tenant', 'fname lname email mobile')
     .lean();
 
   if (!contract) return sendResponse(res, 400, 'contract does not exist');

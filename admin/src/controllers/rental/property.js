@@ -10,7 +10,7 @@ export const createProperty = async (req, res) => {
   const propertyId = await getSequenceId('HJP', CounterName.PROPERTY);
   const user = await User.findOne({ _id: req.body.ownerId }).lean();
   if (!user) return sendResponse(res, 400, 'owner does not exist');
-  if (user.owner?.isRegistered)
+  if (!user.owner?.isRegistered)
     return sendResponse(res, 400, 'the provided user is not an owner');
 
   const data = new Property({
@@ -45,7 +45,7 @@ export const getProperties = async (req, res) => {
   }
 
   const data = await Property.find(filter)
-    .populate('owner', 'fname lname')
+    .populate('owner', 'fname lname email mobile')
     .lean();
 
   sendResponse(res, 200, 'success', data);
@@ -55,7 +55,7 @@ export const getPropertyById = async (req, res) => {
   const data = await Property.findOne({
     _id: req.params.id,
   })
-    .populate('owner', 'fname lname')
+    .populate('owner', 'fname lname email mobile')
     .lean();
 
   if (!data) return sendResponse(res, 404, 'Property does not exist');

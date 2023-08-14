@@ -16,7 +16,7 @@ const schema = new mongoose.Schema(
     isDefault: { type: Boolean, default: false },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 

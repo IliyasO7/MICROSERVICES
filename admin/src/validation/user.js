@@ -17,6 +17,7 @@ export const createUser = joi.object({
     document: validators.fileKey('users/passbooks').allow(''),
   }),
   isOwner: joi.boolean(),
+  isTenant: joi.boolean(),
 });
 
 export const updateUser = joi.object({

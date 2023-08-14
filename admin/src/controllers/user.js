@@ -35,6 +35,14 @@ export const createUser = async (req, res) => {
     };
   }
 
+  if (req.body.isTenant) {
+    user.owner = {
+      isRegistered: true,
+      isActive: true,
+      addedBy: req.user._id,
+    };
+  }
+
   user.addedBy = req.user._id;
 
   await user.save();

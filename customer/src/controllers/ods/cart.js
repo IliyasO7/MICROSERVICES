@@ -165,10 +165,15 @@ export const addItem = async (req, res) => {
   let cart = await Cart.findOne({
     user: req.user._id,
     service: packageData.service,
+    isActive: true,
   });
 
   if (!cart) {
-    cart = new Cart({ user: req.user._id, service: packageData.service });
+    cart = new Cart({
+      user: req.user._id,
+      service: packageData.service,
+      isActive: true,
+    });
   }
 
   const item = cart.items.find((element) =>

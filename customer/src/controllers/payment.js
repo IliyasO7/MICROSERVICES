@@ -17,10 +17,25 @@ export const getPayuCheckout = async (req, res) => {
 <input type="hidden" name="furl" value="${req.query.callbackUrl}" />
 <input type="hidden" name="phone" value="${req.query.mobile}" />
 <input type="hidden" name="hash" value="${req.query.hash}" />
+<input type="hidden" name="udf1" value="${req.query.userId}" />
+<input type="hidden" name="udf2" value="${req.query.redirectUrl}" />
 <input style="display:none" id="submit" type="submit" value="submit"> </form>
 <script>
 document.getElementById("submit").click()
 </script>
 </body>
 </html>`);
+};
+
+export const getPayuCallback = async (req, res) => {
+  console.log(req.query);
+  console.log(req.body);
+
+  res.redirect(
+    req.query.redirectUrl +
+      '?status=' +
+      req.body.status +
+      '&message=' +
+      req.body.error_message
+  );
 };

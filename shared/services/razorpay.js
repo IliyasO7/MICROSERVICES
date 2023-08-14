@@ -40,7 +40,7 @@ export const verifyPayment = async ({
 
     Object.assign(data, {
       paymentId: payment.id,
-      method: payment.method,
+      mode: payment.method.toLowerCase(),
       feeAmount: payment.fee * 100,
       taxAmount: payment.tax * 100,
       settledAmount: payment.amount - payment.fee * 100,

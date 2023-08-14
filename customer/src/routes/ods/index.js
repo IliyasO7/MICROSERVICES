@@ -7,7 +7,7 @@ import { checkAuth } from '../../middleware/checkAuth.js';
 const router = Router();
 
 router.use('/cart', checkAuth(), cartRoutes);
-router.use('/orders', checkAuth(), orderRoutes);
+router.use('/orders', orderRoutes);
 router.use('/services', serviceRoutes);
 
 export default router;

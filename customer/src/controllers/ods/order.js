@@ -14,11 +14,11 @@ import {
   sendResponse,
 } from '../../../../shared/utils/helper.js';
 import Address from '../../../../shared/models/address.js';
+import { razorpay } from '../../../../shared/services/razorpay.js';
 import {
-  razorpay,
+  createPaymentOrder,
   verifyPayment,
-} from '../../../../shared/services/razorpay.js';
-import { createPaymentOrder } from '../../../../shared/services/payu.js';
+} from '../../../../shared/services/payu.js';
 import Payment from '../../../../shared/models/payment.js';
 import { CompanyDetail } from '../../../../shared/utils/constants.js';
 import { CounterName } from '../../../../shared/models/counter.js';
@@ -168,8 +168,11 @@ export const createOrder = async (req, res) => {
     name: req.user.fname,
     email: req.user.email,
     mobile: req.user.mobile,
+    userId: req.user._id.toString(),
     product: 'ODS',
     amount: order.paymentSummary.totalAmount,
+    callbackUrl: `${process.env.BASE_URL}/customer/ods/orders/${order._id}/confirm`,
+    redirectUrl: `https://housejoygroup.com/account/bookings/${order._id}/payment-status`,
   });
 
   order.paymentSummary.history.push(payment._id);
@@ -193,13 +196,18 @@ export const createOrder = async (req, res) => {
 export const confirmOrder = async (req, res) => {
   const order = await Order.findOne({
     _id: req.params.id,
-    user: req.user._id,
-  }).populate('address');
+    user: req.body.udf1,
+  })
+    .populate('address')
+    .populate('user');
   if (!order) return sendResponse(res, 404, 'order not found');
 
   if (order.status !== OrderStatus.PENDING) {
     return sendResponse(res, 400, 'order is not in pending status');
   }
+
+  const payment = await verifyPayment(req.body);
+  if (!payment.success) return res.redirect(payment.redirectUrl);
 
   // const [errorMessage, payment] = await verifyPayment({
   //   userId: req.user._id,
@@ -221,9 +229,9 @@ export const confirmOrder = async (req, res) => {
       state: 'Karnataka',
     },
     billTo: {
-      name: `${req.user.fname} ${req.user.lname}`,
-      mobile: req.user.mobile,
-      email: req.user.email,
+      name: `${order.user.fname} ${order.user.lname}`,
+      mobile: order.user.mobile,
+      email: order.user.email,
       address: `${order.address.line1}, ${order.address.line2}, ${order.address.city}, ${order.address.state} - ${order.address.pincode}`,
       state: 'Karnataka',
     },
@@ -265,14 +273,16 @@ export const confirmOrder = async (req, res) => {
     Cart.updateOne({ _id: order.cart }, { isActive: false }).exec();
   }
 
-  sendResponse(res, 200, 'success', {
-    id: order._id,
-    orderId: order.orderId,
-    amount: order.paymentSummary.totalAmount,
-    paymentMethod: 'none', // payment.method,
-    invoiceId: invoice._id,
-    invoiceUrl: `${process.env.BASE_URL}/invoice/${invoice._id}`,
-  });
+  return res.redirect(payment.redirectUrl);
+
+  // sendResponse(res, 200, 'success', {
+  //   id: order._id,
+  //   orderId: order.orderId,
+  //   amount: order.paymentSummary.totalAmount,
+  //   paymentMethod: 'none', // payment.method,
+  //   invoiceId: invoice._id,
+  //   invoiceUrl: `${process.env.BASE_URL}/invoice/${invoice._id}`,
+  // });
 };
 
 export const getOrders = async (req, res) => {

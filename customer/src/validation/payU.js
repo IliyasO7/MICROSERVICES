@@ -14,5 +14,7 @@ export const payUPayload = joi.object({
     productinfo:joi.string().required(),
     firstname:joi.string().required(),
     email:joi.string().required(),
+    hash: joi.string().required(),
+    status:joi.string().required(),
   });
   

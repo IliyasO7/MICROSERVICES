@@ -16,6 +16,7 @@ const schema = new mongoose.Schema(
     provider: { type: String, enum: Object.values(PaymentProvider) },
     orderId: { type: String, default: null },
     paymentId: { type: String, default: null },
+    referenceId: { type: String },
     user: { type: ObjectId, ref: 'user' },
     mode: { type: String },
     amount: { type: Number },

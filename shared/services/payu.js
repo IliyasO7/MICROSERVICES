@@ -9,6 +9,7 @@ export const createPaymentOrder = async ({
   email,
   mobile,
   userId,
+  referenceId,
   product = 'order',
   amount,
   callbackUrl,
@@ -21,6 +22,7 @@ export const createPaymentOrder = async ({
       type: 'hex',
       length: 10,
     }),
+    referenceId,
     amount,
     user: userId,
   });

@@ -12,7 +12,7 @@ const router = Router();
 
 router.use('/auth', authRoutes);
 router.use('/profile', checkAuth(), profileRoutes);
-router.use('/rental', checkAuth(), rentalRoutes);
+router.use('/rental', rentalRoutes);
 router.use('/ods', odsRoutes);
 router.use('/payments', paymentRoutes);
 

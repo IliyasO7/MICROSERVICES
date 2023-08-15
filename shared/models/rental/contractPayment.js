@@ -26,6 +26,10 @@ const schema = new mongoose.Schema(
     amount: {
       type: Number,
     },
+    payment: {
+      type: mongoose.Types.ObjectId,
+      ref: 'payment',
+    },
     paidAt: {
       type: Date,
     },

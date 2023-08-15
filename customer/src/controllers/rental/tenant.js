@@ -7,6 +7,10 @@ import {
 import { sendResponse } from '../../../../shared/utils/helper.js';
 import Contract from '../../../../shared/models/rental/contract.js';
 import ContractPayment from '../../../../shared/models/rental/contractPayment.js';
+import {
+  createPaymentOrder,
+  verifyPayment,
+} from '../../../../shared/services/payu.js';
 
 export const getContracts = async (req, res) => {
   const filter = { tenant: req.user._id };
@@ -19,8 +23,6 @@ export const getContracts = async (req, res) => {
     .populate('property')
     .populate('owner')
     .lean();
-
-  console.log(data[0]);
 
   const payload = data.map((item) => ({
     _id: item._id,
@@ -56,7 +58,10 @@ export const getContractById = async (req, res) => {
 
   if (!data) return sendResponse(res, 404, 'contract does not exist');
 
-  return sendResponse(res, 200, 'success', data);
+  return sendResponse(res, 200, 'success', {
+    ...data,
+    isPaymentDue: dayjs().isAfter(data.dueDate),
+  });
 };
 
 export const getPayments = async (req, res) => {
@@ -74,23 +79,60 @@ export const tokenPayment = async (req, res) => {
   const contract = await Contract.findOne({ _id: contractId, tenant: userId });
 
   if (!contract) {
-    return sendResponse(res, 404, 'Contract Does not Exist');
+    return sendResponse(res, 404, 'Contract does not exist');
   }
 
-  const data = await ContractPayment.create({
+  if (contract.tokenAdvance.isPaid) {
+    return sendResponse(res, 400, 'token advance is already paid');
+  }
+
+  const payment = await createPaymentOrder({
+    name: req.user.fname,
+    email: req.user.email,
+    mobile: req.user.mobile,
+    userId: req.user._id.toString(),
+    referenceId: contract._id.toString(),
+    product: 'Token Advance',
+    amount: contract.tokenAdvance.amount,
+    callbackUrl: `${process.env.BASE_URL}/customer/rental/tenant/contracts/${contract._id}/token-payment-confirm`,
+    redirectUrl: `https://housejoygroup.com/account/contracts/${contract._id}`,
+  });
+
+  sendResponse(res, 200, 'success', {
+    id: contract._id,
+    amount: payment.amount,
+    paymentUrl: payment.url,
+  });
+};
+
+export const tokenPaymentConfirm = async (req, res) => {
+  const contractId = req.params.id;
+  const userId = req.body.udf1;
+
+  const contract = await Contract.findOne({ _id: contractId, tenant: userId });
+
+  if (!contract) {
+    return sendResponse(res, 404, 'Contract does not exist');
+  }
+
+  const payment = await verifyPayment(req.body);
+  if (!payment.success) return res.redirect(payment.redirectUrl);
+
+  await ContractPayment.create({
     contract: contractId,
     type: ContractPaymentType.TOKEN,
     amount: contract.tokenAdvance.amount,
+    payment: payment.data._id,
     status: ContractPaymentStatus.PAID,
   });
 
   contract.tokenAdvance.isPaid = true;
-  contract.tokenAdvance.paidAt = new Date();
-  contract.status = ContractStatus.ACTIVE;
+  (contract.tokenAdvance.paidAt = payment.data.paidAt),
+    (contract.status = ContractStatus.ACTIVE);
 
   await contract.save();
 
-  return sendResponse(res, 200, 'Token Paid Successfully', data);
+  res.redirect(payment.redirectUrl);
 };
 
 export const depositPayment = async (req, res) => {
@@ -103,20 +145,56 @@ export const depositPayment = async (req, res) => {
     return sendResponse(res, 404, 'Contract Does not Exist');
   }
 
-  const data = await ContractPayment.create({
+  if (contract.securityDeposit.isPaid) {
+    return sendResponse(res, 400, 'token advance is already paid');
+  }
+
+  const payment = await createPaymentOrder({
+    name: req.user.fname,
+    email: req.user.email,
+    mobile: req.user.mobile,
+    userId: req.user._id.toString(),
+    referenceId: contract._id.toString(),
+    product: 'Security Deposit',
+    amount: contract.securityDeposit.amount,
+    callbackUrl: `${process.env.BASE_URL}/customer/rental/tenant/contracts/${contract._id}/deposit-payment-confirm`,
+    redirectUrl: `https://housejoygroup.com/account/contracts/${contract._id}`,
+  });
+
+  sendResponse(res, 200, 'success', {
+    id: contract._id,
+    amount: payment.amount,
+    paymentUrl: payment.url,
+  });
+};
+
+export const depositPaymentConfirm = async (req, res) => {
+  const contractId = req.params.id;
+  const userId = req.body.udf1;
+
+  const contract = await Contract.findOne({ _id: contractId, tenant: userId });
+
+  if (!contract) {
+    return sendResponse(res, 404, 'Contract Does not Exist');
+  }
+
+  const payment = await verifyPayment(req.body);
+  if (!payment.success) return res.redirect(payment.redirectUrl);
+
+  await ContractPayment.create({
     contract: contractId,
     type: ContractPaymentType.DEPOSIT,
     amount: contract.securityDeposit.amount,
+    payment: payment.data._id,
     status: ContractPaymentStatus.PAID,
   });
 
   contract.securityDeposit.isPaid = true;
-  contract.securityDeposit.paidAt = new Date();
-  contract.status = ContractStatus.ACTIVE;
-  //token and deposit one time payment status has to change to active
+  contract.securityDeposit.paidAt = payment.data.paidAt;
+
   await contract.save();
 
-  return sendResponse(res, 200, 'Deposit Paid Successfully', data);
+  res.redirect(payment.redirectUrl);
 };
 
 export const rentPayment = async (req, res) => {
@@ -130,6 +208,24 @@ export const rentPayment = async (req, res) => {
     return sendResponse(res, 404, 'Contract Does not Exist');
   }
 
+  const payment = await createPaymentOrder({
+    name: req.user.fname,
+    email: req.user.email,
+    mobile: req.user.mobile,
+    userId: req.user._id.toString(),
+    referenceId: contract._id.toString(),
+    product: 'Security Deposit',
+    amount: contract.securityDeposit.amount,
+    callbackUrl: `${process.env.BASE_URL}/customer/rental/tenant/contracts/${contract._id}/rent-payment-confirm`,
+    redirectUrl: `https://housejoygroup.com/account/contracts/${contract._id}`,
+  });
+
+  sendResponse(res, 200, 'success', {
+    id: contract._id,
+    amount: payment.amount,
+    paymentUrl: payment.url,
+  });
+
   const data = await ContractPayment.create({
     contract: contractId,
     type: ContractPaymentType.RENT,
@@ -142,4 +238,33 @@ export const rentPayment = async (req, res) => {
   await contract.save();
 
   return sendResponse(res, 200, 'Rent Paid Successfully', data);
+};
+
+export const rentPaymentConfirm = async (req, res) => {
+  const contractId = req.params.id;
+  const userId = req.body.udf1;
+
+  const contract = await Contract.findOne({ _id: contractId, tenant: userId });
+  const prevDue = contract.dueDate;
+
+  if (!contract) {
+    return sendResponse(res, 404, 'Contract Does not Exist');
+  }
+
+  const payment = await verifyPayment(req.body);
+  if (!payment.success) return res.redirect(payment.redirectUrl);
+
+  await ContractPayment.create({
+    contract: contractId,
+    type: ContractPaymentType.RENT,
+    amount: contract.rentAmount,
+    payment: payment.data._id,
+    status: ContractPaymentStatus.PAID,
+  });
+
+  contract.dueDate = dayjs(prevDue).add(1, 'month').toDate();
+
+  await contract.save();
+
+  res.redirect(payment.redirectUrl);
 };

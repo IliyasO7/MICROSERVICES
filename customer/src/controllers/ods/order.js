@@ -172,7 +172,7 @@ export const createOrder = async (req, res) => {
     product: 'ODS',
     amount: order.paymentSummary.totalAmount,
     callbackUrl: `${process.env.BASE_URL}/customer/ods/orders/${order._id}/confirm`,
-    redirectUrl: `https://housejoygroup.com/account/bookings/${order._id}/payment-status`,
+    redirectUrl: `https://housejoygroup.com/account/bookings/${order._id}`,
   });
 
   order.paymentSummary.history.push(payment._id);

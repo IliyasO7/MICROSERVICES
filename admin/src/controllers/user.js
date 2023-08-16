@@ -36,7 +36,7 @@ export const createUser = async (req, res) => {
   }
 
   if (req.body.isTenant) {
-    user.owner = {
+    user.tenant = {
       isRegistered: true,
       isActive: true,
       addedBy: req.user._id,

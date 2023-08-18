@@ -15,8 +15,6 @@ export const createPaymentOrder = async ({
   callbackUrl,
   redirectUrl,
 }) => {
-  amount = 1;
-
   const payment = await Payment.create({
     orderId: cryptoRandomString({
       type: 'hex',

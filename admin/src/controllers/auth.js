@@ -49,3 +49,8 @@ export const login = async (req, res) => {
     profile: admin,
   });
 };
+
+export const profile = async (req, res) => {
+  const profile = req.user;
+  sendResponse(res, 200, "Profile Fetched Successfully", profile);
+};

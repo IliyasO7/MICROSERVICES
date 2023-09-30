@@ -51,5 +51,5 @@ export const deleteCategory = async (req, res) => {
 
   await data.deleteOne();
 
-  sendResponse(res, 200, "success");
+  sendResponse(res, 200, "successfull");
 };

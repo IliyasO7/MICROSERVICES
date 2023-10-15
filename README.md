@@ -9,7 +9,7 @@
 
 - 🔭 I’m currently working on [Backend Technologies](MICROSERVICES,SAAS platforms,On Demand Service Applications,Real Time Applications,E-Commerce Applications.)
 
-- 🌱 I’m currently learning **React Native**
+- 🌱 I’m would be learning **React* in future.
 
 - 💬 Ask me about **Node.js,Express.js,Javascript,AWS,MONGODB,POSTGRES,MYSQL,AWS,MICROSERVICES**
 
